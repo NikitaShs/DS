@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PetDS.Application\PetDS.Application.csproj" />
     <ProjectReference Include="..\PetDS.Contract\PetDS.Contract.csproj" />
     <ProjectReference Include="..\PetDS.Infrastructure\PetDS.Infrastructure.csproj" />
   </ItemGroup>

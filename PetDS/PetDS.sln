@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Contract", "src\PetDS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Infrastructure", "src\PetDS.Infrastructure\PetDS.Infrastructure.csproj", "{DE35C951-98E7-4912-B96E-6B630A94EB77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Application", "PetDS.Application\PetDS.Application.csproj", "{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,7 +50,6 @@ Global
 		{FA170213-F89C-45B5-BCBC-FFA36C1A7806} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{0DED4698-9500-4BF3-88FA-71790E63EA24} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 		{DE35C951-98E7-4912-B96E-6B630A94EB77} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
-		{C8AD8B12-C2A3-47C3-8EAB-527CC74E4647} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D23615EF-4BAB-4070-BC50-694F2CFCD765}
