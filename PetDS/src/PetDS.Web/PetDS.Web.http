@@ -1,0 +1,6 @@
+@PetDS.Web_HostAddress = http://localhost:5053
+
+GET {{PetDS.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
