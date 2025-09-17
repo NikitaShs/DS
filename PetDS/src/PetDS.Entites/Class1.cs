@@ -1,4 +1,4 @@
-﻿namespace PetDS.Entites
+﻿namespace PetDS.Domain
 {
     public class Class1
     {
