@@ -1,11 +1,62 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1 d17.14
+VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItem", "SolutionItem", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C65DADA8-9427-43A5-AD0E-98C80736EDCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Web", "src\PetDS.Web\PetDS.Web.csproj", "{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Domain", "src\PetDS.Entites\PetDS.Domain.csproj", "{FA170213-F89C-45B5-BCBC-FFA36C1A7806}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Contract", "src\PetDS.Contract\PetDS.Contract.csproj", "{0DED4698-9500-4BF3-88FA-71790E63EA24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Infrastructure", "src\PetDS.Infrastructure\PetDS.Infrastructure.csproj", "{DE35C951-98E7-4912-B96E-6B630A94EB77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Application", "src\PetDS.Application\PetDS.Application.csproj", "{7F94B787-C3BF-4050-A6C3-226E4B52D2B6}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA170213-F89C-45B5-BCBC-FFA36C1A7806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA170213-F89C-45B5-BCBC-FFA36C1A7806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA170213-F89C-45B5-BCBC-FFA36C1A7806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA170213-F89C-45B5-BCBC-FFA36C1A7806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DED4698-9500-4BF3-88FA-71790E63EA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DED4698-9500-4BF3-88FA-71790E63EA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DED4698-9500-4BF3-88FA-71790E63EA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DED4698-9500-4BF3-88FA-71790E63EA24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE35C951-98E7-4912-B96E-6B630A94EB77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F94B787-C3BF-4050-A6C3-226E4B52D2B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F94B787-C3BF-4050-A6C3-226E4B52D2B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F94B787-C3BF-4050-A6C3-226E4B52D2B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F94B787-C3BF-4050-A6C3-226E4B52D2B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{23F58B0F-5F3F-4D92-ADF3-D3437A11E81D} = {C65DADA8-9427-43A5-AD0E-98C80736EDCB}
+		{FA170213-F89C-45B5-BCBC-FFA36C1A7806} = {C65DADA8-9427-43A5-AD0E-98C80736EDCB}
+		{0DED4698-9500-4BF3-88FA-71790E63EA24} = {C65DADA8-9427-43A5-AD0E-98C80736EDCB}
+		{DE35C951-98E7-4912-B96E-6B630A94EB77} = {C65DADA8-9427-43A5-AD0E-98C80736EDCB}
+		{7F94B787-C3BF-4050-A6C3-226E4B52D2B6} = {C65DADA8-9427-43A5-AD0E-98C80736EDCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D23615EF-4BAB-4070-BC50-694F2CFCD765}
