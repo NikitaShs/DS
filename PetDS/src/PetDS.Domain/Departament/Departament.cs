@@ -55,7 +55,7 @@ namespace PetDS.Domain.Departament
         public static Result<Departament> Create(
             DepartamentName name,
             DepartamentIdentifier identifier,
-            Departament parent,
+            Departament parent
             )
         {
             var id = DepartamentId.CreateNewGuid();

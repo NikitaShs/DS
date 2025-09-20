@@ -18,7 +18,8 @@ namespace PetDS.Domain.Departament.VO
 
         public static Result<DepartamentName> Create(string valueName)
         {
-            if(valueName.Length < 3 || valueName.Length > 150 || string.IsNullOrWhiteSpace(valueName){
+            if(valueName.Length < 3 || valueName.Length > 150 || string.IsNullOrWhiteSpace(valueName))
+            {
                 return Result.Failure<DepartamentName>("Не валидное имя");
             }
 
