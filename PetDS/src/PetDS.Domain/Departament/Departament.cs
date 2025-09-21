@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament.VO;
+using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -60,7 +62,7 @@ namespace PetDS.Domain.Departament
         public static Result<Departament> Create(
             DepartamentName name,
             DepartamentIdentifier identifier,
-            Departament? parent)
+            Departament? parent, IEnumerable<Guid> locationId)
         {
             var id = DepartamentId.CreateNewGuid();
 
@@ -77,7 +79,7 @@ namespace PetDS.Domain.Departament
                 depth = (short)(parent.Depth + 1);
             }
 
-            var deportament = new Departament(id, name, identifier, parent, path, depth);
+            var deportament = new Departament(id, name, identifier, parent, path, locationId , depth);
             return Result.Success<Departament>(deportament);
         }
 
