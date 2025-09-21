@@ -1,76 +1,26 @@
-﻿using PetDS.Domain.Departament.VO;
+﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Departament.VO;
+using PetDS.Domain.Shered;
 
 namespace PetDS.Domain.Departament
 {
-    public class DepartamentPosition
+    public class DepartamentPosition : Shered.Entity<DepartamentPositionId>
     {
-        public DepartamentPositionId DepartamentPositionId { get; private set; }
+        private DepartamentPosition(DepartamentPositionId departamentPositionId, Departament departament, Guid positionId) : base(departamentPositionId)
+        {
+            Departament = departament;
+            PositionId = positionId;
+        }
 
-        public DepartamentId DepartamentId { get; private set; }
+        public Departament Departament { get; private set; }
 
         public Guid PositionId { get; private set; }
+
+        public static Result<DepartamentPosition> Create(Departament departament, Guid positionId)
+        {
+            var id = DepartamentPositionId.CreateNewGuid();
+            return new DepartamentPosition(id, departament, positionId);
+        }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // CSharpFunctionalExtensions
-        //public static Result<Departament> Create(string name, string identifier, Guid parentId, string path, short depth, bool isActive)
-        //{
-        //    if(name.Length < 3 || name.Length> 150 || string.IsNullOrWhiteSpace(name) )
-        //    {
-        //        return Result.Failure<Departament>("Неверно указанно имя");
-        //    }
-
-        //    if (identifier.Length < 3 || identifier.Length > 150 || string.IsNullOrWhiteSpace(identifier))
-        //    {
-        //        return Result.Failure<Departament>("Неверно указан identifier");
-        //    }
-
-        //    var deportament = new Departament(name, identifier, parentId, path, depth, isActive);
-
-        //    return Result.Success<Departament>(deportament);
-        //}

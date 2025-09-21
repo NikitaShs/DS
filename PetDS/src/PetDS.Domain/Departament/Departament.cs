@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament.VO;
+using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -8,13 +9,18 @@ namespace PetDS.Domain.Departament
 {
     public class Departament : Shered.Entity<DepartamentId>
     {
-        public Departament(DepartamentId id, DepartamentName name, DepartamentIdentifier identifier, Departament parent, DepartamentPash path, short depth) : base(id)
+        public Departament(DepartamentId id, DepartamentName name,
+            DepartamentIdentifier identifier, Departament parent,
+            DepartamentPash path, IEnumerable<Guid> locationId,
+            short depth) : base(id)
         {
             Name = name;
             Identifier = identifier;
             Parent = parent;
             Path = path;
             Depth = depth;
+            var depLoc = locationId.Select(loc => DepartamentLocation.Create(this, loc).Value);
+            _departamentLocation = depLoc.ToList();
             IsActive = true;
             CreateAt = DateTime.UtcNow;
             UpdateAt = DateTime.UtcNow;
@@ -36,6 +42,8 @@ namespace PetDS.Domain.Departament
 
         public DateTime UpdateAt { get; private set; }
 
+        public Guid LocationId { get; private set; }
+
         private List<Departament> _childrenDepartament = [];
 
         private List<DepartamentLocation> _departamentLocation = [];
@@ -44,19 +52,15 @@ namespace PetDS.Domain.Departament
 
         public IReadOnlyCollection<Departament> Children => _childrenDepartament;
 
-        public IReadOnlyCollection<DepartamentLocation> DepartamentLocation => _departamentLocation;
+        public IReadOnlyCollection<DepartamentLocation> DepartamentLocations => _departamentLocation;
 
-        public IReadOnlyCollection<DepartamentPosition> DepartamentPosition => _departamentPosition;
-
-
-
+        public IReadOnlyCollection<DepartamentPosition> DepartamentPositions => _departamentPosition;
 
         // CSharpFunctionalExtensions
         public static Result<Departament> Create(
             DepartamentName name,
             DepartamentIdentifier identifier,
-            Departament parent
-            )
+            Departament? parent)
         {
             var id = DepartamentId.CreateNewGuid();
 
@@ -80,48 +84,3 @@ namespace PetDS.Domain.Departament
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

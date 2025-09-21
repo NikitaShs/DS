@@ -15,8 +15,8 @@ namespace PetDS.Domain.Departament.VO
 
         public Guid ValueId { get; }
 
-        public static DepartamentLocationId CreateNewGuid => new(Guid.NewGuid());
+        public static DepartamentLocationId CreateNewGuid() => new(Guid.NewGuid());
 
-        public static DepartamentLocationId CreateEmpty => new(Guid.Empty);
+        public static DepartamentLocationId CreateEmpty() => new(Guid.Empty);
     }
 }
