@@ -11,9 +11,13 @@ namespace PetDS.Domain.Departament
 {
     public class Departament : Shered.Entity<DepartamentId>
     {
+        private Departament(DepartamentId id) : base(id)
+        {
+        }
+
         public Departament(DepartamentId id, DepartamentName name,
             DepartamentIdentifier identifier, Departament parent,
-            DepartamentPash path, IEnumerable<Guid> locationId,
+            DepartamentPash path, IEnumerable<LocationId> locationId,
             short depth) : base(id)
         {
             Name = name;
@@ -62,7 +66,7 @@ namespace PetDS.Domain.Departament
         public static Result<Departament> Create(
             DepartamentName name,
             DepartamentIdentifier identifier,
-            Departament? parent, IEnumerable<Guid> locationId)
+            Departament? parent, IEnumerable<LocationId> locationId)
         {
             var id = DepartamentId.CreateNewGuid();
 

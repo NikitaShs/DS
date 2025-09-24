@@ -1,22 +1,30 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament.VO;
+using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 
 namespace PetDS.Domain.Departament
 {
     public class DepartamentLocation : Shered.Entity<DepartamentLocationId>
     {
-        private DepartamentLocation(DepartamentLocationId departamentLocationId, Departament departament, Guid locationId) : base(departamentLocationId)
+        private DepartamentLocation(DepartamentLocationId id) : base(id)
+        {
+        }
+
+        private DepartamentLocation(DepartamentLocationId departamentLocationId, Departament departament, LocationId locationId) : base(departamentLocationId)
         {
             Departament = departament;
+            DepartamentId = departament.Id;
             LocationId = locationId;
         }
 
+        public DepartamentId DepartamentId { get; private set; }
+
         public Departament Departament { get; private set; }
 
-        public Guid LocationId { get; private set; }
+        public LocationId LocationId { get; private set; }
 
-        public static Result<DepartamentLocation> Create(Departament departament, Guid locationId)
+        public static Result<DepartamentLocation> Create(Departament departament, LocationId locationId)
         {
             var id = DepartamentLocationId.CreateNewGuid();
 

@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace PetDS.Domain.Departament.VO
 {
     public record DepartamentIdentifier
     {
+        private DepartamentIdentifier()
+        {
+        }
+
         private DepartamentIdentifier(string valuseIdentifier) {
             ValueIdentifier = valuseIdentifier;
         }
@@ -18,7 +23,7 @@ namespace PetDS.Domain.Departament.VO
 
         public static Result<DepartamentIdentifier> Create(string valueIdentifier)
         {
-            if (valueIdentifier.Length < 3 || valueIdentifier.Length > 150 || string.IsNullOrWhiteSpace(valueIdentifier) || !Regex.IsMatch(valueIdentifier, @"^[a-zA-Z]+$"))
+            if (valueIdentifier.Length < 3 || valueIdentifier.Length > Constans.MAX_150_lENGHT_DEP || string.IsNullOrWhiteSpace(valueIdentifier) || !Regex.IsMatch(valueIdentifier, @"^[a-zA-Z]+$"))
             {
                 return Result.Failure<DepartamentIdentifier>("Не валидный аутентификатор");
             }

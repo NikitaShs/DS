@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace PetDS.Domain.Location.VO
 
         public static Result<LocationName> Create(string valueName)
         {
-            if (valueName.Length < 3 || valueName.Length > 120)
+            if (valueName.Length < 3 || valueName.Length > Constans.MAX_120_lENGHT_LOC)
             {
                 return Result.Failure<LocationName>("Невалидное имя");
             }

@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Location.VO;
 using PetDS.Domain.Position.VO;
 using PetDS.Domain.Shered;
 using System.Xml.Linq;
@@ -7,6 +8,10 @@ namespace PetDS.Domain.Position
 {
     public class Position : Shered.Entity<PositionId>
     {
+        private Position(PositionId id) : base(id)
+        {
+        }
+
         private Position(PositionId id, PositionName name, PositionDiscription discription) : base(id)
         {
             Name = name;

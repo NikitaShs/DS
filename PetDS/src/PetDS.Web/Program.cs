@@ -1,9 +1,14 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.Extensions.DependencyInjection;
+using PetDS.Infrastructure;
+using System;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddScoped<ApplicationDbContext>();
 
 var app = builder.Build();
 

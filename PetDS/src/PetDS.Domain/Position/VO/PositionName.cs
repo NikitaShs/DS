@@ -1,9 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PetDS.Domain.Shered;
 
 namespace PetDS.Domain.Position.VO
 {
@@ -18,7 +14,7 @@ namespace PetDS.Domain.Position.VO
 
         public static Result<PositionName> Create (string valueName)
         {
-            if(valueName.Length < 3 || valueName.Length > 100)
+            if(valueName.Length < 3 || valueName.Length > Constans.MAX_100_lENGHT_POS)
             {
                 return Result.Failure<PositionName>("Невалидное имя");
             }

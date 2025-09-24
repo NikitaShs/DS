@@ -10,6 +10,10 @@ namespace PetDS.Domain.Location.VO
 {
     public record LocationAddress
     {
+        private LocationAddress()
+        {
+        }
+
         private LocationAddress(string city, string strit, string namberHouse)
         {
             City = city;
