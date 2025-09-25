@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 
@@ -6,9 +7,13 @@ namespace PetDS.Domain.Location
 {
     public class Location : Shered.Entity<LocationId>
     {
+        private Location(LocationId id) : base(id)
+        {
+        }
+
         private Location(LocationId id, LocationName locationName, LocationAddress address, LocationTimezone timezone) : base(id)
         {
-            LocationName = locationName;
+            Name = locationName;
             Address = address;
             Timezone = timezone;
             IsActive = true;
@@ -17,7 +22,7 @@ namespace PetDS.Domain.Location
             UpdateAt = DateTime.Now;
         }
 
-        public LocationName LocationName { get; private set; }
+        public LocationName Name { get; private set; }
 
         public LocationAddress Address { get; private set; }
 

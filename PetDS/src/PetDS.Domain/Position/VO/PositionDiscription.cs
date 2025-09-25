@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace PetDS.Domain.Position.VO
 
         public static Result<PositionDiscription> Create(string valueDiscription)
         {
-            if(valueDiscription.Length >= 1000)
+            if(valueDiscription.Length >= Constans.MAX_1000_LENGHT_DESC)
             {
                 return Result.Failure<PositionDiscription>("это слишком");
             }
