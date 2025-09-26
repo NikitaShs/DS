@@ -17,8 +17,8 @@ namespace PetDS.Domain.Position
             Name = name;
             Discription = discription;
             IsActive = true;
-            CreateAt = DateTime.Now;
-            UpdateAt = DateTime.Now;
+            CreateAt = DateTime.UtcNow;
+            UpdateAt = DateTime.UtcNow;
         }
 
         public PositionName Name { get; private set; }

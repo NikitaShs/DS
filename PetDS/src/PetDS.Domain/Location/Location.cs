@@ -17,9 +17,9 @@ namespace PetDS.Domain.Location
             Address = address;
             Timezone = timezone;
             IsActive = true;
-            CreateAt = DateTime.Now;
-            CreateAt = DateTime.Now;
-            UpdateAt = DateTime.Now;
+            CreateAt = DateTime.UtcNow;
+            CreateAt = DateTime.UtcNow;
+            UpdateAt = DateTime.UtcNow;
         }
 
         public LocationName Name { get; private set; }
