@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace PetDS.Infrastructure
 {
-    public class EFCoreLocationRepository : ILocationRepository
+    public class LocationRepository : ILocationRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public EFCoreLocationRepository(ApplicationDbContext dbContext)
+        public LocationRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

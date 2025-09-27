@@ -6,9 +6,7 @@ using CSharpFunctionalExtensions;
 namespace PetDS.Web.Controllers
 {
 [ApiController]
-
 [Route("/api/locations")]
-
     public class LocationController : ControllerBase
     {
 
@@ -18,7 +16,7 @@ namespace PetDS.Web.Controllers
             [FromBody] CreateLocationRequest createLocation,
             CancellationToken cancellationToken)
         {
-            return await locationService.CreateLoc(createLocation, cancellationToken);
+            return await locationService.Create(createLocation, cancellationToken);
 
         }
     }

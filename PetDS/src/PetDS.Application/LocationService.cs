@@ -14,7 +14,7 @@ namespace PetDS.Application
             _locationRepository = locationRepository;
         }
 
-        public async Task<Result<Guid>> CreateLoc(
+        public async Task<Result<Guid>> Create(
             CreateLocationRequest createLocation,
             CancellationToken cancellationToken)
 
