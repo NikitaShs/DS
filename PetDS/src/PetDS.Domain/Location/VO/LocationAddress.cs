@@ -35,6 +35,7 @@ namespace PetDS.Domain.Location.VO
             }
 
             return new LocationAddress(city, strit, namberHouse);
+
         }
     }
 }
