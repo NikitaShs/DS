@@ -18,13 +18,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PetDS.Application\PetDS.Application.csproj" />
-    <ProjectReference Include="..\PetDS.Contract\PetDS.Contract.csproj" />
     <ProjectReference Include="..\PetDS.Domain\PetDS.Domain.csproj" />
   </ItemGroup>
 

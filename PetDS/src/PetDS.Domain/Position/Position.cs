@@ -31,7 +31,7 @@ namespace PetDS.Domain.Position
 
         public DateTime UpdateAt { get; private set; }
 
-        public static Result<Position> Create(PositionName name, PositionDiscription discription)
+        public static Result<Position, Error> Create(PositionName name, PositionDiscription discription)
         {
             var id = PositionId.NewGuidPosition();
             return new Position(id, name, discription);

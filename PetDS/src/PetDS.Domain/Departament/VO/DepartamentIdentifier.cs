@@ -21,11 +21,11 @@ namespace PetDS.Domain.Departament.VO
 
         public string ValueIdentifier { get; }
 
-        public static Result<DepartamentIdentifier> Create(string valueIdentifier)
+        public static Result<DepartamentIdentifier, Error> Create(string valueIdentifier)
         {
             if (valueIdentifier.Length < 3 || valueIdentifier.Length > Constans.MAX_150_lENGHT_DEP || string.IsNullOrWhiteSpace(valueIdentifier) || !Regex.IsMatch(valueIdentifier, @"^[a-zA-Z]+$"))
             {
-                return Result.Failure<DepartamentIdentifier>("Не валидный аутентификатор");
+                return GeneralErrors.ValueNotValid("Identifier");
             }
 
             return new DepartamentIdentifier(valueIdentifier);

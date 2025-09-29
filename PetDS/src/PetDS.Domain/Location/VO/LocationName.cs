@@ -17,11 +17,11 @@ namespace PetDS.Domain.Location.VO
 
         public string ValueName { get; }
 
-        public static Result<LocationName> Create(string valueName)
+        public static Result<LocationName, Error> Create(string valueName)
         {
             if (valueName.Length < 3 || valueName.Length > Constans.MAX_120_lENGHT_LOC)
             {
-                return Result.Failure<LocationName>("Невалидное имя");
+                return GeneralErrors.ValueNotValid("Name");
             }
 
             return new LocationName(valueName);

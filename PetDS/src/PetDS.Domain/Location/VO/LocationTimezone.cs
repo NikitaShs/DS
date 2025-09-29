@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,13 @@ namespace PetDS.Domain.Location.VO
 
         public string LanaCode { get; }
 
-        public static Result<LocationTimezone> Create(string region, string city)
+        public static Result<LocationTimezone, Error> Create(string region, string city)
         {
             if (string.IsNullOrWhiteSpace(region) || string.IsNullOrWhiteSpace(city))
             {
-                return Result.Failure<LocationTimezone>("неверный лан");
+                return GeneralErrors.ValueNotValid("lanaCode");
             }
+
             string lanaCode = $"{region}/{city}";
 
             return new LocationTimezone(lanaCode);

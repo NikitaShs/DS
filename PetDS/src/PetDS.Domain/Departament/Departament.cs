@@ -3,6 +3,7 @@ using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -63,14 +64,19 @@ namespace PetDS.Domain.Departament
         public IReadOnlyCollection<DepartamentPosition> DepartamentPositions => _departamentPosition;
 
         // CSharpFunctionalExtensions
-        public static Result<Departament> Create(
+        public static Result<Departament, Error> Create(
             DepartamentName name,
             DepartamentIdentifier identifier,
             Departament? parent, IEnumerable<LocationId> locationId)
         {
             var id = DepartamentId.CreateNewGuid();
 
-            var path = DepartamentPash.Create(name.ValueName, parent).Value;
+            var path = DepartamentPash.Create(name.ValueName, parent);
+
+            if (path.IsFailure)
+            {
+                return GeneralErrors.ValueFailure("path");
+            }
 
             short depth = 0;
 
@@ -83,8 +89,7 @@ namespace PetDS.Domain.Departament
                 depth = (short)(parent.Depth + 1);
             }
 
-            var deportament = new Departament(id, name, identifier, parent, path, locationId , depth);
-            return Result.Success<Departament>(deportament);
+            return new Departament(id, name, identifier, parent, path.Value, locationId , depth);
         }
 
     }

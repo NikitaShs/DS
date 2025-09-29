@@ -18,11 +18,11 @@ namespace PetDS.Domain.Position.VO
 
         public string ValueDiscription { get; }
 
-        public static Result<PositionDiscription> Create(string valueDiscription)
+        public static Result<PositionDiscription, Error> Create(string valueDiscription)
         {
             if(valueDiscription.Length >= Constans.MAX_1000_LENGHT_DESC)
             {
-                return Result.Failure<PositionDiscription>("это слишком");
+                return GeneralErrors.ValueNotValid("Discription");
             }
 
             return new PositionDiscription(valueDiscription);

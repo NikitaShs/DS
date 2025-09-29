@@ -17,11 +17,11 @@ namespace PetDS.Domain.Departament.VO
 
         public string ValueName { get; }
 
-        public static Result<DepartamentName> Create(string valueName)
+        public static Result<DepartamentName, Error> Create(string valueName)
         {
             if(valueName.Length < 3 || valueName.Length > Constans.MAX_150_lENGHT_DEP || string.IsNullOrWhiteSpace(valueName))
             {
-                return Result.Failure<DepartamentName>("Не валидное имя");
+                return GeneralErrors.ValueNotValid("Name");
             }
 
             return new DepartamentName(valueName);
