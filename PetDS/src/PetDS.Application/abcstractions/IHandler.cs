@@ -8,7 +8,7 @@ namespace PetDS.Application.abcstractions
         public Task<Result<ret, Error>> Handel(Tcommand command, CancellationToken cancellationToken = default);
     }
 
-    public interface IHandler<Tcommand>
+    public interface IHandler<Tcommand> where Tcommand : ICommand
     {
         public Task<UnitResult<Error>> Handel(Tcommand command, CancellationToken cancellationToken = default);
     }
