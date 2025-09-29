@@ -17,6 +17,13 @@ namespace PetDS.Web.Response
 
         public static implicit operator EdponintResult<TValue>(Result<TValue, Error> result) => new(result);
 
+        public EdponintResult(Result<TValue, Errors> result)
+        {
+            _result = result.IsSuccess ? new SuccessResult<TValue>(result.Value) : new ErrorResult(result.Error);
+        }
+
+        public static implicit operator EdponintResult<TValue>(Result<TValue, Errors> result) => new(result);
+
         public static void PopulateMetadata(MethodInfo method, EndpointBuilder builder)
         {
 
