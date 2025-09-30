@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +28,11 @@ namespace PetDS.Domain.Location.VO
 
         public string NamberHouse { get; }
 
-        public static Result<LocationAddress> Create(string city, string strit, string namberHouse)
+        public static Result<LocationAddress, Error> Create(string city, string strit, string namberHouse)
         {
             if(string.IsNullOrWhiteSpace(city) || string.IsNullOrWhiteSpace(strit) || string.IsNullOrWhiteSpace(namberHouse))
             {
-                return Result.Failure<LocationAddress>("незаплненный адресс ");
+                return GeneralErrors.ValueNotValid("Address");
             }
 
             return new LocationAddress(city, strit, namberHouse);

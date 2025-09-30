@@ -12,11 +12,11 @@ namespace PetDS.Domain.Position.VO
 
         public string ValueName { get; }
 
-        public static Result<PositionName> Create (string valueName)
+        public static Result<PositionName, Error> Create (string valueName)
         {
             if(valueName.Length < 3 || valueName.Length > Constans.MAX_100_lENGHT_POS)
             {
-                return Result.Failure<PositionName>("Невалидное имя");
+                return GeneralErrors.ValueNotValid("Name");
             }
 
             return new PositionName(valueName);

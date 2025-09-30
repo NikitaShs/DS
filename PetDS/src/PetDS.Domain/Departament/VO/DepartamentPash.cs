@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PetDS.Domain.Departament.VO
 
         public string ValuePash { get; }
 
-        public static Result<DepartamentPash> Create(string departamentName, Departament? parent)
+        public static Result<DepartamentPash, Error> Create(string departamentName, Departament? parent)
         {
 
             if(parent != null)

@@ -25,6 +25,11 @@ namespace PetDS.Infrastructure.Configurations;
             a =>
             {
                 a.ToJson(); // переводим свойство в json
+                a.Property(a => a.City).HasColumnName("city");
+
+                a.Property(a => a.Strit).HasColumnName("street");
+
+                a.Property(a => a.NamberHouse).HasColumnName("houseNumber");
             });
 
         builder.OwnsOne(i => i.Name, n =>

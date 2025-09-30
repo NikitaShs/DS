@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using PetDS.Application;
+using PetDS.Application.Locations;
 using PetDS.Domain.Location;
+using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,18 @@ namespace PetDS.Infrastructure
             _dbContext = dbContext;
         }
 
-        public async Task<Guid> AddLocation(Location location, CancellationToken cancellationToken)
+        public async Task<Result<Guid, Error>> AddLocation(Location location, CancellationToken cancellationToken)
         {
             await _dbContext.Locations.AddAsync(location, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return Error.Unknown("necto", "не известная ошибка");
+            }
 
             return location.Id.ValueId;
         }

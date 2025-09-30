@@ -18,7 +18,6 @@ namespace PetDS.Domain.Location
             Timezone = timezone;
             IsActive = true;
             CreateAt = DateTime.UtcNow;
-            CreateAt = DateTime.UtcNow;
             UpdateAt = DateTime.UtcNow;
         }
 
@@ -34,13 +33,23 @@ namespace PetDS.Domain.Location
 
         public DateTime UpdateAt { get; private set; }
 
-        public static Result<Location> Create(LocationName locationName, string city, string region, string strit, string namberHouse)
+        public static Result<Location, Error> Create(LocationName locationName, string city, string region, string strit, string namberHouse)
         {
             var id = LocationId.NewGuidLocation();
 
             var address = LocationAddress.Create(city, strit, namberHouse);
 
+            if (address.IsFailure)
+            {
+                return GeneralErrors.ValueFailure("address");
+            }
+
             var timezone = LocationTimezone.Create(region, city);
+
+            if (timezone.IsFailure)
+            {
+                return GeneralErrors.ValueFailure("timezone");
+            }
 
             return new Location(id, locationName, address.Value, timezone.Value);
         }

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetDS.Application;
-using PetDS.Contract;
 using CSharpFunctionalExtensions;
+using PetDS.Application.Locations.CreateLocation;
+using PetDS.Contract;
+using PetDS.Application.abcstractions;
+using PetDS.Domain.Shered;
+using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers
 {
@@ -11,13 +14,13 @@ namespace PetDS.Web.Controllers
     {
 
         [HttpPost]
-        public async Task<Result<Guid>> CreateLocation(
-            [FromServices] LocationService locationService,
-            [FromBody] CreateLocationRequest createLocation,
+        public async Task<EdponintResult<Guid>> CreateLocation(
+            [FromServices] IHandler<Guid, CreateLocationCommand> handler,
+            [FromBody] CreateLocationDto request,
             CancellationToken cancellationToken)
         {
-            return await locationService.Create(createLocation, cancellationToken);
-
+            var command = new CreateLocationCommand(request);
+            return await handler.Handel(command, cancellationToken);
         }
     }
 }

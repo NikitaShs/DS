@@ -24,7 +24,7 @@ namespace PetDS.Domain.Departament
 
         public LocationId LocationId { get; private set; }
 
-        public static Result<DepartamentLocation> Create(Departament departament, LocationId locationId)
+        public static Result<DepartamentLocation, Error> Create(Departament departament, LocationId locationId)
         {
             var id = DepartamentLocationId.CreateNewGuid();
 
