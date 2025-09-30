@@ -23,7 +23,14 @@ namespace PetDS.Infrastructure
         {
             await _dbContext.Locations.AddAsync(location, cancellationToken);
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return Error.Unknown("necto", "не известная ошибка");
+            }
 
             return location.Id.ValueId;
         }
