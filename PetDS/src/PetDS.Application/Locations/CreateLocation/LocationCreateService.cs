@@ -25,7 +25,7 @@ namespace PetDS.Application.Locations.CreateLocation
             _validator = validator;
         }
 
-        public async Task<Result<Guid, Error>> Handel(
+        public async Task<Result<Guid, Errors>> Handel(
             CreateLocationCommand createLocation,
             CancellationToken cancellationToken)
         {
@@ -35,19 +35,19 @@ namespace PetDS.Application.Locations.CreateLocation
 
             if (!resultDto.IsValid)
             {
-                return GeneralErrors.ValueNotValid("reqvest");
+                return GeneralErrors.ValueNotValid("reqvest").ToErrors();
             }
 
             var name = LocationName.Create(dto.name);
             if (name.IsFailure)
             {
-                return GeneralErrors.ValueFailure("name");
+                return GeneralErrors.ValueFailure("name").ToErrors();
             }
 
             var loc = Location.Create(name.Value, dto.city, dto.region, dto.strit, dto.namberHouse);
             if (loc.IsFailure)
             {
-                return GeneralErrors.ValueFailure("location");
+                return GeneralErrors.ValueFailure("location").ToErrors();
             }
 
             _logger.LogInformation("Location создана");
