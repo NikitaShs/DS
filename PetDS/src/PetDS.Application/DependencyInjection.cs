@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Locations.CreateLocation;
 
@@ -9,6 +10,8 @@ namespace PetDS.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<IHandler<Guid, CreateLocationCommand>, LocationCreateService>();
+
+            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
             return services;
         }
