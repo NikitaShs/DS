@@ -8,24 +8,24 @@ using System.Threading.Tasks;
 
 namespace PetDS.Domain.Position.VO
 {
-    public record PositionDiscription
+    public record Position
     {
 
-        private PositionDiscription(string valueDiscription)
+        private Position(string valueDiscription)
         {
             ValueDiscription = valueDiscription;
         }
 
         public string ValueDiscription { get; }
 
-        public static Result<PositionDiscription, Error> Create(string valueDiscription)
+        public static Result<Position, Error> Create(string valueDiscription)
         {
             if(valueDiscription.Length >= Constans.MAX_1000_LENGHT_DESC)
             {
                 return GeneralErrors.ValueNotValid("Discription");
             }
 
-            return new PositionDiscription(valueDiscription);
+            return new Position(valueDiscription);
         }
 
     }
