@@ -20,7 +20,7 @@ namespace PetDS.Web.Controllers
             CancellationToken cancellationToken)
         {
             var command = new CreateLocationCommand(request);
-            return await handler.Handel(command, cancellationToken);
+            return await handler.Handler(command, cancellationToken);
         }
     }
 }

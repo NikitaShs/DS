@@ -20,7 +20,7 @@ namespace PetDS.Web.Controllers
         {
             var command = new CreateDepartamentCommand(departamentDto, cancellationToken);
 
-            return await departamentCreate.Handel(command, cancellationToken);
+            return await departamentCreate.Handler(command, cancellationToken);
         }
     }
 }

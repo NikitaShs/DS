@@ -15,7 +15,7 @@ namespace PetDS.Web.Controllers
             [FromServices] PositionCreateServise positionCreateServise)
         {
             var command = new PositionCreateCommand(dto);
-            return await positionCreateServise.Handel(command);
+            return await positionCreateServise.Handler(command);
         }
     }
 }

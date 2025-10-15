@@ -32,7 +32,7 @@ namespace PetDS.Application.Departaments.CreateDepartament
             _locationRepository = locationRepository;
         }
 
-        public async Task<Result<Guid, Errors>> Handel(CreateDepartamentCommand command, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid, Errors>> Handler(CreateDepartamentCommand command, CancellationToken cancellationToken = default)
         {
             var dto = command.departamentDto;
 
@@ -66,7 +66,6 @@ namespace PetDS.Application.Departaments.CreateDepartament
             }
 
             var locIds = dto.locationsId.Select(id => LocationId.Create(id)).ToList();
-            
             var departament = dto.parantId is null
                 ? Departament.Create(name.Value, identifier.Value, null, locIds)
                 : Departament.Create(name.Value, identifier.Value,

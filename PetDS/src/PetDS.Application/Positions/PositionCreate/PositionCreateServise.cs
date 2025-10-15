@@ -34,7 +34,7 @@ namespace PetDS.Application.Positions.PositionCreate
             _departamentRepository = departamentRepository;
         }
 
-        public async Task<Result<Guid, Errors>> Handel(PositionCreateCommand command, CancellationToken cancellationToken = default)
+        public async Task<Result<Guid, Errors>> Handler(PositionCreateCommand command, CancellationToken cancellationToken = default)
         {
 
             var result = _validator.Validate(command.dto);
