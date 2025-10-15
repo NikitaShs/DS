@@ -2,6 +2,8 @@
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
+using PetDS.Domain.Position;
+using PetDS.Domain.Position.VO;
 using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;

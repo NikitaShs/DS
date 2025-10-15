@@ -25,7 +25,7 @@ namespace PetDS.Application.Locations.CreateLocation
             _validator = validator;
         }
 
-        public async Task<Result<Guid, Errors>> Handel(
+        public async Task<Result<Guid, Errors>> Handler(
             CreateLocationCommand createLocation,
             CancellationToken cancellationToken)
         {

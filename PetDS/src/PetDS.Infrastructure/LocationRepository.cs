@@ -1,7 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.Locations;
 using PetDS.Domain.Location;
+using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using System;
 using System.Collections.Generic;
@@ -38,6 +40,11 @@ namespace PetDS.Infrastructure
             }
 
             return location.Id.ValueId;
+        }
+
+        public async Task<Result<bool, Errors>> ChekAvailabilityIdLocation(List<LocationId> locationIds, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).CountAsync(cancellationToken) == locationIds.Count;
         }
     }
 }

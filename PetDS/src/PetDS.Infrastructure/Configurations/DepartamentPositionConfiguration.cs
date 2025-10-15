@@ -29,7 +29,7 @@ namespace PetDS.Infrastructure.Configurations
 
             builder.HasOne<Departament>().WithMany(i => i.DepartamentPositions).HasForeignKey(i => i.DepartamentId);
 
-            builder.HasOne<Position>().WithMany().HasForeignKey(i => i.PositionId);
+            builder.HasOne<Domain.Position.Position>().WithMany(i => i.departamentPositions).HasForeignKey(i => i.PositionId);
         }
     }
 }

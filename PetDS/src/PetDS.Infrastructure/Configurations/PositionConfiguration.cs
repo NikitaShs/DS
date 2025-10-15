@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace PetDS.Infrastructure.Configurations
 {
-    public class PositionConfiguration : IEntityTypeConfiguration<Position>
+    public class PositionConfiguration : IEntityTypeConfiguration<Domain.Position.Position>
     {
-        public void Configure(EntityTypeBuilder<Position> builder)
+        public void Configure(EntityTypeBuilder<Domain.Position.Position> builder)
         {
             builder.ToTable("positions");
 
