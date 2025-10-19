@@ -15,7 +15,7 @@ namespace PetDS.Application.Departaments.CreateDepartament
         {
             RuleFor(q => q.identifier).NotEmpty().Length(3, 150).Matches("^[a-zA-Z]+$");
             RuleFor(q => q.name).NotEmpty().Length(3, 150);
-            RuleFor(q => q.locationsId).NotEmpty().Must(guids => guids.Distinct().Count() == guids.Count);
+            RuleFor(q => q.locationsId).NotEmpty().Must(guids => guids.Distinct().Count() == guids.Count());
         }
     }
 }

@@ -5,7 +5,7 @@ using PetDS.Domain.Departament;
 using PetDS.Domain.Location;
 using PetDS.Domain.Position;
 
-namespace PetDS.Infrastructure
+namespace PetDS.Infrastructure.DataBaseConnections
 {
     public class ApplicationDbContext(IConfiguration configuration) : DbContext
     {
