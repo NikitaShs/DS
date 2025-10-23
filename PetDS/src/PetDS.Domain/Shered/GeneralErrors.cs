@@ -31,5 +31,10 @@ namespace PetDS.Domain.Shered
             return Error.Unknown("error.is.unknown", "error of unknown type");
         }
 
+        public static Error Update(string nameValue)
+        {
+            return Error.Update("update.is.failed", $"update {nameValue} failed");
+        }
+
     }
 }

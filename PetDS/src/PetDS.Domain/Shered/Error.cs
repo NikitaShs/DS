@@ -24,6 +24,7 @@ namespace PetDS.Domain.Shered
         public static Error Failure(string code, string message) => new Error(code, message, ErrorType.Failure);
         public static Error Conflict(string code, string message) => new Error(code, message, ErrorType.Conflict);
         public static Error Unknown(string code, string message) => new Error(code, message, ErrorType.Unknown);
+        public static Error Update(string code, string massage) => new Error(code, massage, ErrorType.Update);
 
         public Errors ToErrors() => new([this]);
     }
@@ -34,6 +35,7 @@ namespace PetDS.Domain.Shered
         NotFound,
         Failure,
         Conflict,
-        Unknown
+        Unknown,
+        Update
     }
 }

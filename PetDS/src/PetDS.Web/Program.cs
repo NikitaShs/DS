@@ -36,7 +36,6 @@ builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
 builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
 builder.Services.AddSingleton<IConnectionFactory, NpgsqlConnectionFactory>();
 
-
 builder.Services.AddApplication();
 var app = builder.Build();
 

@@ -74,7 +74,10 @@ namespace PetDS.Infrastructure.Repositorys
             return result;
         }
 
-        public async Task<Result<Guid, Errors>> UpdateLocations(List<LocationId> locationIds, DepartamentId departamentId, CancellationToken cancellationToken)
+        public async Task<Result<Guid, Errors>> UpdateLocations(
+            List<LocationId> locationIds,
+            DepartamentId departamentId,
+            CancellationToken cancellationToken)
         {
             using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
 
@@ -83,19 +86,23 @@ namespace PetDS.Infrastructure.Repositorys
             try
             {
 
-                const string updateNameSql =
-                    """
-                    SELECT * 
-                    FROM Users 
-                    WHERE Id = @Id
+                const string updateDepthSql = """
+                                              UPDATE departaments
+                                              SET location_id = @location_id
+                                              where id = @id
+                                              """;
 
-                    """;
-                return null;
-
+                var updateLocationsDepartament = new { location_Id = locationIds, id = departamentId };
+                await connection.ExecuteAsync(updateDepthSql, updateLocationsDepartament);
+                _logger.LogInformation("депортамент обновлён");
+                transaction.Commit();
+                return departamentId.ValueId;
             }
             catch (Exception ex)
             {
-                return null;
+                transaction.Rollback();
+                _logger.LogError(ex, "депортамент не обнавлён");
+                return GeneralErrors.Update("departament").ToErrors();
             }
         }
     }

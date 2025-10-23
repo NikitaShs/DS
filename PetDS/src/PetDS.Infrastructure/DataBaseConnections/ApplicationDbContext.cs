@@ -19,7 +19,8 @@ namespace PetDS.Infrastructure.DataBaseConnections
         {
             optionsBuilder.UseNpgsql(configuration.GetConnectionString("BDDS"));
             optionsBuilder.UseSnakeCaseNamingConvention();
-            optionsBuilder.UseLoggerFactory(CreateLoggerFactore());
+            optionsBuilder.UseLoggerFactory(CreateLoggerFactore())
+                .EnableSensitiveDataLogging();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
