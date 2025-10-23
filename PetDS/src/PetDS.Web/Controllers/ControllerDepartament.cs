@@ -24,7 +24,7 @@ namespace PetDS.Web.Controllers
             return await departamentCreate.Handler(command, cancellationToken);
         }
 
-        [HttpPatch("/{departamenId}")]
+        [HttpPatch("/{departamenId}/locations")]
         public async Task<EdponintResult<Guid>> UpdateDepartamentLocations(
             [FromServices] UpdateDepartamentLocationsServise updateDepartamentLocationsServise,
             [FromBody] UpdateDepartamentLocationsDto dto,
