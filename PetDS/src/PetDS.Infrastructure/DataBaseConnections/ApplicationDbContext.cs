@@ -12,6 +12,10 @@ namespace PetDS.Infrastructure.DataBaseConnections
         public DbSet<Departament> Departaments => Set<Departament>();
 
         public DbSet<Location> Locations => Set<Location>();
+        
+        public DbSet<DepartamentLocation> DepartamentLocations => Set<DepartamentLocation>();
+        
+        public DbSet<DepartamentPosition> DepartamentPositions => Set<DepartamentPosition>();
 
         public DbSet<Position> Positions => Set<Position>();
 

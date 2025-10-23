@@ -49,7 +49,11 @@ namespace PetDS.Infrastructure.Repositorys
             return await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).CountAsync(cancellationToken) == locationIds.Count;
         }
 
-        public Task<Result<bool, Errors>> ChekActivetiLocations(List<LocationId> locationIds, CancellationToken cancellationToken) => throw new NotImplementedException();
+        public async Task<Result<bool, Errors>> ChekActivetiLocations(List<LocationId> locationIds, CancellationToken cancellationToken)
+        {
+            var result = await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).ToListAsync(cancellationToken);
+            return result.Count() == locationIds.Count();
+        }
 
     }
 }

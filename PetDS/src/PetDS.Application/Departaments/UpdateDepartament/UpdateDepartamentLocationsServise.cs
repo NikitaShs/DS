@@ -42,17 +42,16 @@ namespace PetDS.Application.Departaments.UpdateDepartament
                 return GeneralErrors.ValueNotValid("locations").ToErrors();
             }
 
-            var locationsId = command.dto.locationsId.Select(q => LocationId.Create(q)).ToList();
+            var locId = command.dto.locationsId.Select(q => LocationId.Create(q)).ToList();
 
-
-            if (! _locationRepository.ChekActivetiLocations(locationsId, cancellationToken).Result.Value)
+            if (!_locationRepository.ChekActivetiLocations(locId, cancellationToken).Result.Value)
             {
                 return GeneralErrors.ValueNotValid("logic").ToErrors();
             }
 
             var departamentId = DepartamentId.Create(command.departamentId);
 
-            await _departamentRepository.UpdateLocations(locationsId, departamentId, cancellationToken);
+            await _departamentRepository.UpdateLocations(locId, departamentId, cancellationToken);
 
             return departamentId.ValueId;
         }

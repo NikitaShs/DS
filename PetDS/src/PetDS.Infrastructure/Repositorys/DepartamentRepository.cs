@@ -22,14 +22,16 @@ namespace PetDS.Infrastructure.Repositorys
         private readonly ILogger<DepartamentRepository> _logger;
         private readonly IConnectionFactory _connectionFactory;
 
-        public DepartamentRepository(ApplicationDbContext applicationDbContext, ILogger<DepartamentRepository> logger, IConnectionFactory connectionFactory)
+        public DepartamentRepository(ApplicationDbContext applicationDbContext, ILogger<DepartamentRepository> logger,
+            IConnectionFactory connectionFactory)
         {
             _applicationDbContext = applicationDbContext;
             _logger = logger;
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<Result<Guid, Errors>> AddDepartament(Departament departament, CancellationToken cancellationToken)
+        public async Task<Result<Guid, Errors>> AddDepartament(Departament departament,
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation("Departament отслеживаеться");
             await _applicationDbContext.Departaments.AddAsync(departament, cancellationToken);
@@ -48,11 +50,13 @@ namespace PetDS.Infrastructure.Repositorys
             return departament.Id.ValueId;
         }
 
-        public async Task<Result<Departament, Errors>> GetDepartamentById(DepartamentId id, CancellationToken cancellationToken)
+        public async Task<Result<Departament, Errors>> GetDepartamentById(DepartamentId id,
+            CancellationToken cancellationToken)
         {
-            var result = await _applicationDbContext.Departaments.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
+            var result =
+                await _applicationDbContext.Departaments.FirstOrDefaultAsync(q => q.Id == id, cancellationToken);
 
-            if(result == null)
+            if (result == null)
             {
                 _logger.LogInformation("депортамент по id: {id}", id);
                 return Result.Failure<Departament, Errors>(GeneralErrors.Unknown().ToErrors());
@@ -61,9 +65,11 @@ namespace PetDS.Infrastructure.Repositorys
             return result;
         }
 
-        public async Task<Result<List<Departament>, Errors>> GetDepartamentsById(List<DepartamentId> ids, CancellationToken cancellationToken)
+        public async Task<Result<List<Departament>, Errors>> GetDepartamentsById(List<DepartamentId> ids,
+            CancellationToken cancellationToken)
         {
-            var result = await _applicationDbContext.Departaments.Where(q => ids.Contains(q.Id) && q.IsActive == true).ToListAsync(cancellationToken);
+            var result = await _applicationDbContext.Departaments.Where(q => ids.Contains(q.Id) && q.IsActive == true)
+                .ToListAsync(cancellationToken);
 
             if (result.Count != ids.Count)
             {
@@ -79,31 +85,14 @@ namespace PetDS.Infrastructure.Repositorys
             DepartamentId departamentId,
             CancellationToken cancellationToken)
         {
-            using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
-
-            using var transaction = connection.BeginTransaction();
-
-            try
+            foreach (var i in locationIds)
             {
-
-                const string updateDepthSql = """
-                                              UPDATE departaments
-                                              SET location_id = @location_id
-                                              where id = @id
-                                              """;
-
-                var updateLocationsDepartament = new { location_Id = locationIds, id = departamentId };
-                await connection.ExecuteAsync(updateDepthSql, updateLocationsDepartament);
-                _logger.LogInformation("депортамент обновлён");
-                transaction.Commit();
-                return departamentId.ValueId;
+                await _applicationDbContext.DepartamentLocations.Where(q => q.DepartamentId == departamentId).ExecuteUpdateAsync(
+                    q => q.SetProperty(v => v.LocationId, i), cancellationToken);
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                _logger.LogError(ex, "депортамент не обнавлён");
-                return GeneralErrors.Update("departament").ToErrors();
-            }
+            return departamentId.ValueId;
         }
     }
 }
+
+
