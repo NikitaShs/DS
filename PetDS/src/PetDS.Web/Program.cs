@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application.Locations;
 using PetDS.Application.Locations.CreateLocation;
-using PetDS.Infrastructure;
 using PetDS.Application;
 using System;
 using Serilog;
@@ -11,6 +10,9 @@ using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Application.Positions;
 using PetDS.Application.Positions.PositionCreate;
 using Microsoft.EntityFrameworkCore;
+using PetDS.Infrastructure.DataBaseConnections;
+using PetDS.Infrastructure.Repositorys;
+using PetDS.Application.Departaments.UpdateDepartament;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped<LocationCreateService>();
 builder.Services.AddScoped<DepartamentCreateServise>();
 builder.Services.AddScoped<PositionCreateServise>();
 builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
+builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
+builder.Services.AddSingleton<IConnectionFactory, NpgsqlConnectionFactory>();
 
 builder.Services.AddApplication();
 var app = builder.Build();

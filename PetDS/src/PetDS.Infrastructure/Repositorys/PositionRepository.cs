@@ -4,13 +4,14 @@ using PetDS.Application.Positions;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Position;
 using PetDS.Domain.Shered;
+using PetDS.Infrastructure.DataBaseConnections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PetDS.Infrastructure
+namespace PetDS.Infrastructure.Repositorys
 {
     public class PositionRepository : IPositionRepositiry
     {

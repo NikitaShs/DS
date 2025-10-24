@@ -14,5 +14,7 @@ namespace PetDS.Application.Departaments
 
         Task<Result<List<Departament>, Errors>> GetDepartamentsById(List<DepartamentId> ids, CancellationToken cancellationToken);
 
+        Task<Result<Guid, Errors>> UpdateLocations(List<LocationId> locationIds, DepartamentId departamentId, CancellationToken cancellationToken);
+
     }
 }

@@ -5,13 +5,14 @@ using PetDS.Application.Locations;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using PetDS.Infrastructure.DataBaseConnections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PetDS.Infrastructure
+namespace PetDS.Infrastructure.Repositorys
 {
     public class LocationRepository : ILocationRepository
     {
@@ -42,9 +43,17 @@ namespace PetDS.Infrastructure
             return location.Id.ValueId;
         }
 
+
         public async Task<Result<bool, Errors>> ChekAvailabilityIdLocation(List<LocationId> locationIds, CancellationToken cancellationToken)
         {
             return await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).CountAsync(cancellationToken) == locationIds.Count;
         }
+
+        public async Task<Result<bool, Errors>> ChekActivetiLocations(List<LocationId> locationIds, CancellationToken cancellationToken)
+        {
+            var result = await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).ToListAsync(cancellationToken);
+            return result.Count() == locationIds.Count();
+        }
+
     }
 }
