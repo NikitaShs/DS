@@ -1,22 +1,17 @@
-﻿
-namespace PetDS.Web.Response
+﻿namespace PetDS.Web.Response;
+
+public class SuccessResult<T> : IResult
 {
-    public class SuccessResult<T> : IResult
+    private readonly T _result;
+
+    public SuccessResult(T result) => _result = result;
+
+    public Task ExecuteAsync(HttpContext httpContext)
     {
-        private readonly T _result;
+        ArgumentNullException.ThrowIfNull(httpContext); // null or
 
-        public SuccessResult(T result)
-        {
-            _result = result;
-        }
+        httpContext.Response.StatusCode = StatusCodes.Status200OK;
 
-        public Task ExecuteAsync(HttpContext httpContext)
-        {
-            ArgumentNullException.ThrowIfNull(httpContext); // null or
-
-            httpContext.Response.StatusCode = StatusCodes.Status200OK;
-
-            return httpContext.Response.WriteAsJsonAsync(Envelope.Ok(_result));
-        }
+        return httpContext.Response.WriteAsJsonAsync(Envelope.Ok(_result));
     }
 }

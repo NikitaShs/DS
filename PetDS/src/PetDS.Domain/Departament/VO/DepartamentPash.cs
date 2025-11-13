@@ -1,37 +1,25 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Shered;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PetDS.Domain.Departament.VO
+namespace PetDS.Domain.Departament.VO;
+
+public record DepartamentPash
 {
-    public record DepartamentPash
+    private DepartamentPash(string valuePash) => ValuePash = valuePash;
+
+    public string ValuePash { get; }
+
+    public static Result<DepartamentPash, Error> Create(string departamentName, Departament? parent)
     {
-
-        private DepartamentPash(string valuePash)
+        if (parent != null)
         {
-            ValuePash = valuePash;
+            string valuePash = $"{parent.Path.ValuePash}.{departamentName}";
+            return new DepartamentPash(valuePash);
         }
-
-        public string ValuePash { get; }
-
-        public static Result<DepartamentPash, Error> Create(string departamentName, Departament? parent)
+        else
         {
-
-            if(parent != null)
-            {
-                string valuePash = $"{parent.Name}/{departamentName}";
-                return new DepartamentPash(valuePash);
-            }
-            else
-            {
-                string valuePash = $"{departamentName}";
-                return new DepartamentPash(valuePash);
-            }
+            string valuePash = $"{departamentName}";
+            return new DepartamentPash(valuePash);
         }
-
     }
 }

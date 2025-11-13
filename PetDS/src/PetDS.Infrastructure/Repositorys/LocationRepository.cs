@@ -6,54 +6,52 @@ using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PetDS.Infrastructure.Repositorys
+namespace PetDS.Infrastructure.Repositorys;
+
+public class LocationRepository : ILocationRepository
 {
-    public class LocationRepository : ILocationRepository
+    private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger<LocationRepository> _logger;
+
+    public LocationRepository(ApplicationDbContext dbContext, ILogger<LocationRepository> logger)
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly ILogger<LocationRepository> _logger;
+        _dbContext = dbContext;
+        _logger = logger;
+    }
 
-        public LocationRepository(ApplicationDbContext dbContext, ILogger<LocationRepository> logger)
+    public async Task<Result<Guid, Error>> AddLocation(Location location, CancellationToken cancellationToken)
+    {
+        await _dbContext.Locations.AddAsync(location, cancellationToken);
+
+        try
         {
-            _dbContext = dbContext;
-            _logger = logger;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation("Location сохранена в базу данных");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Location не сохранена в базу данных");
+            return Error.Unknown("necto", "не известная ошибка");
         }
 
-        public async Task<Result<Guid, Error>> AddLocation(Location location, CancellationToken cancellationToken)
-        {
-            await _dbContext.Locations.AddAsync(location, cancellationToken);
-
-            try
-            {
-                await _dbContext.SaveChangesAsync(cancellationToken);
-                _logger.LogInformation("Location сохранена в базу данных");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Location не сохранена в базу данных");
-                return Error.Unknown("necto", "не известная ошибка");
-            }
-
-            return location.Id.ValueId;
-        }
+        return location.Id.ValueId;
+    }
 
 
-        public async Task<Result<bool, Errors>> ChekAvailabilityIdLocation(List<LocationId> locationIds, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).CountAsync(cancellationToken) == locationIds.Count;
-        }
+    public async Task<Result<bool, Errors>>
+        ChekAvailabilityIdLocation(List<LocationId> locationIds, CancellationToken cancellationToken) =>
+        await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true)
+            .CountAsync(cancellationToken) == locationIds.Count;
 
-        public async Task<Result<bool, Errors>> ChekActivetiLocations(List<LocationId> locationIds, CancellationToken cancellationToken)
-        {
-            var result = await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true).ToListAsync(cancellationToken);
-            return result.Count() == locationIds.Count();
-        }
+    public async Task<Result<bool, Errors>> ChekActivetiLocations(List<LocationId> locationIds,
+        CancellationToken cancellationToken)
+    {
+        //var bloc = await _dbContext.Database.ExecuteSqlAsync("");
 
+
+        List<Location> result = await _dbContext.Locations.Where(q => locationIds.Contains(q.Id) && q.IsActive == true)
+            .ToListAsync(cancellationToken);
+        return result.Count() == locationIds.Count();
     }
 }

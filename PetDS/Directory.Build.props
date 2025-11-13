@@ -14,12 +14,11 @@
   </ItemGroup>
 
 
-    <PropertyGroup>
+  <PropertyGroup>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnableStyleCopAnalyzers>true</EnableStyleCopAnalyzers>
 
-    </PropertyGroup>
-
+  </PropertyGroup>
 
 
 </Project>

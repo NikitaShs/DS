@@ -1,20 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using PetDS.Application;
+using PetDS.Application.abcstractions;
+using PetDS.Application.Departaments;
+using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
+using PetDS.Application.Departaments.CreateDepartament;
+using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 using PetDS.Application.Locations;
 using PetDS.Application.Locations.CreateLocation;
-using PetDS.Application;
-using System;
-using Serilog;
-using Serilog.Events;
-using PetDS.Application.Departaments;
-using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Application.Positions;
 using PetDS.Application.Positions.PositionCreate;
-using Microsoft.EntityFrameworkCore;
 using PetDS.Infrastructure.DataBaseConnections;
 using PetDS.Infrastructure.Repositorys;
-using PetDS.Application.Departaments.UpdateDepartament;
+using PetDS.Infrastructure.Seeding;
+using PetDS.Web.Middlewares;
+using Serilog;
+using Serilog.Events;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -26,7 +28,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<ApplicationDbContext>();
+builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
@@ -34,10 +36,13 @@ builder.Services.AddScoped<DepartamentCreateServise>();
 builder.Services.AddScoped<PositionCreateServise>();
 builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
 builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
+builder.Services.AddScoped<UpdateDepartamentHierarchyServise>();
 builder.Services.AddSingleton<IConnectionFactory, NpgsqlConnectionFactory>();
+builder.Services.AddScoped<IConnectionManeger, ConnectionManeger>();
+builder.Services.AddScoped<ISeeding, Seeding>();
 
 builder.Services.AddApplication();
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseExceptionMiddleware();
 
@@ -48,9 +53,14 @@ if (app.Environment.IsDevelopment())
 
     // автоматические миграции
 
-    using var scope = app.Services.CreateAsyncScope();
-    var dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    using AsyncServiceScope scope = app.Services.CreateAsyncScope();
+    ApplicationDbContext dbcontext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await dbcontext.Database.MigrateAsync();
+
+    if (args.Contains("-seeding"))
+    {
+        await app.Services.GoSeeding();
+    }
 }
 
 app.UseSerilogRequestLogging();

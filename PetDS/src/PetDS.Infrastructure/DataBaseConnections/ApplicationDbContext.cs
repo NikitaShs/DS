@@ -1,38 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Location;
 using PetDS.Domain.Position;
 
-namespace PetDS.Infrastructure.DataBaseConnections
+namespace PetDS.Infrastructure.DataBaseConnections;
+
+public class ApplicationDbContext(IConfiguration configuration) : DbContext, IReadDbContext
 {
-    public class ApplicationDbContext(IConfiguration configuration) : DbContext
+    public DbSet<Departament> Departaments => Set<Departament>();
+
+    public DbSet<Location> Locations => Set<Location>();
+
+    public DbSet<DepartamentLocation> DepartamentLocations => Set<DepartamentLocation>();
+
+    public DbSet<DepartamentPosition> DepartamentPositions => Set<DepartamentPosition>();
+
+    public DbSet<Position> Positions => Set<Position>();
+
+    public IQueryable<Position> ReadPosition => Set<Position>().AsQueryable().AsNoTracking();
+
+    public IQueryable<Location> ReadLocation => Set<Location>().AsQueryable().AsNoTracking();
+
+    public IQueryable<Departament> ReadDepartament => Set<Departament>().AsQueryable().AsNoTracking();
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public DbSet<Departament> Departaments => Set<Departament>();
-
-        public DbSet<Location> Locations => Set<Location>();
-        
-        public DbSet<DepartamentLocation> DepartamentLocations => Set<DepartamentLocation>();
-        
-        public DbSet<DepartamentPosition> DepartamentPositions => Set<DepartamentPosition>();
-
-        public DbSet<Position> Positions => Set<Position>();
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("BDDS"));
-            optionsBuilder.UseSnakeCaseNamingConvention();
-            optionsBuilder.UseLoggerFactory(CreateLoggerFactore())
-                .EnableSensitiveDataLogging();
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        }
-
-        private ILoggerFactory CreateLoggerFactore() => LoggerFactory.Create(builder => builder.AddConsole());
-
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString("BDDS"));
+        optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.UseLoggerFactory(CreateLoggerFactore())
+            .EnableSensitiveDataLogging();
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+    private ILoggerFactory CreateLoggerFactore() => LoggerFactory.Create(builder => builder.AddConsole());
 }

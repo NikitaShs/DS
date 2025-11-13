@@ -1,4 +1,4 @@
-{
+﻿{
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -17,6 +17,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "commandLineArgs": "-seeding",
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7010;http://localhost:5053"
     },

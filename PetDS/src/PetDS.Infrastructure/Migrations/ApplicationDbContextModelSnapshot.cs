@@ -46,18 +46,18 @@ namespace PetDS.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("location_id");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_id");
+
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("update_at");
 
-                    b.Property<Guid?>("parent_Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("parent_id");
-
                     b.HasKey("Id")
                         .HasName("pk_departaments");
 
-                    b.HasIndex("parent_Id")
+                    b.HasIndex("ParentId")
                         .HasDatabaseName("ix_departaments_parent_id");
 
                     b.ToTable("departaments", (string)null);
@@ -185,8 +185,8 @@ namespace PetDS.Infrastructure.Migrations
                 {
                     b.HasOne("PetDS.Domain.Departament.Departament", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("parent_Id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_departaments_departaments_parent_id");
 
                     b.OwnsOne("PetDS.Domain.Departament.VO.DepartamentIdentifier", "Identifier", b1 =>
@@ -309,7 +309,7 @@ namespace PetDS.Infrastructure.Migrations
                         .HasConstraintName("fk_departament_positions_departaments_departament_id1");
 
                     b.HasOne("PetDS.Domain.Position.Position", null)
-                        .WithMany()
+                        .WithMany("departamentPositions")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -325,6 +325,21 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<Guid>("LocationId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("city");
+
+                            b1.Property<string>("NamberHouse")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("houseNumber");
+
+                            b1.Property<string>("Strit")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("street");
 
                             b1.HasKey("LocationId");
 
@@ -393,7 +408,7 @@ namespace PetDS.Infrastructure.Migrations
 
             modelBuilder.Entity("PetDS.Domain.Position.Position", b =>
                 {
-                    b.OwnsOne("PetDS.Domain.Position.VO.PositionDiscription", "Discription", b1 =>
+                    b.OwnsOne("PetDS.Domain.Position.VO.Position", "Discription", b1 =>
                         {
                             b1.Property<Guid>("PositionId")
                                 .HasColumnType("uuid")
@@ -449,6 +464,11 @@ namespace PetDS.Infrastructure.Migrations
                     b.Navigation("DepartamentLocations");
 
                     b.Navigation("DepartamentPositions");
+                });
+
+            modelBuilder.Entity("PetDS.Domain.Position.Position", b =>
+                {
+                    b.Navigation("departamentPositions");
                 });
 #pragma warning restore 612, 618
         }
