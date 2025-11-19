@@ -20,6 +20,7 @@ namespace PetDS.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "ltree");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("PetDS.Domain.Departament.Departament", b =>
@@ -199,7 +200,7 @@ namespace PetDS.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(150)
                                 .HasColumnType("character varying(150)")
-                                .HasColumnName("identifier_value_identifier");
+                                .HasColumnName("identifier");
 
                             b1.HasKey("DepartamentId");
 
@@ -219,13 +220,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("DepartamentId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_departaments_name_value_name");
+                                .HasDatabaseName("ix_departaments_name");
 
                             b1.ToTable("departaments");
 
@@ -242,8 +243,8 @@ namespace PetDS.Infrastructure.Migrations
 
                             b1.Property<string>("ValuePash")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("path_value_pash");
+                                .HasColumnType("ltree")
+                                .HasColumnName("path");
 
                             b1.HasKey("DepartamentId");
 
@@ -361,13 +362,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("LocationId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_locations_name_value_name");
+                                .HasDatabaseName("ix_locations_name");
 
                             b1.ToTable("locations");
 
@@ -385,7 +386,7 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("LanaCode")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("timezone_lana_code");
+                                .HasColumnName("lanaCode");
 
                             b1.HasKey("LocationId");
 
@@ -408,7 +409,7 @@ namespace PetDS.Infrastructure.Migrations
 
             modelBuilder.Entity("PetDS.Domain.Position.Position", b =>
                 {
-                    b.OwnsOne("PetDS.Domain.Position.VO.Position", "Discription", b1 =>
+                    b.OwnsOne("PetDS.Domain.Position.VO.PositionDiscription", "Discription", b1 =>
                         {
                             b1.Property<Guid>("PositionId")
                                 .HasColumnType("uuid")
@@ -416,7 +417,7 @@ namespace PetDS.Infrastructure.Migrations
 
                             b1.Property<string>("ValueDiscription")
                                 .HasColumnType("text")
-                                .HasColumnName("discription_value_discription");
+                                .HasColumnName("discription");
 
                             b1.HasKey("PositionId");
 
@@ -436,13 +437,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("PositionId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_positions_name_value_name");
+                                .HasDatabaseName("ix_positions_name");
 
                             b1.ToTable("positions");
 

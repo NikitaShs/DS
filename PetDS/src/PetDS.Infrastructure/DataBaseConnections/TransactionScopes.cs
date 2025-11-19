@@ -6,7 +6,7 @@ using PetDS.Domain.Shered;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 
-public class TransactionScopes : ITransactionScopes
+public class TransactionScopes : ITransactionScopes, IDisposable
 {
     private readonly IDbTransaction _dbtransation;
     private readonly ILogger<TransactionScopes> _logger;

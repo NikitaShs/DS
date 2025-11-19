@@ -21,15 +21,20 @@ public class DepartamentConfiguration : IEntityTypeConfiguration<Departament>
 
         builder.OwnsOne(i => i.Name, n =>
         {
-            n.Property(q => q.ValueName).IsRequired();
+            n.Property(q => q.ValueName).IsRequired().HasColumnName("name");
             n.HasIndex(i => i.ValueName).IsUnique();
         });
 
         builder.OwnsOne(i => i.Identifier, n =>
-            n.Property(q => q.ValueIdentifier).HasMaxLength(Constans.MAX_150_lENGHT_DEP).IsRequired());
+            n.Property(q => q.ValueIdentifier).HasColumnName("identifier")
+                .HasMaxLength(Constans.MAX_150_lENGHT_DEP).IsRequired());
 
-        builder.OwnsOne(i => i.Path, n => n.Property(q => q.ValuePash).IsRequired());
-
+        builder.OwnsOne(i => i.Path, n =>
+                n.Property(q => q.ValuePash).HasColumnName("path")
+                .HasColumnType("ltree")
+                .IsRequired()
+                );
+        
         builder.Property(d => d.Depth).IsRequired();
 
         builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();

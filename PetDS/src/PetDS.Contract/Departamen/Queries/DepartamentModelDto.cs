@@ -8,20 +8,15 @@ namespace PetDS.Contract.Departamen.Queries
 {
     public record DepartamentModelDto
     {
-        public string Name { get; private set; } = String.Empty;
+        public Guid Id { get; init; }
 
-        public string Identifier { get; private set; } = String.Empty;
+        public string Name { get; init; } = String.Empty;
 
-        public Guid? ParentId { get; private set; }
+        public string Identifier { get; init; } = String.Empty;
 
-        public string Path { get; private set; } = String.Empty;
+        public Guid? ParentId { get; init; }
 
-        public short Depth { get; }
+        public short Depth { get; init; }
 
-        public DateTime CreateAt { get; private set; }
-
-        public DateTime UpdateAt { get; private set; }
-
-        public Guid LocationId { get; private set; }
     }
 }

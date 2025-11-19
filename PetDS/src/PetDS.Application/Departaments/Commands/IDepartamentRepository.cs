@@ -18,6 +18,9 @@ public interface IDepartamentRepository
     Task<Result<Guid, Errors>> UpdateLocations(List<LocationId> locationIds, DepartamentId departamentId,
         CancellationToken cancellationToken);
 
-    Task<Result<Departament, Errors>> GetDepartamentFullHierahiById(DepartamentId id,
+    Task<Result<Guid, Errors>> UpdateDepartamentFullHierahiById(Guid departamentId, Guid? parent_id,
+        CancellationToken cancellationToken);
+
+    Task<Result<bool, Errors>> CheckingDepartamentExistence(DepartamentId departamentId,
         CancellationToken cancellationToken);
 }

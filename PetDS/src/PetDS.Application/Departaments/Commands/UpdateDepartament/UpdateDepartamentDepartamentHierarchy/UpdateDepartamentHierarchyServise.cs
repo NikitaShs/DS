@@ -24,12 +24,43 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
         _connectionManeger = connectionManeger;
     }
 
-    public async Task<Result<Guid, Errors>> Handler(UpdateDepartamentHierarchyCommand command,
+    public async Task<Result<Guid, Errors>> Handler(
+        UpdateDepartamentHierarchyCommand command,
         CancellationToken cancellationToken = default)
     {
-        DepartamentId w = DepartamentId.Create(command.departanetId);
-        Result<Departament, Errors> ret = _departamentRepository.GetDepartamentFullHierahiById(w, cancellationToken)
-            .Result;
-        return DepartamentId.CreateNewGuid().ValueId;
+        var resultCommand = await _connectionManeger.CreateTranzit(cancellationToken);
+        if (resultCommand.IsFailure)
+        {
+            return GeneralErrors.Unknown().ToErrors();
+        }
+
+        using var tranziction = resultCommand.Value;
+
+        if (command.departanetId == command.dto.parantId)
+        {
+            return GeneralErrors.Unknown().ToErrors();
+        }
+
+        if (command.dto.parantId != null)
+        {
+            var resParent = await _departamentRepository.CheckingDepartamentExistence(DepartamentId.Create((Guid)command.dto.parantId), cancellationToken);
+            if (resParent.IsFailure || resParent.Value == false)
+            {
+                _logger.LogInformation("parantId нету");
+                return GeneralErrors.Unknown().ToErrors();
+            }
+        }
+
+        var res = await _departamentRepository.CheckingDepartamentExistence(DepartamentId.Create(command.departanetId), cancellationToken);
+        if (res.IsFailure || res.Value == false)
+        {
+            _logger.LogInformation("departanetId нету");
+            return GeneralErrors.Unknown().ToErrors();
+        }
+
+        var result = await _departamentRepository.UpdateDepartamentFullHierahiById(command.departanetId, command.dto.parantId, cancellationToken);
+
+        tranziction.Commit();
+        return result;
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
+using PetDS.Application.Departaments.Queries;
 using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 using PetDS.Application.Locations.Commands.CreateLocation;
 using PetDS.Application.Locations.CreateLocation;
@@ -25,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped<IHandler<Guid, UpdateDepartamentLocationsCommand>, UpdateDepartamentLocationsServise>();
 
         services.AddScoped<IHandler<Guid, UpdateDepartamentHierarchyCommand>, UpdateDepartamentHierarchyServise>();
+
+        services.AddScoped<GetByIdDepartament>();
 
         return services;
     }

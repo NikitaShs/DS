@@ -1,5 +1,5 @@
-﻿using System.Data.Common;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
@@ -9,6 +9,7 @@ using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
+using System.Data.Common;
 
 namespace PetDS.Infrastructure.Repositorys;
 
@@ -93,33 +94,88 @@ public class DepartamentRepository : IDepartamentRepository
         return departamentId.ValueId;
     }
 
-    public async Task<Result<Departament, Errors>> GetDepartamentFullHierahiById(DepartamentId id,
+    public async Task<Result<Guid, Errors>> UpdateDepartamentFullHierahiById(Guid id, Guid? parentId,
         CancellationToken cancellationToken)
     {
-        const string selDap = """
-                              WITH RECURSIVE tree_dept As(
-                                  SELECT d.* 
-                                  FROM departaments d
-                                             WHERE d.id = '719f7651-eb9d-46c8-a780-f71203b6c873'
-                                             UNION ALL 
-                                             SELECT c.*
-                                             FROM departaments c
-                                             JOIN tree_dept dt ON c.parent_id = dt.id)
-                              SELECT id,
-                                     parent_id,
-                                     name_value_name,
-                                     identifier_value_identifier,
-                                     path_value_pash,
-                                     depth,
-                                     is_active,
-                                     create_at,
-                                     update_at
-                                  FROM tree_dept
-                              """;
-        DbConnection con = _applicationDbContext.Database.GetDbConnection();
 
-        var dep = await con.Q
-        var ee = res;
-        return res;
+        var connection = _applicationDbContext.Database.GetDbConnection();
+
+        var sql = string.Empty;
+
+        if (parentId != null)
+        {
+            sql = """
+            
+            WITH Parent AS
+                     (
+                         SELECT id, path FROM departaments
+                         WHERE id = @parentId
+                            FOR UPDATE
+                     ),
+                 OldDept AS
+                     (
+                         SELECT id, depth, path, name FROM departaments
+                         WHERE id = @id
+                            FOR UPDATE
+                     ),
+                New_Dept AS
+            (
+                UPDATE departaments SET 
+                    parent_id = p.id,
+                    path = (p.path::text || '.' || departaments.name)::ltree,
+                    depth = nlevel((p.path::text || '.' || departaments.name)::ltree)
+                    FROM Parent p
+                    WHERE departaments.id = @id
+                    
+                    RETURNING departaments.id, departaments.path, departaments.depth, departaments.name
+            )
+            UPDATE departaments SET 
+                                    path = (New_Dept.path::text || subpath(departaments.path, OldDept.depth))::ltree,
+                                    depth = nlevel((New_Dept.path::text || subpath(departaments.path, OldDept.depth))::ltree)
+                                
+                                    FROM New_Dept, OldDept
+                                    WHERE departaments.path <@ OldDept.path AND New_Dept.id != departaments.id
+            
+            """;
+        }
+        else
+        {
+            sql = """
+            
+            WITH OldDept AS
+                     (
+                         SELECT id, depth, path, name FROM departaments
+                         WHERE id = @id
+                            FOR UPDATE
+                     ),
+                New_Dept AS
+            (
+                UPDATE departaments SET 
+                    parent_id = null,
+                    path = departaments.name::ltree,
+                    depth = 1
+                    WHERE departaments.id = @id
+                    
+                    RETURNING departaments.id, departaments.path, departaments.depth, departaments.name
+            )
+            UPDATE departaments SET 
+                                    path = (New_Dept.path::text || subpath(departaments.path, OldDept.depth))::ltree,
+                                    depth = nlevel((New_Dept.path::text || subpath(departaments.path, OldDept.depth))::ltree)
+                                
+                                    FROM New_Dept, OldDept
+                                    WHERE departaments.path <@ OldDept.path AND New_Dept.id != departaments.id
+            
+            """;
+        }
+
+        var res = await connection.ExecuteAsync(sql, new { parentId = parentId, id = id});
+
+        return id;
+
+    }
+
+    public async Task<Result<bool, Errors>> CheckingDepartamentExistence(DepartamentId departamentId, CancellationToken cancellationToken)
+    {
+        return await _applicationDbContext.Departaments.AnyAsync(q => q.Id == departamentId);
     }
 }

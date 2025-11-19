@@ -4,6 +4,7 @@ using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
+using PetDS.Application.Departaments.Queries;
 using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 using PetDS.Application.Locations;
 using PetDS.Application.Locations.CreateLocation;
@@ -25,10 +26,13 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
     .CreateLogger();
+
 builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddApplication();
 builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>();
+builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
@@ -38,10 +42,11 @@ builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
 builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
 builder.Services.AddScoped<UpdateDepartamentHierarchyServise>();
 builder.Services.AddSingleton<IConnectionFactory, NpgsqlConnectionFactory>();
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // для устранения ошибки при мапинге из-за имён
 builder.Services.AddScoped<IConnectionManeger, ConnectionManeger>();
 builder.Services.AddScoped<ISeeding, Seeding>();
+builder.Services.AddScoped<GetByIdDepartament>();
 
-builder.Services.AddApplication();
 WebApplication app = builder.Build();
 
 app.UseExceptionMiddleware();

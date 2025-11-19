@@ -29,11 +29,12 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
 
         builder.OwnsOne(i => i.Name, n =>
         {
-            n.Property(q => q.ValueName).IsRequired();
+            n.Property(q => q.ValueName).IsRequired().HasColumnName("name");
             n.HasIndex(i => i.ValueName).IsUnique();
         });
 
-        builder.OwnsOne(i => i.Timezone, n => n.Property(q => q.LanaCode).IsRequired());
+        builder.OwnsOne(i => i.Timezone, n => 
+            n.Property(q => q.LanaCode).IsRequired().HasColumnName("lanaCode"));
 
         builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();
 

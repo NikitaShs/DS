@@ -77,11 +77,11 @@ public class Departament : Shered.Entity<DepartamentId>
             return GeneralErrors.ValueFailure("path");
         }
 
-        short depth = 0;
+        short depth = 1;
 
         if (parent == null)
         {
-            depth = 0;
+            depth = 1;
         }
         else
         {

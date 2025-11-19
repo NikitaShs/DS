@@ -6,20 +6,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetDS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class newbase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:PostgresExtension:ltree", ",,");
+
             migrationBuilder.CreateTable(
                 name: "departaments",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name_value_name = table.Column<string>(type: "text", nullable: false),
-                    identifier_value_identifier = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    identifier = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     parent_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    path_value_pash = table.Column<string>(type: "text", nullable: false),
+                    path = table.Column<string>(type: "ltree", nullable: false),
                     depth = table.Column<short>(type: "smallint", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     create_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -33,7 +36,8 @@ namespace PetDS.Infrastructure.Migrations
                         name: "fk_departaments_departaments_parent_id",
                         column: x => x.parent_id,
                         principalTable: "departaments",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -41,8 +45,8 @@ namespace PetDS.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name_value_name = table.Column<string>(type: "text", nullable: false),
-                    timezone_lana_code = table.Column<string>(type: "text", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    lanaCode = table.Column<string>(type: "text", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     create_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     update_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -58,8 +62,8 @@ namespace PetDS.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name_value_name = table.Column<string>(type: "text", nullable: false),
-                    discription_value_discription = table.Column<string>(type: "text", nullable: true),
+                    name = table.Column<string>(type: "text", nullable: false),
+                    discription = table.Column<string>(type: "text", nullable: true),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
                     create_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     update_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -164,9 +168,9 @@ namespace PetDS.Infrastructure.Migrations
                 column: "position_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_departaments_name_value_name",
+                name: "ix_departaments_name",
                 table: "departaments",
-                column: "name_value_name",
+                column: "name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -175,15 +179,15 @@ namespace PetDS.Infrastructure.Migrations
                 column: "parent_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_locations_name_value_name",
+                name: "ix_locations_name",
                 table: "locations",
-                column: "name_value_name",
+                column: "name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_positions_name_value_name",
+                name: "ix_positions_name",
                 table: "positions",
-                column: "name_value_name",
+                column: "name",
                 unique: true);
         }
 

@@ -202,7 +202,7 @@ public class Seeding : ISeeding
             {
                 string departamentType = _departamentTypes[random.Next(_departamentTypes.Length)];
 
-                Result<DepartamentName, Error> name = DepartamentName.Create($"Корневой {departamentType} {i + 1}");
+                Result<DepartamentName, Error> name = DepartamentName.Create($"Корневой{departamentType}{i + 1}");
                 if (name.IsFailure)
                 {
                     _logger.LogWarning("❌ Ошибка создания имени департамента {Index}: {Error}", i, name.Error);
@@ -258,7 +258,7 @@ public class Seeding : ISeeding
                 {
                     string departamentType = _departamentTypes[random.Next(_departamentTypes.Length)];
 
-                    Result<DepartamentName, Error> name = DepartamentName.Create($"{departamentType} {i + 1}");
+                    Result<DepartamentName, Error> name = DepartamentName.Create($"{departamentType}_{i + 1}");
                     if (name.IsFailure)
                     {
                         continue;

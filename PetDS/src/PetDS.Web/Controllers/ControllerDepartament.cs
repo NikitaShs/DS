@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
+using PetDS.Application.Departaments.Queries;
 using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 using PetDS.Contract;
 using PetDS.Contract.Departamen;
+using PetDS.Contract.Departamen.Queries;
 using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
@@ -40,7 +42,8 @@ public class ControllerDepartament : ControllerBase
         [FromServices] UpdateDepartamentHierarchyServise servise,
         [FromRoute] Guid departamenId)
     {
-        var command = new UpdateDepartamentHierarchyCommand(departamenId);
+        var command = new UpdateDepartamentHierarchyCommand(departamenId, dto);
         return await servise.Handler(command);
     }
+
 }

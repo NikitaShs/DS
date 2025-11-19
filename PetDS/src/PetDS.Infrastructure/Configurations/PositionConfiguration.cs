@@ -18,11 +18,12 @@ public class PositionConfiguration : IEntityTypeConfiguration<Position>
 
         builder.OwnsOne(i => i.Name, n =>
         {
-            n.Property(q => q.ValueName).IsRequired();
+            n.Property(q => q.ValueName).IsRequired().HasColumnName("name");
             n.HasIndex(i => i.ValueName).IsUnique();
         });
 
-        builder.OwnsOne(i => i.Discription, n => n.Property(q => q.ValueDiscription).IsRequired(false));
+        builder.OwnsOne(i => i.Discription, n => 
+            n.Property(q => q.ValueDiscription).IsRequired(false).HasColumnName("discription"));
 
         builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();
 

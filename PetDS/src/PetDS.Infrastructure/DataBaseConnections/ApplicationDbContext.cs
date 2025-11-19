@@ -34,8 +34,11 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext, IRe
             .EnableSensitiveDataLogging();
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasPostgresExtension("ltree");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+    }
 
     private ILoggerFactory CreateLoggerFactore() => LoggerFactory.Create(builder => builder.AddConsole());
 }
