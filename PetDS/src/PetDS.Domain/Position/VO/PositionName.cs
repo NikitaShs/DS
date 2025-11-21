@@ -1,25 +1,21 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Shered;
 
-namespace PetDS.Domain.Position.VO
+namespace PetDS.Domain.Position.VO;
+
+public record PositionName
 {
-    public record PositionName
+    private PositionName(string valueName) => ValueName = valueName;
+
+    public string ValueName { get; }
+
+    public static Result<PositionName, Error> Create(string valueName)
     {
-        private PositionName(string valueName)
+        if (valueName.Length < 3 || valueName.Length > Constans.MAX_100_lENGHT_POS)
         {
-            ValueName = valueName;
+            return GeneralErrors.ValueNotValid("Name");
         }
 
-        public string ValueName { get; }
-
-        public static Result<PositionName, Error> Create (string valueName)
-        {
-            if(valueName.Length < 3 || valueName.Length > Constans.MAX_100_lENGHT_POS)
-            {
-                return GeneralErrors.ValueNotValid("Name");
-            }
-
-            return new PositionName(valueName);
-        }
+        return new PositionName(valueName);
     }
 }

@@ -1,35 +1,34 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application.abcstractions;
+using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
-using PetDS.Application.Departaments.UpdateDepartament;
+using PetDS.Application.Departaments.Queries;
+using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
+using PetDS.Application.Locations.Commands.CreateLocation;
 using PetDS.Application.Locations.CreateLocation;
 using PetDS.Application.Positions.PositionCreate;
-using PetDS.Contract;
 
-namespace PetDS.Application
+namespace PetDS.Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
-        {
-            services.AddScoped<IHandler<Guid, CreateLocationCommand>, LocationCreateService>();
+        services.AddScoped<IHandler<Guid, CreateLocationCommand>, LocationCreateService>();
 
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
-            services.AddScoped<IHandler<Guid, CreateDepartamentCommand>, DepartamentCreateServise>();
+        services.AddScoped<IHandler<Guid, CreateDepartamentCommand>, DepartamentCreateServise>();
 
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddScoped<IHandler<Guid, PositionCreateCommand>, PositionCreateServise>();
 
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddScoped<IHandler<Guid, UpdateDepartamentLocationsCommand>, UpdateDepartamentLocationsServise>();
 
-            services.AddScoped<IHandler<Guid, PositionCreateCommand>, PositionCreateServise>();
+        services.AddScoped<IHandler<Guid, UpdateDepartamentHierarchyCommand>, UpdateDepartamentHierarchyServise>();
 
-            services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        services.AddScoped<GetByIdDepartament>();
 
-            services.AddScoped<IHandler<Guid, UpdateDepartamentLocationsCommand>, UpdateDepartamentLocationsServise>();
-
-            return services;
-        }
+        return services;
     }
 }

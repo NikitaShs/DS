@@ -20,6 +20,7 @@ namespace PetDS.Infrastructure.Migrations
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "ltree");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("PetDS.Domain.Departament.Departament", b =>
@@ -46,18 +47,18 @@ namespace PetDS.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("location_id");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_id");
+
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("update_at");
 
-                    b.Property<Guid?>("parent_Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("parent_id");
-
                     b.HasKey("Id")
                         .HasName("pk_departaments");
 
-                    b.HasIndex("parent_Id")
+                    b.HasIndex("ParentId")
                         .HasDatabaseName("ix_departaments_parent_id");
 
                     b.ToTable("departaments", (string)null);
@@ -185,8 +186,8 @@ namespace PetDS.Infrastructure.Migrations
                 {
                     b.HasOne("PetDS.Domain.Departament.Departament", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("parent_Id")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_departaments_departaments_parent_id");
 
                     b.OwnsOne("PetDS.Domain.Departament.VO.DepartamentIdentifier", "Identifier", b1 =>
@@ -199,7 +200,7 @@ namespace PetDS.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(150)
                                 .HasColumnType("character varying(150)")
-                                .HasColumnName("identifier_value_identifier");
+                                .HasColumnName("identifier");
 
                             b1.HasKey("DepartamentId");
 
@@ -219,13 +220,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("DepartamentId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_departaments_name_value_name");
+                                .HasDatabaseName("ix_departaments_name");
 
                             b1.ToTable("departaments");
 
@@ -242,8 +243,8 @@ namespace PetDS.Infrastructure.Migrations
 
                             b1.Property<string>("ValuePash")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("path_value_pash");
+                                .HasColumnType("ltree")
+                                .HasColumnName("path");
 
                             b1.HasKey("DepartamentId");
 
@@ -309,7 +310,7 @@ namespace PetDS.Infrastructure.Migrations
                         .HasConstraintName("fk_departament_positions_departaments_departament_id1");
 
                     b.HasOne("PetDS.Domain.Position.Position", null)
-                        .WithMany()
+                        .WithMany("departamentPositions")
                         .HasForeignKey("PositionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -325,6 +326,21 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<Guid>("LocationId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("city");
+
+                            b1.Property<string>("NamberHouse")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("houseNumber");
+
+                            b1.Property<string>("Strit")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("street");
 
                             b1.HasKey("LocationId");
 
@@ -346,13 +362,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("LocationId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_locations_name_value_name");
+                                .HasDatabaseName("ix_locations_name");
 
                             b1.ToTable("locations");
 
@@ -370,7 +386,7 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("LanaCode")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("timezone_lana_code");
+                                .HasColumnName("lanaCode");
 
                             b1.HasKey("LocationId");
 
@@ -401,7 +417,7 @@ namespace PetDS.Infrastructure.Migrations
 
                             b1.Property<string>("ValueDiscription")
                                 .HasColumnType("text")
-                                .HasColumnName("discription_value_discription");
+                                .HasColumnName("discription");
 
                             b1.HasKey("PositionId");
 
@@ -421,13 +437,13 @@ namespace PetDS.Infrastructure.Migrations
                             b1.Property<string>("ValueName")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("name_value_name");
+                                .HasColumnName("name");
 
                             b1.HasKey("PositionId");
 
                             b1.HasIndex("ValueName")
                                 .IsUnique()
-                                .HasDatabaseName("ix_positions_name_value_name");
+                                .HasDatabaseName("ix_positions_name");
 
                             b1.ToTable("positions");
 
@@ -449,6 +465,11 @@ namespace PetDS.Infrastructure.Migrations
                     b.Navigation("DepartamentLocations");
 
                     b.Navigation("DepartamentPositions");
+                });
+
+            modelBuilder.Entity("PetDS.Domain.Position.Position", b =>
+                {
+                    b.Navigation("departamentPositions");
                 });
 #pragma warning restore 612, 618
         }
