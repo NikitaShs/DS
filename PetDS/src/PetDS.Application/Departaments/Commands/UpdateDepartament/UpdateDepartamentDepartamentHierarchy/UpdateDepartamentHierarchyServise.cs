@@ -43,7 +43,7 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
 
         if (command.dto.parantId != null)
         {
-            var resParent = await _departamentRepository.CheckingDepartamentExistence(DepartamentId.Create((Guid)command.dto.parantId), cancellationToken);
+            var resParent = await _departamentRepository.CheckingDepartamentExistence(DepartamentId.Create(command.dto.parantId.Value), cancellationToken);
             if (resParent.IsFailure || resParent.Value == false)
             {
                 _logger.LogInformation("parantId нету");
@@ -59,8 +59,10 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
         }
 
         var result = await _departamentRepository.UpdateDepartamentFullHierahiById(command.departanetId, command.dto.parantId, cancellationToken);
+        if (result.Value <= 0)
+            return GeneralErrors.Update("Hierahi").ToErrors();
 
         tranziction.Commit();
-        return result;
+        return command.departanetId;
     }
 }

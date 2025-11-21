@@ -94,7 +94,7 @@ public class DepartamentRepository : IDepartamentRepository
         return departamentId.ValueId;
     }
 
-    public async Task<Result<Guid, Errors>> UpdateDepartamentFullHierahiById(Guid id, Guid? parentId,
+    public async Task<Result<int, Errors>> UpdateDepartamentFullHierahiById(Guid id, Guid? parentId,
         CancellationToken cancellationToken)
     {
 
@@ -168,9 +168,11 @@ public class DepartamentRepository : IDepartamentRepository
             """;
         }
 
-        var res = await connection.ExecuteAsync(sql, new { parentId = parentId, id = id});
+        var res = await connection.ExecuteAsync(sql, new { parentId = parentId, id = id });
 
-        return id;
+        _logger.LogInformation($"затронуто {res}");
+        
+        return res;
 
     }
 
