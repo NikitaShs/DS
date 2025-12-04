@@ -39,6 +39,11 @@ public class UpdateDepartamentLocationsServise : IHandler<Guid, UpdateDepartamen
             return GeneralErrors.ValueNotValid("locations").ToErrors();
         }
 
+        if(command.dto.locationsId.Length <= 0)
+        {
+            return GeneralErrors.ValueNotValid("logic").ToErrors();
+        }
+
         var locId = command.dto.locationsId.Select(q => LocationId.Create(q)).ToList();
 
         if (!_locationRepository.ChekActivetiLocations(locId, cancellationToken).Result.Value)

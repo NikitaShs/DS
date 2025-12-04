@@ -1,0 +1,156 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
+using PetDS.Contract.Departamen;
+using PetDS.Domain.Departament;
+using PetDS.Domain.Departament.VO;
+using PetDS.Domain.Location;
+using PetDS.Domain.Location.VO;
+using PetDS.Infrastructure.DataBaseConnections;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PetDSTests
+{
+    public class DepartamentUpdateLocation : IAsyncLifetime, IClassFixture<FactoryTest>
+    {
+        public IServiceProvider Service { get; set; }
+
+        private readonly Func<Task> _resetDataBase;
+
+        public DepartamentUpdateLocation(FactoryTest factoryTest)
+        {
+            Service = factoryTest.Services;
+            _resetDataBase = factoryTest.ResetDataBase;
+        }
+
+        [Fact]
+        public async Task DepartamentUpdateLocation_Valid_data_win()
+        {
+            var cancellationToken = CancellationToken.None;
+
+            await using var sripeDbCont = Service.CreateAsyncScope();
+
+            var dbContext = sripeDbCont.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var locReplacement = Location.Create(LocationName.Create("локация").Value, "Novgorod", "Evrope", "yliza", "2").Value;
+
+            await dbContext.Locations.AddAsync(locReplacement, cancellationToken);
+
+            var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
+
+            await dbContext.Locations.AddAsync(locFirct, cancellationToken);
+
+            var dept = Departament.Create(DepartamentName.Create("name").Value, DepartamentIdentifier.Create("qqqq").Value, null, [locFirct.Id]).Value;
+
+            await dbContext.Departaments.AddAsync(dept, cancellationToken);
+            
+            dbContext.SaveChanges();
+
+            await using var sropeHand = Service.CreateAsyncScope();
+
+            var handler = sropeHand.ServiceProvider.GetRequiredService<UpdateDepartamentLocationsServise>();
+
+            var command = new UpdateDepartamentLocationsCommand(new UpdateDepartamentLocationsDto([locReplacement.Id.ValueId]), dept.Id.ValueId);
+
+            var result = await handler.Handler(command, cancellationToken);
+
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async Task DepartamentUpdateLocation_Location_Fictional_Fail()
+        {
+            var cancellationToken = CancellationToken.None;
+
+            await using var sripeDbCont = Service.CreateAsyncScope();
+
+            var dbContext = sripeDbCont.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
+
+            await dbContext.Locations.AddAsync(locFirct, cancellationToken);
+
+            var dept = Departament.Create(DepartamentName.Create("name").Value, DepartamentIdentifier.Create("qqqq").Value, null, [locFirct.Id]).Value;
+
+            await dbContext.Departaments.AddAsync(dept, cancellationToken);
+
+            dbContext.SaveChanges();
+
+            await using var sropeHand = Service.CreateAsyncScope();
+
+            var handler = sropeHand.ServiceProvider.GetRequiredService<UpdateDepartamentLocationsServise>();
+
+            var command = new UpdateDepartamentLocationsCommand(new UpdateDepartamentLocationsDto([Guid.NewGuid()]), dept.Id.ValueId);
+
+            var result = await handler.Handler(command, cancellationToken);
+
+            Assert.True(result.IsFailure);
+        }
+
+        [Fact]
+        public async Task DepartamentUpdateLocation_Not_Location_Fail()
+        {
+            var cancellationToken = CancellationToken.None;
+
+            await using var sripeDbCont = Service.CreateAsyncScope();
+
+            var dbContext = sripeDbCont.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
+
+            await dbContext.Locations.AddAsync(locFirct, cancellationToken);
+
+            var dept = Departament.Create(DepartamentName.Create("name").Value, DepartamentIdentifier.Create("qqqq").Value, null, [locFirct.Id]).Value;
+
+            await dbContext.Departaments.AddAsync(dept, cancellationToken);
+
+            dbContext.SaveChanges();
+
+            await using var sropeHand = Service.CreateAsyncScope();
+
+            var handler = sropeHand.ServiceProvider.GetRequiredService<UpdateDepartamentLocationsServise>();
+
+            var command = new UpdateDepartamentLocationsCommand(new UpdateDepartamentLocationsDto([]), dept.Id.ValueId);
+
+            var result = await handler.Handler(command, cancellationToken);
+
+            Assert.True(result.IsFailure);
+        }
+
+        [Fact]
+        public async Task DepartamentUpdateLocation_Departament_Fictional_Fail()
+        {
+            var cancellationToken = CancellationToken.None;
+
+            await using var sripeDbCont = Service.CreateAsyncScope();
+
+            var dbContext = sripeDbCont.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var locReplacement = Location.Create(LocationName.Create("локация").Value, "Novgorod", "Evrope", "yliza", "2").Value;
+
+            await dbContext.Locations.AddAsync(locReplacement, cancellationToken);
+
+            dbContext.SaveChanges();
+
+            await using var sropeHand = Service.CreateAsyncScope();
+
+            var handler = sropeHand.ServiceProvider.GetRequiredService<UpdateDepartamentLocationsServise>();
+
+            var command = new UpdateDepartamentLocationsCommand(new UpdateDepartamentLocationsDto([locReplacement.Id.ValueId]), Guid.NewGuid());
+
+            var result = await handler.Handler(command, cancellationToken);
+
+            Assert.True(result.IsSuccess);
+        }
+
+        public Task InitializeAsync() => Task.CompletedTask;
+
+        public async Task DisposeAsync()
+        {
+            await _resetDataBase();
+        }
+    }
+}

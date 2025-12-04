@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -16,6 +17,7 @@ using PetDS.Infrastructure.Seeding;
 using PetDS.Web.Middlewares;
 using Serilog;
 using Serilog.Events;
+using static CSharpFunctionalExtensions.Result;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +33,8 @@ builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddApplication();
-builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>();
-builder.Services.AddScoped<ApplicationDbContext>();
+builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
+builder.Services.AddScoped<ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
@@ -73,3 +75,9 @@ app.UseSerilogRequestLogging();
 app.MapControllers();
 
 app.Run();
+
+
+namespace PetDS.Web
+{
+    public partial class Program { }
+}
