@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Contract;
@@ -36,13 +37,16 @@ public class CreateDepartamentTest : IAsyncLifetime, IClassFixture<FactoryTest> 
 
         DbContectTest.SaveChanges();
 
-        await using var scope = Services.CreateAsyncScope();
+        var result = await ExecuteHandler((handler) =>
+        {
+            var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { location.Value.Id.ValueId }), cancellationToken);
 
-        var handler = scope.ServiceProvider.GetRequiredService<DepartamentCreateServise>();
+            return handler.Handler(command, cancellationToken);
+        });
 
-        var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { location.Value.Id.ValueId }), cancellationToken);
+        var dept = await DbContectTest.Departaments.FirstAsync(q => q.Id == DepartamentId.Create(result.Value));
 
-        var result = await handler.Handler(command, cancellationToken);
+        Assert.NotNull(dept);
 
         Assert.True(result.IsSuccess);
     }
@@ -52,13 +56,14 @@ public class CreateDepartamentTest : IAsyncLifetime, IClassFixture<FactoryTest> 
     {
         var cancellationToken = CancellationToken.None;
 
-        await using var scope = Services.CreateAsyncScope();
+        var result = await ExecuteHandler((handler) =>
+        {
+            var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { }), cancellationToken);
 
-        var handler = scope.ServiceProvider.GetRequiredService<DepartamentCreateServise>();
+            return handler.Handler(command, cancellationToken);
+        });
 
-        var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { }), cancellationToken);
-
-        var result = await handler.Handler(command, cancellationToken);
+        await using var scopeProv = Services.CreateAsyncScope();
 
         Assert.True(result.IsFailure);
     }
@@ -68,13 +73,12 @@ public class CreateDepartamentTest : IAsyncLifetime, IClassFixture<FactoryTest> 
     {
         var cancellationToken = CancellationToken.None;
 
-        await using var scope = Services.CreateAsyncScope();
+        var result = await ExecuteHandler((handler) =>
+        {
+            var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { Guid.NewGuid() }), cancellationToken);
 
-        var handler = scope.ServiceProvider.GetRequiredService<DepartamentCreateServise>();
-
-        var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { Guid.NewGuid() }), cancellationToken);
-
-        var result = await handler.Handler(command, cancellationToken);
+            return handler.Handler(command, cancellationToken);
+        });
 
         Assert.True(result.IsFailure);
     }
@@ -98,13 +102,16 @@ public class CreateDepartamentTest : IAsyncLifetime, IClassFixture<FactoryTest> 
 
         DbContectTest.SaveChanges();
 
-        await using var scope = Services.CreateAsyncScope();
+        var result = await ExecuteHandler((handler) =>
+        {
+            var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { location.Value.Id.ValueId, location2.Value.Id.ValueId }), cancellationToken);
 
-        var handler = scope.ServiceProvider.GetRequiredService<DepartamentCreateServise>();
+            return handler.Handler(command, cancellationToken);
+        });
 
-        var command = new CreateDepartamentCommand(new CreateDepartamentDto("Buxarin", "Trocki", new List<Guid> { location.Value.Id.ValueId, location2.Value.Id.ValueId }), cancellationToken);
+        var dept = await DbContectTest.Departaments.FirstAsync(q => q.Id == DepartamentId.Create(result.Value));
 
-        var result = await handler.Handler(command, cancellationToken);
+        Assert.NotNull(dept);
 
         Assert.True(result.IsSuccess);
     }
@@ -114,5 +121,14 @@ public class CreateDepartamentTest : IAsyncLifetime, IClassFixture<FactoryTest> 
     public async Task DisposeAsync()
     {
         await _resetDataBase();
+    }
+
+    private async Task<T> ExecuteHandler<T>(Func<DepartamentCreateServise, Task<T>> axtion)
+    {
+        await using var scope = Services.CreateAsyncScope();
+
+        var handler = scope.ServiceProvider.GetRequiredService<DepartamentCreateServise>();
+
+        return await axtion(handler);
     }
 }

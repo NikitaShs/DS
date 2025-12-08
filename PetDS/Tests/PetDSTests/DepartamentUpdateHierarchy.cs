@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 using PetDS.Contract;
+using PetDS.Contract.Departamen;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location;
@@ -36,10 +39,6 @@ namespace PetDSTests
 
             var dbContext = scopeDbContext.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            await using var scopeHandler = Services.CreateAsyncScope();
-
-            var handler = scopeHandler.ServiceProvider.GetRequiredService<UpdateDepartamentHierarchyServise>();
-
             var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
 
             await dbContext.Locations.AddAsync(locFirct, cancellationToken);
@@ -66,10 +65,17 @@ namespace PetDSTests
 
             await dbContext.SaveChangesAsync();
 
-            var command = new UpdateDepartamentHierarchyCommand(dept.Id.ValueId, new UpdateDepartamentHierarchyDto(dept5.Id.ValueId));
 
-            var result = await handler.Handler(command, cancellationToken);
+            var result = await ExecuteHandler((handler) =>
+            {
+                var command = new UpdateDepartamentHierarchyCommand(dept.Id.ValueId, new UpdateDepartamentHierarchyDto(dept5.Id.ValueId));
 
+                return handler.Handler(command, cancellationToken);
+            });
+
+            var res2 = dbContext.Departaments.Any(q => q.Id == dept.Id && q.Parent == dept5);
+
+            Assert.True(res2);
             Assert.True(result.IsSuccess);
         }
 
@@ -81,10 +87,6 @@ namespace PetDSTests
             await using var scopeDbContext = Services.CreateAsyncScope();
 
             var dbContext = scopeDbContext.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            await using var scopeHandler = Services.CreateAsyncScope();
-
-            var handler = scopeHandler.ServiceProvider.GetRequiredService<UpdateDepartamentHierarchyServise>();
 
             var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
 
@@ -108,10 +110,17 @@ namespace PetDSTests
 
             await dbContext.SaveChangesAsync();
 
-            var command = new UpdateDepartamentHierarchyCommand(dept4.Id.ValueId, new UpdateDepartamentHierarchyDto(null));
 
-            var result = await handler.Handler(command, cancellationToken);
+            var result = await ExecuteHandler((handler) =>
+            {
+                var command = new UpdateDepartamentHierarchyCommand(dept4.Id.ValueId, new UpdateDepartamentHierarchyDto(null));
 
+                return handler.Handler(command, cancellationToken);
+            });
+
+            var res2 = dbContext.Departaments.FirstAsync(q => q.Id == dept4.Id).Result;
+
+            Assert.NotNull(res2.Parent);
             Assert.True(result.IsSuccess);
         }
 
@@ -124,10 +133,6 @@ namespace PetDSTests
 
             var dbContext = scopeDbContext.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            await using var scopeHandler = Services.CreateAsyncScope();
-
-            var handler = scopeHandler.ServiceProvider.GetRequiredService<UpdateDepartamentHierarchyServise>();
-
             var locFirct = Location.Create(LocationName.Create("НеЛокация").Value, "Nogorod", "Evope", "ylia", "2").Value;
 
             await dbContext.Locations.AddAsync(locFirct, cancellationToken);
@@ -138,9 +143,12 @@ namespace PetDSTests
 
             await dbContext.SaveChangesAsync();
 
-            var command = new UpdateDepartamentHierarchyCommand(dept.Id.ValueId, new UpdateDepartamentHierarchyDto(dept.Id.ValueId));
+            var result = await ExecuteHandler((handler) =>
+            {
+                var command = new UpdateDepartamentHierarchyCommand(dept.Id.ValueId, new UpdateDepartamentHierarchyDto(dept.Id.ValueId));
 
-            var result = await handler.Handler(command, cancellationToken);
+                return handler.Handler(command, cancellationToken);
+            });
 
             Assert.True(result.IsFailure);
         }
@@ -150,6 +158,16 @@ namespace PetDSTests
         public async Task DisposeAsync()
         {
             await _resetDataBase();
+        }
+
+
+        private async Task<T> ExecuteHandler<T>(Func<UpdateDepartamentHierarchyServise, Task<T>> axtion)
+        {
+            await using var scope = Services.CreateAsyncScope();
+
+            var handler = scope.ServiceProvider.GetRequiredService<UpdateDepartamentHierarchyServise>();
+
+            return await axtion(handler);
         }
     }
 }
