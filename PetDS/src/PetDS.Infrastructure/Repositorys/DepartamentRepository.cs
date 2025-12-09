@@ -10,6 +10,7 @@ using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
 using System.Data.Common;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace PetDS.Infrastructure.Repositorys;
 
@@ -120,14 +121,14 @@ public class DepartamentRepository : IDepartamentRepository
                      ),
                 New_Dept AS
             (
-                UPDATE departaments SET 
+                UPDATE departaments dep SET
                     parent_id = p.id,
-                    path = (p.path::text || '.' || departaments.name)::ltree,
-                    depth = nlevel((p.path::text || '.' || departaments.name)::ltree)
+                    path = (p.path::text || '.' || dep.name)::ltree,
+                    depth = nlevel((p.path::text || '.' || dep.name)::ltree)
                     FROM Parent p
-                    WHERE departaments.id = @id
+                    WHERE dep.id = @id
                     
-                    RETURNING departaments.id, departaments.path, departaments.depth, departaments.name
+                    RETURNING dep.id, dep.path, dep.depth, dep.name
             )
             UPDATE departaments SET 
                                     path = (New_Dept.path::text || subpath(departaments.path, OldDept.depth))::ltree,
@@ -171,8 +172,28 @@ public class DepartamentRepository : IDepartamentRepository
         var res = await connection.ExecuteAsync(sql, new { parentId = parentId, id = id });
 
         _logger.LogInformation($"затронуто {res}");
-        
-        return res;
+
+        if (res >= 0)
+        {
+            var updated = await _applicationDbContext.Departaments
+                .Where(d => d.Id == DepartamentId.Create(id))
+                .Select(d => d.ParentId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (!parentId.HasValue)
+            {
+                return updated == null ? 1 : GeneralErrors.Update("Hierarchy").ToErrors();
+            }
+            else
+            {
+                return updated.ValueId == parentId.Value ? 1 : GeneralErrors.Update("Hierarchy").ToErrors();
+            }
+        }
+
+
+        return GeneralErrors.Update("Hierarchy").ToErrors();
+
+
 
     }
 

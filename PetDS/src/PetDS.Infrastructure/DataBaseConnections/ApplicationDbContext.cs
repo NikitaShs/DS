@@ -8,7 +8,7 @@ using PetDS.Domain.Position;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 
-public class ApplicationDbContext(IConfiguration configuration) : DbContext, IReadDbContext
+public class ApplicationDbContext(string connectionString) : DbContext, IReadDbContext
 {
     public DbSet<Departament> Departaments => Set<Departament>();
 
@@ -28,7 +28,7 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext, IRe
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("BDDS"));
+        optionsBuilder.UseNpgsql(connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactore())
             .EnableSensitiveDataLogging();
