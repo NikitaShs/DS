@@ -11,4 +11,8 @@ public interface IReadDbContext
     IQueryable<Location> ReadLocation { get; }
 
     IQueryable<Departament> ReadDepartament { get; }
+
+    IQueryable<DepartamentLocation> ReadDepartamentLocation { get; }
+
+    IQueryable<DepartamentPosition> ReadDepartamentPosition { get; }
 }

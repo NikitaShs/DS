@@ -9,8 +9,9 @@ using PetDS.Domain.Position;
 using PetDS.Domain.Position.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
+using PetDS.Infrastructure.Seeding;
 
-namespace PetDS.Infrastructure.Seeding;
+namespace PetDS.Infrastructure.Seedings;
 
 public class Seeding : ISeeding
 {
@@ -22,13 +23,13 @@ public class Seeding : ISeeding
     private const int MaxRetryAttempts = 3;
     private const int RetryDelayMs = 1000;
 
-    // SQL команды для очистки БД
+    // SQL команды для очистки БД (используем имена таблиц как в миграциях с кавычками для сохранения регистра)
     private static readonly string ClearDepartamentPositionsSql = "DELETE FROM \"departamentPositions\"";
     private static readonly string ClearDepartamentLocationsSql = "DELETE FROM \"departamentLocations\"";
-    private static readonly string ClearPositionsSql = "DELETE FROM \"positions\"";
-    private static readonly string ClearDepartamentsSql = "DELETE FROM \"departaments\"";
-    private static readonly string ClearLocationsSql = "DELETE FROM \"locations\"";
-    private static readonly string ResetParentIdsSql = "UPDATE \"departaments\" SET \"parent_id\" = NULL";
+    private static readonly string ClearPositionsSql = "DELETE FROM positions";
+    private static readonly string ClearDepartamentsSql = "DELETE FROM departaments";
+    private static readonly string ClearLocationsSql = "DELETE FROM locations";
+    private static readonly string ResetParentIdsSql = "UPDATE departaments SET parent_id = NULL";
 
     // Данные для генерации
     private readonly string[] _cities = { "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань" };
@@ -46,11 +47,10 @@ public class Seeding : ISeeding
         _logger = logger;
     }
 
-    public async Task<SeedingResult> SeedAsync()
+    public async Task SeedAsync()
     {
         _logger.LogInformation("🚀 Начало сидирования базы данных");
         DateTime startTime = DateTime.UtcNow;
-        SeedingResult result = new();
 
         try
         {
@@ -65,7 +65,6 @@ public class Seeding : ISeeding
             if (locations.Any())
             {
                 await SaveInBatchesAsync(locations, _dbContext.Locations, "локаций");
-                result.LocationsCreated = locations.Count;
                 _logger.LogInformation("✅ Создано {Count} локаций", locations.Count);
             }
             else
@@ -81,13 +80,11 @@ public class Seeding : ISeeding
             if (departaments.Any())
             {
                 await SaveInBatchesAsync(departaments, _dbContext.Departaments, "департаментов");
-                result.DepartamentsCreated = departaments.Count;
                 _logger.LogInformation("✅ Создано {Count} департаментов", departaments.Count);
             }
             else
             {
                 _logger.LogError("❌ Не удалось создать ни одного департамента!");
-                result.DepartamentsCreated = 0;
             }
 
             // 3. Создаем Positions
@@ -98,40 +95,28 @@ public class Seeding : ISeeding
                 if (positions.Any())
                 {
                     await SaveInBatchesAsync(positions, _dbContext.Positions, "позиций");
-                    result.PositionsCreated = positions.Count;
                     _logger.LogInformation("✅ Создано {Count} позиций", positions.Count);
                 }
                 else
                 {
                     _logger.LogWarning("⚠️ Не удалось создать ни одной позиции");
-                    result.PositionsCreated = 0;
                 }
             }
             else
             {
                 _logger.LogWarning("📭 Пропуск создания позиций: нет департаментов");
-                result.PositionsCreated = 0;
             }
 
             _dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
 
-            result.Success = true;
-            result.Duration = DateTime.UtcNow - startTime;
-
-            _logger.LogInformation("🎉 Сидирование завершено за {Duration:F2} секунд", result.Duration.TotalSeconds);
-            _logger.LogInformation(
-                "📊 Итоговые результаты: {Locations} локаций, {Departaments} департаментов, {Positions} позиций",
-                result.LocationsCreated, result.DepartamentsCreated, result.PositionsCreated);
+            var duration = DateTime.UtcNow - startTime;
+            _logger.LogInformation("🎉 Сидирование завершено за {Duration:F2} секунд", duration.TotalSeconds);
         }
         catch (Exception ex)
         {
-            result.Success = false;
-            result.Error = ex.Message;
             _logger.LogError(ex, "❌ Критическая ошибка при сидировании базы данных");
             throw;
         }
-
-        return result;
     }
 
     private async Task<List<Location>> GenerateLocationsAsync()
@@ -541,20 +526,4 @@ public static class SeedingExtensions
 
         return shuffled;
     }
-}
-
-// Результат сидирования
-public class SeedingResult
-{
-    public bool Success { get; set; }
-    public TimeSpan Duration { get; set; }
-    public int LocationsCreated { get; set; }
-    public int DepartamentsCreated { get; set; }
-    public int PositionsCreated { get; set; }
-    public string Error { get; set; }
-
-    public override string ToString() =>
-        Success
-            ? $"✅ Успешно за {Duration.TotalSeconds:F2}с. 📍{LocationsCreated} 🏢{DepartamentsCreated} 👥{PositionsCreated}"
-            : $"❌ Ошибка: {Error}";
 }

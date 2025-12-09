@@ -26,6 +26,10 @@ public class ApplicationDbContext(string connectionString) : DbContext, IReadDbC
 
     public IQueryable<Departament> ReadDepartament => Set<Departament>().AsQueryable().AsNoTracking();
 
+    public IQueryable<DepartamentLocation> ReadDepartamentLocation => Set<DepartamentLocation>().AsQueryable().AsNoTracking();
+
+    public IQueryable<DepartamentPosition> ReadDepartamentPosition => Set<DepartamentPosition>().AsQueryable().AsNoTracking();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(connectionString);

@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Locations\Queries\" />
     <Folder Include="Positions\Queries\" />
   </ItemGroup>
 
