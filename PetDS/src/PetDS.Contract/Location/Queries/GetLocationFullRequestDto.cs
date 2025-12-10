@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace PetDS.Contract.Location.Queries
 {
     public record GetLocationFullRequestDto(
-        string? name,  string? city,
-        string? strit, int? namberHouse,
-        bool? isActive, Guid[]? DepartamentIds,
+        string? Name,  string? City,
+        string? Strit, int? NamberHouse,
+        bool? IsActive, Guid[]? DepartamentIds,
         DateTime? TimeTo, DateTime? TimeAfter,
-        int page = 1, int sizePage = 20);
+        int Page = 1, int SizePage = 20);
 }

@@ -26,17 +26,17 @@ namespace PetDS.Application.Locations.Queries
         {
             var req = _readDbContext.ReadLocation;
 
-            if (!string.IsNullOrEmpty(dto.name))
-                req = req.Where(q => q.Name.ValueName.ToLower().Contains(dto.name.ToLower()));
+            if (!string.IsNullOrEmpty(dto.Name))
+                req = req.Where(q => q.Name.ValueName.ToLower().Contains(dto.Name.ToLower()));
 
-            if (!string.IsNullOrEmpty(dto.strit))
-                req = req.Where(q => q.Address.Strit.ToLower().Contains(dto.strit.ToLower()));
+            if (!string.IsNullOrEmpty(dto.Strit))
+                req = req.Where(q => q.Address.Strit.ToLower().Contains(dto.Strit.ToLower()));
 
-            if (!string.IsNullOrEmpty(dto.city))
-                req = req.Where(q => q.Address.City.ToLower().Contains(dto.city.ToLower()));
+            if (!string.IsNullOrEmpty(dto.City))
+                req = req.Where(q => q.Address.City.ToLower().Contains(dto.City.ToLower()));
 
-            if (dto.namberHouse.HasValue)
-                req = req.Where(q => q.Address.NamberHouse == dto.namberHouse.ToString());
+            if (dto.NamberHouse.HasValue)
+                req = req.Where(q => q.Address.NamberHouse == dto.NamberHouse.ToString());
 
             if (dto.TimeTo.HasValue)
                 req = req.Where(q => q.CreateAt <= dto.TimeTo.Value.ToUniversalTime());
@@ -44,8 +44,8 @@ namespace PetDS.Application.Locations.Queries
             if (dto.TimeAfter.HasValue)
                 req = req.Where(q => q.CreateAt >= dto.TimeAfter.Value.ToUniversalTime());
 
-            if (dto.isActive.HasValue)
-                req = req.Where(q => q.IsActive == dto.isActive);
+            if (dto.IsActive.HasValue)
+                req = req.Where(q => q.IsActive == dto.IsActive);
 
             if (dto.DepartamentIds != null && dto.DepartamentIds.Length > 0)
             {
@@ -56,8 +56,8 @@ namespace PetDS.Application.Locations.Queries
             var totalCount = await req.LongCountAsync();
 
             req = req
-                .Skip((dto.page - 1) * dto.sizePage)
-                .Take(dto.sizePage)
+                .Skip((dto.Page - 1) * dto.SizePage)
+                .Take(dto.SizePage)
                 .OrderBy(q => q.CreateAt);
 
 
