@@ -2,5 +2,5 @@
 
 public interface ISeeding
 {
-    Task<SeedingResult> SeedAsync();
+    Task SeedAsync();
 }
