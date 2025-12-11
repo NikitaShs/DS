@@ -8,8 +8,6 @@ namespace PetDS.Contract.Departamen.Queries
 {
     public record DepartamentModelDto
     {
-        public Guid Id { get; init; }
-
         public string Name { get; init; } = String.Empty;
 
         public string Identifier { get; init; } = String.Empty;
@@ -18,5 +16,10 @@ namespace PetDS.Contract.Departamen.Queries
 
         public short Depth { get; init; }
 
+        public string Path { get; init; } = String.Empty;
+
+        public bool IsActive { get; init; }
+
+        public int CountPos { get; init; }
     }
 }

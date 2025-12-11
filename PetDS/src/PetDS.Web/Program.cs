@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using PetDS.Application;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
 builder.Services.AddScoped<DepartamentCreateServise>();
 builder.Services.AddScoped<GetLocationFullServise>();
+builder.Services.AddScoped<GetTopFiveDepartamentsServise>();
 builder.Services.AddScoped<PositionCreateServise>();
 builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
 builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
