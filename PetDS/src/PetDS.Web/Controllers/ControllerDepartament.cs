@@ -46,4 +46,9 @@ public class ControllerDepartament : ControllerBase
         return await servise.Handler(command);
     }
 
+    [HttpGet("/topFiveD")]
+    public async Task<EdponintResult<List<DepartamentModelDto>>> TopFiveDepartaments([FromServices] GetTopFiveDepartamentsServise servise, CancellationToken cancellationToken)
+    {
+        return await servise.Handler(cancellationToken);
+    }
 }
