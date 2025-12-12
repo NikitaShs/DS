@@ -38,14 +38,10 @@ namespace PetDS.Application.Departaments.Queries
                                                       dep.path,
                                                       COUNT(dep.id) as countPos
                                                   FROM departaments dep
-                                                           JOIN "departamentPositions" dp ON dep.id = dp.departament_id
+                                                          JOIN "departamentPositions" dp ON dep.id = dp.departament_id
                                                   GROUP BY
-                                                      dep.name,
-                                                      dep.identifier,
-                                                      dep.parent_id,
-                                                      dep.depth,
-                                                      dep.is_active,
-                                                      dep.path ORDER BY countPos DESC LIMIT 5;
+                                                      dep.id
+                                                   ORDER BY countPos DESC LIMIT 5;
                                                   """);
 
             return res.ToList();
