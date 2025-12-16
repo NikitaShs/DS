@@ -25,12 +25,14 @@ namespace PetDS.Application.Departaments.Queries
 
         public async Task<Result<DepartamenthAndChildDto, Errors>> Handler(RootsDepartementReqvestDto reqvestDto, CancellationToken cancellationToken)
         {
-            var req = _readDbContext.ReadDepartament
-                .Where(q => q.ParentId == null).Include(q => q.Children)
-                .OrderBy(q => q.CreateAt).Take(reqvestDto.SizePage)
-                .Skip((reqvestDto.Page - 1) * reqvestDto.SizePage);
+            var req = _readDbContext.ReadDepartament;
+
+            req = req.Where(q => q.ParentId == null).Include(q => q.Children);
 
             var totalCount = await req.LongCountAsync();
+
+            req = req.OrderBy(q => q.CreateAt).Take(reqvestDto.SizePage)
+                .Skip((reqvestDto.Page - 1) * reqvestDto.SizePage);
 
             var res = await req.Select(q => new DepartamenthAndChildModel
             {
