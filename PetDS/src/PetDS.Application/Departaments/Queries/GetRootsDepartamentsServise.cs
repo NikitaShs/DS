@@ -23,12 +23,14 @@ namespace PetDS.Application.Departaments.Queries
             _readDbContext = readDbContext;
         }
 
-        public async Task<Result<List<DepartamenthAndChildModel>, Errors>> Handler(RootsDepartementReqvestDto reqvestDto, CancellationToken cancellationToken)
+        public async Task<Result<DepartamenthAndChildDto, Errors>> Handler(RootsDepartementReqvestDto reqvestDto, CancellationToken cancellationToken)
         {
             var req = _readDbContext.ReadDepartament
                 .Where(q => q.ParentId == null).Include(q => q.Children)
                 .OrderBy(q => q.CreateAt).Take(reqvestDto.SizePage)
                 .Skip((reqvestDto.Page - 1) * reqvestDto.SizePage);
+
+            var totalCount = await req.LongCountAsync();
 
             var res = await req.Select(q => new DepartamenthAndChildModel
             {
@@ -39,6 +41,7 @@ namespace PetDS.Application.Departaments.Queries
                 Depth = q.Depth,
                 Path = q.Path.ValuePash,
                 IsActive = q.IsActive,
+                HasMoreChildren = q.Children.Count,
                 Childs = q.Children.Take(reqvestDto.prefetch).Select(Cq => new DepartamenthModelClear
                 {
                     Id = Cq.Id.ValueId,
@@ -47,12 +50,13 @@ namespace PetDS.Application.Departaments.Queries
                     ParentId = Cq.ParentId.ValueId,
                     Depth = Cq.Depth,
                     Path = Cq.Path.ValuePash,
-                    IsActive = Cq.IsActive
+                    IsActive = Cq.IsActive,
+                    HasMoreChildren = Cq.Children.Count
                 }).ToList(),
             }).ToListAsync();
 
 
-            return res;
+            return new DepartamenthAndChildDto(res, totalCount);
         }
     }
 }

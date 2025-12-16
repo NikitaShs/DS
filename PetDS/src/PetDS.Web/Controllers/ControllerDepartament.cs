@@ -53,7 +53,7 @@ public class ControllerDepartament : ControllerBase
     }
 
     [HttpGet("roots")]
-    public async Task<EdponintResult<List<DepartamenthAndChildModel>>> RootsDepartaments(
+    public async Task<EdponintResult<DepartamenthAndChildDto>> RootsDepartaments(
         [FromQuery] RootsDepartementReqvestDto reqvestDto,
         [FromServices] GetRootsDepartamentsServise servise, CancellationToken cancellationToken)
     {

@@ -21,5 +21,8 @@ namespace PetDS.Contract.Departamen.Queries
         public string Path { get; init; } = String.Empty;
 
         public bool IsActive { get; init; }
+
+        public int HasMoreChildren { get; init; }
+
     }
 }
