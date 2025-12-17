@@ -41,6 +41,8 @@ builder.Services.AddScoped<ApplicationDbContext>(q => new ApplicationDbContext(b
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
+builder.Services.AddScoped<GetChildsDepartamentsServise>();
+builder.Services.AddScoped<GetRootsDepartamentsServise>();
 builder.Services.AddScoped<DepartamentCreateServise>();
 builder.Services.AddScoped<GetLocationFullServise>();
 builder.Services.AddScoped<GetTopFiveDepartamentsServise>();

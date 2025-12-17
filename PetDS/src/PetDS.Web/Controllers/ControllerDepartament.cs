@@ -51,4 +51,20 @@ public class ControllerDepartament : ControllerBase
     {
         return await servise.Handler(cancellationToken);
     }
+
+    [HttpGet("roots")]
+    public async Task<EdponintResult<DepartamenthAndChildDto>> RootsDepartaments(
+        [FromQuery] RootsDepartementReqvestDto reqvestDto,
+        [FromServices] GetRootsDepartamentsServise servise, CancellationToken cancellationToken)
+    {
+        return await servise.Handler(reqvestDto, cancellationToken);
+    }
+
+    [HttpGet("{parentId}/childs")]
+    public async Task<EdponintResult<List<DepartamenthModelClear>>> ChildsDepartaments(
+        [FromRoute] Guid parentId, [FromQuery] DepartamentPaginationReqvestDto reqvestDto,
+        GetChildsDepartamentsServise servise, CancellationToken cancellationToken)
+    {
+        return await servise.Handler(parentId, reqvestDto, cancellationToken);
+    }
 }
