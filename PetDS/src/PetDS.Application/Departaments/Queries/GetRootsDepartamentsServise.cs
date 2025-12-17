@@ -43,7 +43,7 @@ namespace PetDS.Application.Departaments.Queries
                 Depth = q.Depth,
                 Path = q.Path.ValuePash,
                 IsActive = q.IsActive,
-                HasMoreChildren = q.Children.Count,
+                HasMoreChildren = q.Children.Count > 0,
                 Childs = q.Children.Take(reqvestDto.prefetch).Select(Cq => new DepartamenthModelClear
                 {
                     Id = Cq.Id.ValueId,
@@ -53,7 +53,7 @@ namespace PetDS.Application.Departaments.Queries
                     Depth = Cq.Depth,
                     Path = Cq.Path.ValuePash,
                     IsActive = Cq.IsActive,
-                    HasMoreChildren = Cq.Children.Count
+                    HasMoreChildren = Cq.Children.Count > 0
                 }).ToList(),
             }).ToListAsync();
 

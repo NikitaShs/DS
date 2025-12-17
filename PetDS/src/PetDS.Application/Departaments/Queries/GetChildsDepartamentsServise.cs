@@ -41,7 +41,7 @@ namespace PetDS.Application.Departaments.Queries
                     Depth = q.Depth,
                     Path = q.Path.ValuePash,
                     IsActive = q.IsActive,
-                    HasMoreChildren = q.Children.Count
+                    HasMoreChildren = q.Children.Count > 0,
                 }).ToListAsync(cancellationToken);
 
             return res;

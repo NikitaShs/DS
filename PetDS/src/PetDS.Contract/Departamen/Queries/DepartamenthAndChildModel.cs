@@ -22,7 +22,7 @@ namespace PetDS.Contract.Departamen.Queries
 
         public bool IsActive { get; init; }
 
-        public int HasMoreChildren { get; init; }
+        public bool HasMoreChildren { get; init; }
 
         public List<DepartamenthModelClear> Childs { get; init; }
     }
