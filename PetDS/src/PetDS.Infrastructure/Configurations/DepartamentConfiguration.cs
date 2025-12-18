@@ -37,9 +37,11 @@ public class DepartamentConfiguration : IEntityTypeConfiguration<Departament>
         
         builder.Property(d => d.Depth).IsRequired();
 
-        builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();
+        builder.Property(i => i.IsActive).HasDefaultValue(true);
 
         builder.Property(c => c.CreateAt).IsRequired();
+
+        builder.Property(q => q.DeletedAt).IsRequired(false);
 
         builder.Property(u => u.UpdateAt).IsRequired();
 

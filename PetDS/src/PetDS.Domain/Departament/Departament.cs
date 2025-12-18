@@ -49,6 +49,8 @@ public class Departament : Shered.Entity<DepartamentId>
 
     public bool IsActive { get; private set; }
 
+    public DateTime? DeletedAt { get; private set; }
+
     public DateTime CreateAt { get; private set; }
 
     public DateTime UpdateAt { get; private set; }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetDS.Infrastructure.DataBaseConnections;
@@ -11,9 +12,11 @@ using PetDS.Infrastructure.DataBaseConnections;
 namespace PetDS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217165216_qqqqq")]
+    partial class qqqqq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +36,9 @@ namespace PetDS.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<DateTime?>("DeletedAt")
+                    b.Property<DateTime?>("DeleteTime")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
+                        .HasColumnName("delete_time");
 
                     b.Property<short>("Depth")
                         .HasColumnType("smallint")
