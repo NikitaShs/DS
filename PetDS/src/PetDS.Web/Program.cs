@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using PetDS.Application;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
+using PetDS.Application.Departaments.Commands.DeleteDepartament;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Application.Departaments.Queries;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<ApplicationDbContext>(q => new ApplicationDbContext(b
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
+builder.Services.AddScoped<DeleteDepartamentServise>();
 builder.Services.AddScoped<GetChildsDepartamentsServise>();
 builder.Services.AddScoped<GetRootsDepartamentsServise>();
 builder.Services.AddScoped<DepartamentCreateServise>();

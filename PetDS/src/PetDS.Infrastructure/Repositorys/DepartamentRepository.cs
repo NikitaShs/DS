@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -200,5 +201,38 @@ public class DepartamentRepository : IDepartamentRepository
     public async Task<Result<bool, Errors>> CheckingDepartamentExistence(DepartamentId departamentId, CancellationToken cancellationToken)
     {
         return await _applicationDbContext.Departaments.AnyAsync(q => q.Id == departamentId);
+    }
+
+    public async Task<Result<bool, Errors>> SoftDeleteDept(Guid departamentId, CancellationToken cancellationToken)
+    {
+        var conn = _applicationDbContext.Database.GetDbConnection();
+
+        string sql = """
+                     WITH OldDept AS (
+                                     UPDATE departaments
+                                      SET path = (subpath(path, 0, -1) || ('delete-' || name))::ltree,
+                                     is_active = false,
+                                          deleted_at = @timeDel
+                                      WHERE id = @Depid
+                                     RETURNING departaments.id, departaments.path, departaments.depth, departaments.name
+                         )
+                     
+                     
+                     UPDATE departaments dep SET
+                                             path = (OldDept.path || subpath(dep.path, OldDept.depth))
+                                             FROM OldDept
+                                             WHERE OldDept.id != dep.id AND dep.path <@ (subpath(OldDept.path, 0, -1) || OldDept.name)::ltree;
+                     """;
+        var delTime = DateTime.UtcNow.AddYears(1);
+
+        _logger.LogInformation(delTime.ToString());
+
+        var res = await conn.ExecuteAsync(sql, new { Depid = departamentId, timeDel = delTime});
+
+
+        if (res > 0)
+            return true;
+        else
+            return GeneralErrors.Update("SoftDeleteDept").ToErrors();
     }
 }

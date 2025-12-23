@@ -23,4 +23,6 @@ public interface IDepartamentRepository
 
     Task<Result<bool, Errors>> CheckingDepartamentExistence(DepartamentId departamentId,
         CancellationToken cancellationToken);
+
+    Task<Result<bool, Errors>> SoftDeleteDept(Guid departamentId, CancellationToken cancellationToken);
 }

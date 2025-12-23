@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetDS.Application.Departaments.Commands.DeleteDepartament;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Application.Departaments.Queries;
@@ -66,5 +67,11 @@ public class ControllerDepartament : ControllerBase
         GetChildsDepartamentsServise servise, CancellationToken cancellationToken)
     {
         return await servise.Handler(parentId, reqvestDto, cancellationToken);
+    }
+
+    [HttpDelete("{departamentId}")]
+    public async Task<EdponintResult<Guid>> SoftDelete([FromRoute] Guid departamentId, [FromServices] DeleteDepartamentServise servise, CancellationToken cancellationToken)
+    {
+        return await servise.Handler(new DeleteDepartamentCommand(departamentId), cancellationToken);
     }
 }
