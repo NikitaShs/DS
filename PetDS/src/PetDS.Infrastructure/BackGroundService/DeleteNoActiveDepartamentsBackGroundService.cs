@@ -24,7 +24,7 @@ namespace PetDS.Infrastructure.BackGroundService
 
             var dbContect = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var timer = new PeriodicTimer(TimeSpan.FromSeconds(20));
+            var timer = new PeriodicTimer(TimeSpan.FromDays(1));
 
             var connection = dbContect.Database.GetDbConnection();
 
@@ -66,7 +66,7 @@ namespace PetDS.Infrastructure.BackGroundService
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
 
-                var res = await connection.ExecuteAsync(sql, new { newTime = DateTime.UtcNow.AddYears(2) });
+                var res = await connection.ExecuteAsync(sql, new { newTime = DateTime.UtcNow});
                 _logger.LogInformation(")");
                 if (res > 0)
                     _logger.LogInformation("опа удаление");
