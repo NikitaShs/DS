@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.66"/>
-    <PackageReference Include="EntityFrameworkCore.NamingConventions" Version="8.0.0"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9"/>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="EntityFrameworkCore.NamingConventions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,16 +19,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9"/>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
-    <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PetDS.Application\PetDS.Application.csproj"/>
-    <ProjectReference Include="..\PetDS.Domain\PetDS.Domain.csproj"/>
+    <ProjectReference Include="..\PetDS.Application\PetDS.Application.csproj" />
+    <ProjectReference Include="..\PetDS.Domain\PetDS.Domain.csproj" />
   </ItemGroup>
 
 </Project>
