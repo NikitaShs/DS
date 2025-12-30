@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using PetDS.Application;
@@ -22,7 +23,6 @@ using PetDS.Infrastructure.Seedings;
 using PetDS.Web.Middlewares;
 using Serilog;
 using Serilog.Events;
-using static CSharpFunctionalExtensions.Result;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +38,17 @@ builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddApplication();
+builder.Services.AddStackExchangeRedisCache(setup =>
+{
+    setup.Configuration = builder.Configuration.GetConnectionString("redis");
+});
+builder.Services.AddHybridCache(options =>
+{
+    options.DefaultEntryOptions = new HybridCacheEntryOptions()
+    {
+        LocalCacheExpiration = TimeSpan.FromMinutes(1), Expiration = TimeSpan.FromMinutes(30)
+    };
+});
 builder.Services.AddHostedService<DeleteNoActiveDepartamentsBackGroundService>();
 builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
 builder.Services.AddScoped<ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));

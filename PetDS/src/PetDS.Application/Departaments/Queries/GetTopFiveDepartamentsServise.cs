@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace PetDS.Application.Departaments.Queries
 {
@@ -18,17 +19,21 @@ namespace PetDS.Application.Departaments.Queries
 
         private ILogger<GetTopFiveDepartamentsServise> _logger;
 
-        public GetTopFiveDepartamentsServise(IConnectionFactory connectionFactory, ILogger<GetTopFiveDepartamentsServise> logger)
+        private readonly HybridCache _cache;
+
+        public GetTopFiveDepartamentsServise(IConnectionFactory connectionFactory, ILogger<GetTopFiveDepartamentsServise> logger, HybridCache cache)
         {
             _connectionFactory = connectionFactory;
             _logger = logger;
+            _cache = cache;
         }
 
         public async Task<Result<List<DepartamentModelDto>, Errors>> Handler(CancellationToken cancellationToken)
         {
             using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
 
-            var res = await connection.QueryAsync<DepartamentModelDto>("""
+            return await _cache.GetOrCreateAsync("top_5_dept", async _ => {
+                var res = await connection.QueryAsync<DepartamentModelDto>("""
                                                   SELECT
                                                       dep.name,
                                                       dep.identifier,
@@ -43,8 +48,13 @@ namespace PetDS.Application.Departaments.Queries
                                                       dep.id
                                                    ORDER BY countPos DESC LIMIT 5;
                                                   """);
+                if (!res.Any())
+                    return [];
+                _logger.LogInformation("нету(");
+                return res.ToList();
+            });
 
-            return res.ToList();
+
         }
     }
 }

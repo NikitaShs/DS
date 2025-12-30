@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
@@ -16,14 +17,25 @@ namespace PetDS.Application.Departaments.Queries
     {
         private readonly ILogger<GetRootsDepartamentsServise> _logger;
         private readonly IReadDbContext _readDbContext;
+        private readonly HybridCache _cache;
 
-        public GetRootsDepartamentsServise(ILogger<GetRootsDepartamentsServise> logger, IReadDbContext readDbContext)
+        public GetRootsDepartamentsServise(ILogger<GetRootsDepartamentsServise> logger, IReadDbContext readDbContext, HybridCache cache)
         {
             _logger = logger;
             _readDbContext = readDbContext;
+            _cache = cache;
         }
 
         public async Task<Result<DepartamenthAndChildDto, Errors>> Handler(RootsDepartementReqvestDto reqvestDto, CancellationToken cancellationToken)
+        {
+
+            return await _cache.GetOrCreateAsync(
+                $"Rootdepartament_page{reqvestDto.Page}_sizePage{reqvestDto.SizePage}_prefetch{reqvestDto.prefetch}",
+                async _ => await DeptGet(reqvestDto));
+
+        }
+
+        private async Task<DepartamenthAndChildDto> DeptGet(RootsDepartementReqvestDto reqvestDto)
         {
             var req = _readDbContext.ReadDepartament;
 
@@ -57,6 +69,8 @@ namespace PetDS.Application.Departaments.Queries
                 }).ToList(),
             }).ToListAsync();
 
+            if (!res.Any())
+                return null;
 
             return new DepartamenthAndChildDto(res, totalCount);
         }
