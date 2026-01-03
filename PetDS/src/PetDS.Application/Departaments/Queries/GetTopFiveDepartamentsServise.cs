@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
+using Dapper;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Domain.Shered;
-using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Hybrid;
 
 namespace PetDS.Application.Departaments.Queries
 {
@@ -30,6 +30,9 @@ namespace PetDS.Application.Departaments.Queries
 
         public async Task<Result<List<DepartamentModelDto>, Errors>> Handler(CancellationToken cancellationToken)
         {
+
+            var tags = new List<string> { "dept", "top" };
+
             using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
 
             return await _cache.GetOrCreateAsync("top_5_dept", async _ => {
@@ -52,7 +55,11 @@ namespace PetDS.Application.Departaments.Queries
                     return [];
                 _logger.LogInformation("нету(");
                 return res.ToList();
-            });
+            }, new HybridCacheEntryOptions
+            {
+                LocalCacheExpiration = TimeSpan.FromMinutes(10),
+                Expiration = TimeSpan.FromMinutes(5)
+            }, new List<string> { CacheTags.Departament, CacheTags.DepartamentTopPosition }, cancellationToken);
 
 
         }

@@ -6,11 +6,6 @@ using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Shered;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PetDS.Application.Departaments.Queries
 {
@@ -54,7 +49,10 @@ namespace PetDS.Application.Departaments.Queries
                     if (!res.Any())
                         return [];
                     return res;
-                });
+                }, new HybridCacheEntryOptions {
+                    LocalCacheExpiration = TimeSpan.FromMinutes(10),
+                    Expiration = TimeSpan.FromMinutes(5)
+                }, new List<string> { CacheTags.Departament, CacheTags.DepartamentChilds }, cancellationToken);
         }
     }
 }
