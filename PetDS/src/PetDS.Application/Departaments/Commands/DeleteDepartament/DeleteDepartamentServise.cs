@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament.VO;
@@ -16,12 +17,16 @@ namespace PetDS.Application.Departaments.Commands.DeleteDepartament
         private readonly ILogger<DeleteDepartamentServise> _logger;
         private readonly IDepartamentRepository _departamentRepository;
         private readonly IConnectionManeger _connectionManeger;
+        private readonly HybridCache _hybridCache;
 
-        public DeleteDepartamentServise(ILogger<DeleteDepartamentServise> logger, IDepartamentRepository departamentRepository, IConnectionManeger connectionManeger)
+
+        public DeleteDepartamentServise(ILogger<DeleteDepartamentServise> logger, IDepartamentRepository departamentRepository,
+            IConnectionManeger connectionManeger, HybridCache hybridCache)
         {
             _logger = logger;
             _departamentRepository = departamentRepository;
             _connectionManeger = connectionManeger;
+            _hybridCache = hybridCache;
         }
 
         public async Task<Result<Guid, Errors>> Handler(DeleteDepartamentCommand command, CancellationToken cancellationToken)
@@ -35,7 +40,6 @@ namespace PetDS.Application.Departaments.Commands.DeleteDepartament
 
             using var tran = _connectionManeger.CreateTranzit(cancellationToken).Result.Value;
 
-            tran.Commit();
 
 
             var res = await _departamentRepository.SoftDeleteDept(command.departamenId, cancellationToken);
@@ -43,7 +47,11 @@ namespace PetDS.Application.Departaments.Commands.DeleteDepartament
             if (res.IsFailure)
                 return GeneralErrors.Update("SoftDeleteDept").ToErrors();
             else
+            {
+                tran.Commit();
+                _hybridCache.RemoveByTagAsync(CacheTags.Departament);
                 return command.departamenId;
+            }
         }
     }
 }

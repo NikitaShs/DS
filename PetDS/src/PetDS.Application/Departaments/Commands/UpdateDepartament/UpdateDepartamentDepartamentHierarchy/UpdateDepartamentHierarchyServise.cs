@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament;
@@ -13,15 +14,19 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
 
     private readonly IDepartamentRepository _departamentRepository;
     private readonly ILogger<UpdateDepartamentHierarchyServise> _logger;
+    private readonly HybridCache _hybridCache;
+
 
     public UpdateDepartamentHierarchyServise(
         ILogger<UpdateDepartamentHierarchyServise> logger,
         IDepartamentRepository departamentRepository,
-        IConnectionManeger connectionManeger)
+        IConnectionManeger connectionManeger,
+        HybridCache hybridCache)
     {
         _logger = logger;
         _departamentRepository = departamentRepository;
         _connectionManeger = connectionManeger;
+        _hybridCache = hybridCache;
     }
 
     public async Task<Result<Guid, Errors>> Handler(
@@ -63,6 +68,7 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
             return GeneralErrors.Update("Hierahi").ToErrors();
 
         tranziction.Commit();
+        _hybridCache.RemoveByTagAsync(CacheTags.Departament);
         return command.departanetId;
     }
 }

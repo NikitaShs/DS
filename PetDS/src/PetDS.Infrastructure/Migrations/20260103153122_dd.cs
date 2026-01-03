@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetDS.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class newbase : Migration
+    public partial class dd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,7 @@ namespace PetDS.Infrastructure.Migrations
                     path = table.Column<string>(type: "ltree", nullable: false),
                     depth = table.Column<short>(type: "smallint", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     create_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     update_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     location_id = table.Column<Guid>(type: "uuid", nullable: false)
