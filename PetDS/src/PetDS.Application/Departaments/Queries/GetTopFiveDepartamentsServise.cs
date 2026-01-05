@@ -31,11 +31,9 @@ namespace PetDS.Application.Departaments.Queries
         public async Task<Result<List<DepartamentModelDto>, Errors>> Handler(CancellationToken cancellationToken)
         {
 
-            var tags = new List<string> { "dept", "top" };
-
             using var connection = await _connectionFactory.CreateConnectionAsync(cancellationToken);
 
-            return await _cache.GetOrCreateAsync("top_5_dept", async _ => {
+            return await _cache.GetOrCreateAsync(GeneralKeyCache.KeyDeptTops("position", 5), async _ => {
                 var res = await connection.QueryAsync<DepartamentModelDto>("""
                                                   SELECT
                                                       dep.name,
@@ -53,14 +51,12 @@ namespace PetDS.Application.Departaments.Queries
                                                   """);
                 if (!res.Any())
                     return [];
-                _logger.LogInformation("нету(");
                 return res.ToList();
             }, new HybridCacheEntryOptions
             {
                 LocalCacheExpiration = TimeSpan.FromMinutes(10),
                 Expiration = TimeSpan.FromMinutes(5)
-            }, new List<string> { CacheTags.Departament, CacheTags.DepartamentTopPosition }, cancellationToken);
-
+            }, [CacheTags.Departament, CacheTags.DepartamentTopPosition], cancellationToken);
 
         }
     }

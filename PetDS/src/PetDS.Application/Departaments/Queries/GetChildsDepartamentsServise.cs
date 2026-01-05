@@ -28,7 +28,7 @@ namespace PetDS.Application.Departaments.Queries
         {
 
             return await _cache.GetOrCreateAsync(
-                $"DeptChilds_parentId{parentId}_page{reqvestDto.Page}_pageSize{reqvestDto.SizePage}",
+                GeneralKeyCache.KeyDeptChildPagination(parentId, reqvestDto.Page, reqvestDto.SizePage),
                 async _ =>
                 {
                     var res = await _readDbContext.ReadDepartament
@@ -52,7 +52,7 @@ namespace PetDS.Application.Departaments.Queries
                 }, new HybridCacheEntryOptions {
                     LocalCacheExpiration = TimeSpan.FromMinutes(10),
                     Expiration = TimeSpan.FromMinutes(5)
-                }, new List<string> { CacheTags.Departament, CacheTags.DepartamentChilds }, cancellationToken);
+                }, [CacheTags.Departament, CacheTags.DepartamentChilds], cancellationToken);
         }
     }
 }

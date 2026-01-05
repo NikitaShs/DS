@@ -28,15 +28,13 @@ namespace PetDS.Application.Departaments.Queries
 
         public async Task<Result<DepartamenthAndChildDto, Errors>> Handler(RootsDepartementReqvestDto reqvestDto, CancellationToken cancellationToken)
         {
-            var tags = new List<string> { "dept", "roots" };
-
             return await _cache.GetOrCreateAsync(
-                $"Rootdepartament_page{reqvestDto.Page}_sizePage{reqvestDto.SizePage}_prefetch{reqvestDto.prefetch}",
+                GeneralKeyCache.KeyDeptRootsPagination(reqvestDto.Page, reqvestDto.SizePage, reqvestDto.prefetch),
                 async _ => await DeptGet(reqvestDto), new HybridCacheEntryOptions
                 {
                     LocalCacheExpiration = TimeSpan.FromMinutes(10),
                     Expiration = TimeSpan.FromMinutes(5)
-                }, new List<string> { CacheTags.Departament, CacheTags.DepartamentChilds, CacheTags.DepartamentRoots }, cancellationToken);
+                }, [CacheTags.Departament, CacheTags.DepartamentChilds, CacheTags.DepartamentRoots], cancellationToken);
 
         }
 
