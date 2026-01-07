@@ -2,6 +2,7 @@
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -20,13 +21,15 @@ public class DepartamentRepository : IDepartamentRepository
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly IConnectionFactory _connectionFactory;
     private readonly ILogger<DepartamentRepository> _logger;
+    private readonly HybridCache _hybridCache;
 
     public DepartamentRepository(ApplicationDbContext applicationDbContext, ILogger<DepartamentRepository> logger,
-        IConnectionFactory connectionFactory)
+        IConnectionFactory connectionFactory, HybridCache hybridCache)
     {
         _applicationDbContext = applicationDbContext;
         _logger = logger;
         _connectionFactory = connectionFactory;
+        _hybridCache = hybridCache;
     }
 
     public async Task<Result<Guid, Errors>> AddDepartament(Departament departament,
@@ -39,6 +42,13 @@ public class DepartamentRepository : IDepartamentRepository
         {
             _applicationDbContext.SaveChanges();
             _logger.LogInformation("Departament сохранён");
+            if (departament.Parent != null)
+            {
+                _hybridCache.RemoveByTagAsync(CacheTags.DepartamentChilds);
+                _hybridCache.RemoveByTagAsync(CacheTags.DepartamentTopPosition);
+            }
+            else
+                _hybridCache.RemoveByTagAsync(CacheTags.Departament);
         }
         catch (Exception ex)
         {
@@ -80,7 +90,6 @@ public class DepartamentRepository : IDepartamentRepository
         return result;
     }
 
-
     public async Task<Result<Guid, Errors>> UpdateLocations(
         List<LocationId> locationIds,
         DepartamentId departamentId,
@@ -92,6 +101,8 @@ public class DepartamentRepository : IDepartamentRepository
                 .ExecuteUpdateAsync(
                     q => q.SetProperty(v => v.LocationId, i), cancellationToken);
         }
+
+        _hybridCache.RemoveByTagAsync(CacheTags.Departament);
 
         return departamentId.ValueId;
     }

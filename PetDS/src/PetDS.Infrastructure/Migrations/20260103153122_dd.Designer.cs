@@ -12,8 +12,8 @@ using PetDS.Infrastructure.DataBaseConnections;
 namespace PetDS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251217165216_qqqqq")]
-    partial class qqqqq
+    [Migration("20260103153122_dd")]
+    partial class dd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,9 +36,9 @@ namespace PetDS.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_at");
 
-                    b.Property<DateTime?>("DeleteTime")
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("delete_time");
+                        .HasColumnName("deleted_at");
 
                     b.Property<short>("Depth")
                         .HasColumnType("smallint")
