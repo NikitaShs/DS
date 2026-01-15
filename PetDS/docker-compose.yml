@@ -1,4 +1,4 @@
-﻿services:
+services:
   postgres:
     image: postgres
     restart: always
@@ -28,5 +28,12 @@
       - "6379:6379"
     restart: always
 
+  petds.web:
+    image: ${DOCKER_REGISTRY-}petdsweb
+    build:
+      context: .
+      dockerfile: src/PetDS.Web/Dockerfile
+
 volumes:
   postgres-data:
+
