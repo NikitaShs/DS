@@ -10,6 +10,7 @@ using PetDS.Domain.Position.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
 using PetDS.Infrastructure.Seeding;
+using SharedKernel.Exseption;
 
 namespace PetDS.Infrastructure.Seedings;
 

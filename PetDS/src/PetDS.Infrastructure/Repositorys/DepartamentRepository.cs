@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.adstract;
+using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,6 +12,7 @@ using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
+using SharedKernel.Exseption;
 using System.Data.Common;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 

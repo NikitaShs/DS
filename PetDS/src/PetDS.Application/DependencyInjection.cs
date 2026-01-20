@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Core.adstract;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;

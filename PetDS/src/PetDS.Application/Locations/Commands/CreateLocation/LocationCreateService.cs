@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.adstract;
+using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using PetDS.Contract;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Locations.CreateLocation;
 

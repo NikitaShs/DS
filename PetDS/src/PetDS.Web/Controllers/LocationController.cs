@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.adstract;
+using Framework.Response;
+using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Locations.Commands.CreateLocation;
 using PetDS.Application.Locations.Queries;
 using PetDS.Contract;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Contract.Location.Queries;
-using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
 

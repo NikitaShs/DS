@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Position;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Positions;
 

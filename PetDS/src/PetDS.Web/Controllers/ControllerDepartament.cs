@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Framework.Response;
+using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.Departaments.Commands.DeleteDepartament;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
@@ -7,7 +8,6 @@ using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartam
 using PetDS.Contract;
 using PetDS.Contract.Departamen;
 using PetDS.Contract.Departamen.Queries;
-using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
 

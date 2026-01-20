@@ -1,10 +1,12 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.adstract;
+using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;
 

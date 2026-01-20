@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.adstract;
+using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Position;
 using PetDS.Domain.Position.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Positions.PositionCreate;
 

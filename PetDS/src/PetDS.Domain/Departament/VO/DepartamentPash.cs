@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Domain.Departament.VO;
 

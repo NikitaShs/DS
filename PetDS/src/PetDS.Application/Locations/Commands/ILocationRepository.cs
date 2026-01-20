@@ -2,6 +2,7 @@
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Locations;
 

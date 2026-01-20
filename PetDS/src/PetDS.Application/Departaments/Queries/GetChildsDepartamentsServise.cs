@@ -6,6 +6,7 @@ using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Departaments.Queries
 {

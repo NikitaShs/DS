@@ -3,6 +3,7 @@ using PetDS.Domain.Departament;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Departaments;
 

@@ -1,4 +1,5 @@
-﻿using PetDS.Application.abcstractions;
+﻿using Core.adstract;
+using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen;
 
 namespace PetDS.Application.Positions.PositionCreate;

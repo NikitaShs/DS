@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Core.adstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;

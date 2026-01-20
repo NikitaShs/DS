@@ -4,6 +4,7 @@ using PetDS.Application.Positions;
 using PetDS.Domain.Position;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
+using SharedKernel.Exseption;
 
 namespace PetDS.Infrastructure.Repositorys;
 

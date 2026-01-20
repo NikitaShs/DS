@@ -6,6 +6,7 @@ using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
+using SharedKernel.Exseption;
 
 namespace PetDS.Infrastructure.Repositorys;
 

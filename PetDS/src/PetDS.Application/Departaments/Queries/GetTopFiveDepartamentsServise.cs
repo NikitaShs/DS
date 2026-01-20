@@ -1,10 +1,12 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.adstract;
+using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 using System;
 using System.Collections.Generic;
 using System.Linq;

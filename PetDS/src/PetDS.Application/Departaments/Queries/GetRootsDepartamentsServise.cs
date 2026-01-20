@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Contract.Departamen.Queries;
 using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 using System;
 using System.Collections.Generic;
 using System.Linq;
