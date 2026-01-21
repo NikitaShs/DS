@@ -22,7 +22,7 @@ public class PositionConfiguration : IEntityTypeConfiguration<Position>
             n.HasIndex(i => i.ValueName).IsUnique();
         });
 
-        builder.OwnsOne(i => i.Discription, n => 
+        builder.OwnsOne(i => i.Discription, n =>
             n.Property(q => q.ValueDiscription).IsRequired(false).HasColumnName("discription"));
 
         builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();

@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PetDS.Contract.Departamen.Queries;
 
-namespace PetDS.Contract.Departamen.Queries
+public record DepartamentModelDto
 {
-    public record DepartamentModelDto
-    {
-        public string Name { get; init; } = String.Empty;
+    public string Name { get; init; } = string.Empty;
 
-        public string Identifier { get; init; } = String.Empty;
+    public string Identifier { get; init; } = string.Empty;
 
-        public Guid? ParentId { get; init; }
+    public Guid? ParentId { get; init; }
 
-        public short Depth { get; init; }
+    public short Depth { get; init; }
 
-        public string Path { get; init; } = String.Empty;
+    public string Path { get; init; } = string.Empty;
 
-        public bool IsActive { get; init; }
+    public bool IsActive { get; init; }
 
-        public int CountPos { get; init; }
-    }
+    public int CountPos { get; init; }
 }

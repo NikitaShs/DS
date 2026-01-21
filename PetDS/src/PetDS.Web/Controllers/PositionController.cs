@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Framework.Response;
+using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.Positions.PositionCreate;
 using PetDS.Contract.Departamen;
-using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
 

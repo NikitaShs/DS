@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using PetDS.Domain.Shered;
-using PetDS.Web.Response;
+using Framework.Response;
+using SharedKernel.Exseption;
 
 namespace PetDS.Web.Middlewares;
 

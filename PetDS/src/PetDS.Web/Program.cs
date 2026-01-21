@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Adstract;
+using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging.Abstractions;
 using PetDS.Application;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -44,14 +44,16 @@ builder.Services.AddStackExchangeRedisCache(setup =>
 });
 builder.Services.AddHybridCache(options =>
 {
-    options.DefaultEntryOptions = new HybridCacheEntryOptions()
+    options.DefaultEntryOptions = new HybridCacheEntryOptions
     {
         LocalCacheExpiration = TimeSpan.FromMinutes(1), Expiration = TimeSpan.FromMinutes(30)
     };
 });
 builder.Services.AddHostedService<DeleteNoActiveDepartamentsBackGroundService>();
-builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
-builder.Services.AddScoped<ApplicationDbContext>(q => new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
+builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>(q =>
+    new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
+builder.Services.AddScoped<ApplicationDbContext>(q =>
+    new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IDepartamentRepository, DepartamentRepository>();
 builder.Services.AddScoped<LocationCreateService>();
@@ -66,7 +68,7 @@ builder.Services.AddScoped<IPositionRepositiry, PositionRepository>();
 builder.Services.AddScoped<UpdateDepartamentLocationsServise>();
 builder.Services.AddScoped<UpdateDepartamentHierarchyServise>();
 builder.Services.AddSingleton<IConnectionFactory, NpgsqlConnectionFactory>();
-Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // для устранения ошибки при мапинге из-за имён
+DefaultTypeMap.MatchNamesWithUnderscores = true; // для устранения ошибки при мапинге из-за имён
 builder.Services.AddScoped<IConnectionManeger, ConnectionManeger>();
 builder.Services.AddScoped<ISeeding, Seeding>();
 builder.Services.AddScoped<GetByIdDepartament>();
@@ -101,5 +103,7 @@ app.Run();
 
 namespace PetDS.Web
 {
-    public partial class Program { }
+    public class Program
+    {
+    }
 }

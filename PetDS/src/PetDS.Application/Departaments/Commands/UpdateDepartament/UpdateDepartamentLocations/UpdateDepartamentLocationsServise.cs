@@ -1,13 +1,13 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Adstract;
+using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using PetDS.Application.abcstractions;
 using PetDS.Application.Locations;
 using PetDS.Contract.Departamen;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 
@@ -39,12 +39,12 @@ public class UpdateDepartamentLocationsServise : IHandler<Guid, UpdateDepartamen
             return GeneralErrors.ValueNotValid("locations").ToErrors();
         }
 
-        if(command.dto.locationsId.Length <= 0)
+        if (command.dto.locationsId.Length <= 0)
         {
             return GeneralErrors.ValueNotValid("logic").ToErrors();
         }
 
-        var locId = command.dto.locationsId.Select(q => LocationId.Create(q)).ToList();
+        List<LocationId> locId = command.dto.locationsId.Select(q => LocationId.Create(q)).ToList();
 
         if (!_locationRepository.ChekActivetiLocations(locId, cancellationToken).Result.Value)
         {

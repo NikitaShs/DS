@@ -1,4 +1,4 @@
-﻿using PetDS.Application.abcstractions;
+﻿using Core.Adstract;
 using PetDS.Contract;
 
 namespace PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartamentHierarchy;

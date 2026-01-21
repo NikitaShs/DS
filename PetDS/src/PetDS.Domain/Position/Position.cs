@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Position.VO;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Domain.Position;
 
-public class Position : Shered.Entity<PositionId>
+public class Position : SharedKernel.Exseption.Entity<PositionId>
 {
     private readonly List<DepartamentPosition> _departamentPositions;
 

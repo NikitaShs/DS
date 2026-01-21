@@ -7,9 +7,9 @@ using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
 using PetDS.Domain.Position;
 using PetDS.Domain.Position.VO;
-using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
 using PetDS.Infrastructure.Seeding;
+using SharedKernel.Exseption;
 
 namespace PetDS.Infrastructure.Seedings;
 
@@ -109,7 +109,7 @@ public class Seeding : ISeeding
 
             _dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
 
-            var duration = DateTime.UtcNow - startTime;
+            TimeSpan duration = DateTime.UtcNow - startTime;
             _logger.LogInformation("🎉 Сидирование завершено за {Duration:F2} секунд", duration.TotalSeconds);
         }
         catch (Exception ex)

@@ -1,8 +1,8 @@
 ﻿using System.Data.Common;
+using Core.Adstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using PetDS.Application.abcstractions;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 

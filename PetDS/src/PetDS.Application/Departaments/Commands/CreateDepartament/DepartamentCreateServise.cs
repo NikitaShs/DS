@@ -1,14 +1,14 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Adstract;
+using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using PetDS.Application.abcstractions;
 using PetDS.Application.Locations;
 using PetDS.Contract;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Application.Departaments.CreateDepartament;
 
@@ -32,9 +32,9 @@ public class DepartamentCreateServise : IHandler<Guid, CreateDepartamentCommand>
     public async Task<Result<Guid, Errors>> Handler(CreateDepartamentCommand command,
         CancellationToken cancellationToken = default)
     {
-        var dto = command.departamentDto;
+        CreateDepartamentDto dto = command.departamentDto;
 
-        var idLoc = dto.locationsId.Select(q => LocationId.Create(q)).ToList();
+        List<LocationId> idLoc = dto.locationsId.Select(q => LocationId.Create(q)).ToList();
 
         if (!_locationRepository.ChekAvailabilityIdLocation(idLoc, cancellationToken).Result.Value)
         {
@@ -63,7 +63,7 @@ public class DepartamentCreateServise : IHandler<Guid, CreateDepartamentCommand>
             return GeneralErrors.ValueFailure("identifier").ToErrors();
         }
 
-        var locIds = dto.locationsId.Select(id => LocationId.Create(id)).ToList();
+        List<LocationId> locIds = dto.locationsId.Select(id => LocationId.Create(id)).ToList();
         Result<Departament, Error> departament = dto.parantId is null
             ? Departament.Create(name.Value, identifier.Value, null, locIds)
             : Departament.Create(name.Value, identifier.Value,

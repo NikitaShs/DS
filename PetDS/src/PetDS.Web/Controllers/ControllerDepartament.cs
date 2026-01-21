@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Framework.Response;
+using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.Departaments.Commands.DeleteDepartament;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
@@ -7,7 +8,6 @@ using PetDS.Application.Departaments.UpdateDepartament.UpdateDepartamentDepartam
 using PetDS.Contract;
 using PetDS.Contract.Departamen;
 using PetDS.Contract.Departamen.Queries;
-using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
 
@@ -21,7 +21,7 @@ public class ControllerDepartament : ControllerBase
         [FromServices] DepartamentCreateServise departamentCreate,
         CancellationToken cancellationToken)
     {
-        var command = new CreateDepartamentCommand(departamentDto, cancellationToken);
+        CreateDepartamentCommand command = new(departamentDto, cancellationToken);
 
         return await departamentCreate.Handler(command, cancellationToken);
     }
@@ -43,35 +43,29 @@ public class ControllerDepartament : ControllerBase
         [FromServices] UpdateDepartamentHierarchyServise servise,
         [FromRoute] Guid departamenId)
     {
-        var command = new UpdateDepartamentHierarchyCommand(departamenId, dto);
+        UpdateDepartamentHierarchyCommand command = new(departamenId, dto);
         return await servise.Handler(command);
     }
 
     [HttpGet("/topFiveD")]
-    public async Task<EdponintResult<List<DepartamentModelDto>>> TopFiveDepartaments([FromServices] GetTopFiveDepartamentsServise servise, CancellationToken cancellationToken)
-    {
-        return await servise.Handler(cancellationToken);
-    }
+    public async Task<EdponintResult<List<DepartamentModelDto>>> TopFiveDepartaments(
+        [FromServices] GetTopFiveDepartamentsServise servise, CancellationToken cancellationToken) =>
+        await servise.Handler(cancellationToken);
 
     [HttpGet("roots")]
     public async Task<EdponintResult<DepartamenthAndChildDto>> RootsDepartaments(
         [FromQuery] RootsDepartementReqvestDto reqvestDto,
-        [FromServices] GetRootsDepartamentsServise servise, CancellationToken cancellationToken)
-    {
-        return await servise.Handler(reqvestDto, cancellationToken);
-    }
+        [FromServices] GetRootsDepartamentsServise servise, CancellationToken cancellationToken) =>
+        await servise.Handler(reqvestDto, cancellationToken);
 
     [HttpGet("{parentId}/childs")]
     public async Task<EdponintResult<List<DepartamenthModelClear>>> ChildsDepartaments(
         [FromRoute] Guid parentId, [FromQuery] DepartamentPaginationReqvestDto reqvestDto,
-        GetChildsDepartamentsServise servise, CancellationToken cancellationToken)
-    {
-        return await servise.Handler(parentId, reqvestDto, cancellationToken);
-    }
+        GetChildsDepartamentsServise servise, CancellationToken cancellationToken) =>
+        await servise.Handler(parentId, reqvestDto, cancellationToken);
 
     [HttpDelete("{departamentId}")]
-    public async Task<EdponintResult<Guid>> SoftDelete([FromRoute] Guid departamentId, [FromServices] DeleteDepartamentServise servise, CancellationToken cancellationToken)
-    {
-        return await servise.Handler(new DeleteDepartamentCommand(departamentId), cancellationToken);
-    }
+    public async Task<EdponintResult<Guid>> SoftDelete([FromRoute] Guid departamentId,
+        [FromServices] DeleteDepartamentServise servise, CancellationToken cancellationToken) =>
+        await servise.Handler(new DeleteDepartamentCommand(departamentId), cancellationToken);
 }

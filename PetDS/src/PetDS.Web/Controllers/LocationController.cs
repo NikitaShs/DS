@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PetDS.Application.abcstractions;
+﻿using Core.Adstract;
+using Framework.Response;
+using Microsoft.AspNetCore.Mvc;
 using PetDS.Application.Locations.Commands.CreateLocation;
 using PetDS.Application.Locations.Queries;
 using PetDS.Contract;
-using PetDS.Contract.Departamen.Queries;
 using PetDS.Contract.Location.Queries;
-using PetDS.Web.Response;
 
 namespace PetDS.Web.Controllers;
 
@@ -19,7 +18,7 @@ public class LocationController : ControllerBase
         [FromBody] CreateLocationDto request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateLocationCommand(request);
+        CreateLocationCommand command = new(request);
         return await handler.Handler(command, cancellationToken);
     }
 
@@ -27,8 +26,6 @@ public class LocationController : ControllerBase
     public async Task<ActionResult<GetLocationDto>> GetLocation(
         [FromServices] GetLocationFullServise handler,
         [FromQuery] GetLocationFullRequestDto request,
-        CancellationToken cancellationToken)
-    {
-        return Ok(await handler.Handler(request, cancellationToken));
-    }
+        CancellationToken cancellationToken) =>
+        Ok(await handler.Handler(request, cancellationToken));
 }

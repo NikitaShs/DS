@@ -1,8 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Adstract;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using PetDS.Application.abcstractions;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 

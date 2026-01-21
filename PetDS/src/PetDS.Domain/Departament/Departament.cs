@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Domain.Departament;
 
-public class Departament : Shered.Entity<DepartamentId>
+public class Departament : SharedKernel.Exseption.Entity<DepartamentId>
 {
     private readonly List<Departament> _childrenDepartament = [];
 

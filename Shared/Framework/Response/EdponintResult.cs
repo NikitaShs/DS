@@ -1,14 +1,21 @@
-﻿using System.Reflection;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Http.Metadata;
-using PetDS.Domain.Shered;
-using IResult = Microsoft.AspNetCore.Http.IResult;
+using SharedKernel.Exseption;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PetDS.Web.Response;
+namespace Framework.Response;
 
-public class EdponintResult<TValue> : IResult, IEndpointMetadataProvider
+public class EdponintResult<TValue> : Microsoft.AspNetCore.Http.IResult, IEndpointMetadataProvider
 {
-    private readonly IResult _result;
+    private readonly Microsoft.AspNetCore.Http.IResult _result;
 
     public EdponintResult(Result<TValue, Error> result) => _result =
         result.IsSuccess ? new SuccessResult<TValue>(result.Value) : new ErrorResult(result.Error);

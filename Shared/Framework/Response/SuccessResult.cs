@@ -1,4 +1,6 @@
-﻿namespace PetDS.Web.Response;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Framework.Response;
 
 public class SuccessResult<T> : IResult
 {
@@ -8,7 +10,7 @@ public class SuccessResult<T> : IResult
 
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        ArgumentNullException.ThrowIfNull(httpContext); // null or
+        ArgumentNullException.ThrowIfNull(httpContext);
 
         httpContext.Response.StatusCode = StatusCodes.Status200OK;
 

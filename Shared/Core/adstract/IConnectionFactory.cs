@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace PetDS.Application.abcstractions;
+namespace Core.Adstract;
 
 public interface IConnectionFactory
 {

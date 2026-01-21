@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
-namespace PetDS.Application.abcstractions;
+namespace Core.Adstract;
 
 public interface IConnectionManeger
 {

@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
+using SharedKernel.Exseption;
 
 namespace PetDS.Domain.Departament;
 
-public class DepartamentLocation : Shered.Entity<DepartamentLocationId>
+public class DepartamentLocation : SharedKernel.Exseption.Entity<DepartamentLocationId>
 {
     private DepartamentLocation(DepartamentLocationId id) : base(id)
     {

@@ -1,6 +1,7 @@
-﻿using PetDS.Domain.Shered;
+﻿using Microsoft.AspNetCore.Http;
+using SharedKernel.Exseption;
 
-namespace PetDS.Web.Response;
+namespace Framework.Response;
 
 public class ErrorResult : IResult
 {
