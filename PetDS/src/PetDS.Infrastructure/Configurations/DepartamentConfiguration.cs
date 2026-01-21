@@ -30,11 +30,11 @@ public class DepartamentConfiguration : IEntityTypeConfiguration<Departament>
                 .HasMaxLength(Constans.MAX_150_lENGHT_DEP).IsRequired());
 
         builder.OwnsOne(i => i.Path, n =>
-                n.Property(q => q.ValuePash).HasColumnName("path")
+            n.Property(q => q.ValuePash).HasColumnName("path")
                 .HasColumnType("ltree")
                 .IsRequired()
-                );
-        
+        );
+
         builder.Property(d => d.Depth).IsRequired();
 
         builder.Property(i => i.IsActive).HasDefaultValue(true);

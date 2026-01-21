@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace Core.adstract;
+namespace Core.Adstract;
 
 public interface IConnectionFactory
 {

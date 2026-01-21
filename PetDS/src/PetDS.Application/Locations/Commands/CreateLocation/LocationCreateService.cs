@@ -1,14 +1,12 @@
-﻿using Core.adstract;
+﻿using Core.Adstract;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using PetDS.Application.abcstractions;
 using PetDS.Application.Locations.Commands.CreateLocation;
 using PetDS.Contract;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
 using SharedKernel.Exseption;
 
 namespace PetDS.Application.Locations.CreateLocation;
@@ -33,7 +31,7 @@ public class LocationCreateService : IHandler<Guid, CreateLocationCommand>
         CreateLocationCommand createLocation,
         CancellationToken cancellationToken)
     {
-        var dto = createLocation.dto;
+        CreateLocationDto dto = createLocation.dto;
 
         ValidationResult? resultDto = await _validator.ValidateAsync(dto);
 

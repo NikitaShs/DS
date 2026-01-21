@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament;
@@ -26,9 +25,11 @@ public class ApplicationDbContext(string connectionString) : DbContext, IReadDbC
 
     public IQueryable<Departament> ReadDepartament => Set<Departament>().AsQueryable().AsNoTracking();
 
-    public IQueryable<DepartamentLocation> ReadDepartamentLocation => Set<DepartamentLocation>().AsQueryable().AsNoTracking();
+    public IQueryable<DepartamentLocation> ReadDepartamentLocation =>
+        Set<DepartamentLocation>().AsQueryable().AsNoTracking();
 
-    public IQueryable<DepartamentPosition> ReadDepartamentPosition => Set<DepartamentPosition>().AsQueryable().AsNoTracking();
+    public IQueryable<DepartamentPosition> ReadDepartamentPosition =>
+        Set<DepartamentPosition>().AsQueryable().AsNoTracking();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

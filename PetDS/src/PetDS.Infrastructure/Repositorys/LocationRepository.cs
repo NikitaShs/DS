@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using PetDS.Application.Locations;
 using PetDS.Domain.Location;
 using PetDS.Domain.Location.VO;
-using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
 using SharedKernel.Exseption;
 

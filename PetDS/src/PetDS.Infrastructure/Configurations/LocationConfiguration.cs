@@ -33,7 +33,7 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
             n.HasIndex(i => i.ValueName).IsUnique();
         });
 
-        builder.OwnsOne(i => i.Timezone, n => 
+        builder.OwnsOne(i => i.Timezone, n =>
             n.Property(q => q.LanaCode).IsRequired().HasColumnName("lanaCode"));
 
         builder.Property(i => i.IsActive).HasDefaultValue(true).IsRequired();

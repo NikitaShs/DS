@@ -8,31 +8,30 @@ using PetDS.Domain.Departament.VO;
 using PetDS.Domain.Shered;
 using SharedKernel.Exseption;
 
-namespace PetDS.Application.Departaments.Queries
+namespace PetDS.Application.Departaments.Queries;
+
+public class GetChildsDepartamentsServise
 {
-    public class GetChildsDepartamentsServise
+    private readonly HybridCache _cache;
+    private readonly ILogger<GetChildsDepartamentsServise> _logger;
+
+    private readonly IReadDbContext _readDbContext;
+
+    public GetChildsDepartamentsServise(ILogger<GetChildsDepartamentsServise> logger, IReadDbContext readDbContext,
+        HybridCache cache)
     {
-        private readonly ILogger<GetChildsDepartamentsServise> _logger;
+        _logger = logger;
+        _readDbContext = readDbContext;
+        _cache = cache;
+    }
 
-        private readonly IReadDbContext _readDbContext;
-
-        private readonly HybridCache _cache;
-
-        public GetChildsDepartamentsServise(ILogger<GetChildsDepartamentsServise> logger, IReadDbContext readDbContext, HybridCache cache)
-        {
-            _logger = logger;
-            _readDbContext = readDbContext;
-            _cache = cache;
-        }
-
-        public async Task<Result<List<DepartamenthModelClear>, Errors>> Handler(Guid parentId, DepartamentPaginationReqvestDto reqvestDto, CancellationToken cancellationToken)
-        {
-
-            return await _cache.GetOrCreateAsync(
-                GeneralKeyCache.KeyDeptChildPagination(parentId, reqvestDto.Page, reqvestDto.SizePage),
-                async _ =>
-                {
-                    var res = await _readDbContext.ReadDepartament
+    public async Task<Result<List<DepartamenthModelClear>, Errors>> Handler(Guid parentId,
+        DepartamentPaginationReqvestDto reqvestDto, CancellationToken cancellationToken) =>
+        await _cache.GetOrCreateAsync(
+            GeneralKeyCache.KeyDeptChildPagination(parentId, reqvestDto.Page, reqvestDto.SizePage),
+            async _ =>
+            {
+                List<DepartamenthModelClear> res = await _readDbContext.ReadDepartament
                     .Where(q => q.ParentId == DepartamentId.Create(parentId)).Include(q => q.Children)
                     .OrderBy(q => q.CreateAt).Take(reqvestDto.SizePage)
                     .Skip((reqvestDto.Page - 1) * reqvestDto.SizePage)
@@ -45,15 +44,17 @@ namespace PetDS.Application.Departaments.Queries
                         Depth = q.Depth,
                         Path = q.Path.ValuePash,
                         IsActive = q.IsActive,
-                        HasMoreChildren = q.Children.Count > 0,
+                        HasMoreChildren = q.Children.Count > 0
                     }).ToListAsync(cancellationToken);
-                    if (!res.Any())
-                        return [];
-                    return res;
-                }, new HybridCacheEntryOptions {
-                    LocalCacheExpiration = TimeSpan.FromMinutes(10),
-                    Expiration = TimeSpan.FromMinutes(5)
-                }, [CacheTags.Departament, CacheTags.DepartamentChilds], cancellationToken);
-        }
-    }
+                if (!res.Any())
+                {
+                    return [];
+                }
+
+                return res;
+            },
+            new HybridCacheEntryOptions
+            {
+                LocalCacheExpiration = TimeSpan.FromMinutes(10), Expiration = TimeSpan.FromMinutes(5)
+            }, [CacheTags.Departament, CacheTags.DepartamentChilds], cancellationToken);
 }

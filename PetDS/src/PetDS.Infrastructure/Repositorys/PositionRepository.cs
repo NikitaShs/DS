@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using PetDS.Application.Positions;
 using PetDS.Domain.Position;
-using PetDS.Domain.Shered;
 using PetDS.Infrastructure.DataBaseConnections;
 using SharedKernel.Exseption;
 

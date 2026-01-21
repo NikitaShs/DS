@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <PackageId>Qvaik.Core</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>NikitaShs</Authors>
     <Company>NikitaShs</Company>
     <PackageDescription>Core</PackageDescription>

@@ -1,7 +1,6 @@
-﻿using Core.adstract;
+﻿using Core.Adstract;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments.Commands.UpdateDepartament.UpdateDepartamentLocations;
 using PetDS.Application.Departaments.CreateDepartament;
 using PetDS.Application.Departaments.Queries;

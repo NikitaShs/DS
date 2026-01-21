@@ -1,4 +1,4 @@
-﻿namespace Core.adstract;
+﻿namespace Core.Adstract;
 
 public interface ICommand
 {

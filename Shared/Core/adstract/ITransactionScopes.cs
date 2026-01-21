@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using SharedKernel.Exseption;
 
-namespace Core.adstract;
+namespace Core.Adstract;
 
 public interface ITransactionScopes : IDisposable
 {
