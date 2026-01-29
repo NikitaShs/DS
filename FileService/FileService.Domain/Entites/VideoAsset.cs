@@ -18,6 +18,8 @@ namespace FileService.Domain.Entites
         public const string MASTER_PLAYLIST_NAME = "master.m3u8";
         public static readonly string[] AllowedExtensions = ["mp4", "mkv", "avi", "mov"];
 
+        private VideoAsset() { }
+
         private VideoAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, StatusMedia statusMedia, MediaOwner owner)
             : base(id, mediaData, assetType, key, statusMedia, owner) {}
 

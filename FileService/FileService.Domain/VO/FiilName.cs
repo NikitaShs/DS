@@ -5,6 +5,7 @@ namespace FileService.Domain.VO
 {
     public record FiilName
     {
+        private FiilName() { }
         private FiilName(string name, string extention)
         {
             ValueName = name;

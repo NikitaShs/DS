@@ -16,7 +16,9 @@ namespace FileService.Domain.Entites
         public const string RAW_PREFIX = "raw";
         public static readonly string[] AllowedExtensions = ["jpg", "jpeg", "png", "webp"];
 
-        public PreviewAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, StatusMedia statusMedia, MediaOwner owner)
+        private PreviewAsset() { }
+
+        private PreviewAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, StatusMedia statusMedia, MediaOwner owner)
             : base(id, mediaData, assetType, key, statusMedia, owner) { }
 
 

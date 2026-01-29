@@ -10,6 +10,8 @@ namespace FileService.Domain.VO
 {
     public record MediaOwner
     {
+        private MediaOwner() { }
+
         private MediaOwner(Guid entiteId, string context)
         {
             EntiteId = entiteId;

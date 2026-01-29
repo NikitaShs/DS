@@ -10,15 +10,15 @@
 
     public static class AssetTypeConvet
     {
-        public static string AssetTypeConvetToString(this string value)
+        public static AssetType AssetTypeConvetToString(this string value)
         {
             return value switch
             {
                 "video" => AssetType.VIDEO,
                 "avatar" => AssetType.AVATAR,
                 "image" => AssetType.IMAGE,
-                "preview" => AssetType.PREVIEW
-                _ => throw new AggregateException($"invalid asset type: {value}")
+                "preview" => AssetType.PREVIEW,
+                _ => throw new ArgumentException($"invalid asset type: {value}")
             };
 
         }
