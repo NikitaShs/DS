@@ -7,6 +7,8 @@ namespace FileService.Domain.VO
 {
     public record StorageKey
     {
+        private StorageKey() { }
+
         private StorageKey(string key, string? prefix, string bucket)
         {
             Key = key;

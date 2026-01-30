@@ -5,6 +5,7 @@ namespace FileService.Domain.VO
 {
     public record ContentType
     {
+        private ContentType() { }
         private ContentType(string valueContentType, MediaType mediaType)
         {
             ValueContentType = valueContentType;

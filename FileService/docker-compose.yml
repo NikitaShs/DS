@@ -14,3 +14,18 @@
     ports:
       - 5341:5341
       - 8081:80
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: FileSer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Servise5
+    ports:
+      - "1346:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres-data:

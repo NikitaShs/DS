@@ -5,6 +5,7 @@ namespace FileService.Domain.VO
 {
     public record MediaData
     {
+        private MediaData() { }
         private MediaData(FiilName fiilName, ContentType contentType, long size, int expectedChunksCount)
         {
             FiilName = fiilName;
