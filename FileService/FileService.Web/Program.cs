@@ -1,4 +1,9 @@
-﻿using FileService.Infrastructure.Postgres.DataBase;
+﻿using FileService.Core;
+using FileService.Core.abstractions;
+using FileService.Infrastructure.Postgres.DataBase;
+using FileService.Infrastructure.Postgres.Repositori;
+using FileService.Infrastructure.S3;
+using FileService.Infrastructure.S3.BackgroundServise;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -13,10 +18,16 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
     .CreateLogger();
 
+builder.Services.AddEndpoints();
 builder.Services.AddSerilog();
+builder.Services.AddS3(builder.Configuration);
+builder.Services.AddScoped<IS3Provider, S3Provider>();
+builder.Services.AddScoped<IMediaRepository, MediaRepository>();
 builder.Services.AddScoped<PostgresDbContext>(q => new PostgresDbContext(builder.Configuration.GetConnectionString("BDFS")));
+builder.Services.AddCore();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddHostedService<S3BucketInitializationServise>();
 
 var app = builder.Build();
 
@@ -34,6 +45,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 
+app.MapEndpoints();
 app.MapControllers();
 
 app.Run();

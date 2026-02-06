@@ -20,12 +20,12 @@ namespace FileService.Domain.Entites
 
         private VideoAsset() { }
 
-        private VideoAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, StatusMedia statusMedia, MediaOwner owner)
-            : base(id, mediaData, assetType, key, statusMedia, owner) {}
+        private VideoAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey StorageKey, StatusMedia statusMedia, MediaOwner owner)
+            : base(id, mediaData, assetType, StorageKey, statusMedia, owner) {}
 
         public static UnitResult<Error> ValidateForUpload(MediaData mediaData)
         {
-            if (!AllowedExtensions.Contains(mediaData.FiilName.Extention))
+            if (!AllowedExtensions.Contains(mediaData.FileName.Extention))
                 return GeneralErrors.ValueNotValid("Extention");
 
             if (mediaData.Size > MAX_SIZE)
@@ -37,12 +37,12 @@ namespace FileService.Domain.Entites
             return UnitResult.Success<Error>();
         }
 
-        public static Result<VideoAsset, Error> CreateForUpload(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, MediaOwner owner)
+        public static Result<VideoAsset, Error> CreateForUpload(Guid id, MediaData mediaData, AssetType assetType, MediaOwner owner)
         {
             if (ValidateForUpload(mediaData).IsFailure)
                 return GeneralErrors.ValueNotValid("IsFailure");
 
-            key = StorageKey.Create(id.ToString(), RAW_PREFIX, BUCKET).Value;
+            var key = StorageKey.Create(id.ToString(), RAW_PREFIX, BUCKET).Value;
 
             return new VideoAsset(id, mediaData, assetType, key, StatusMedia.UPLOADING, owner);
         }

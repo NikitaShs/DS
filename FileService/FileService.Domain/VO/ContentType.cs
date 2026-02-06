@@ -12,9 +12,9 @@ namespace FileService.Domain.VO
             MediaType = mediaType;
         }
 
-        public string ValueContentType { get; }
+        public string ValueContentType { get; init; }
 
-        public MediaType MediaType { get; }
+        public MediaType MediaType { get; init; }
 
         public static Result<ContentType, Error> Create(string contentType)
         {
@@ -24,9 +24,9 @@ namespace FileService.Domain.VO
             MediaType mediaType = contentType switch
             {
                 var ct when ct.Contains("video") => MediaType.VIDEO,
-                var ct when ct.Contains("audio") => MediaType.VIDEO,
-                var ct when ct.Contains("document") => MediaType.VIDEO,
-                var ct when ct.Contains("images") => MediaType.VIDEO,
+                var ct when ct.Contains("audio") => MediaType.AUDIO,
+                var ct when ct.Contains("document") => MediaType.DOCUMENT,
+                var ct when ct.Contains("images") => MediaType.IMAGE,
                 var ct => MediaType.UNKNOWN
             };
 

@@ -18,13 +18,13 @@ namespace FileService.Domain.VO
             Context = context;
         }
 
-        public Guid EntiteId { get; }
+        public Guid EntiteId { get; init; }
 
-        public string Context { get; }
+        public string Context { get; init; }
 
         public static Result<MediaOwner, Error> Create(Guid entiteId, string context)
         {
-            if (string.IsNullOrWhiteSpace(context) || context.Length <= 50)
+            if (string.IsNullOrWhiteSpace(context) || context.Length >= 50)
                 return GeneralErrors.ValueNotValid("context");
             context = context.Trim().ToLower();
             if (entiteId == Guid.Empty)

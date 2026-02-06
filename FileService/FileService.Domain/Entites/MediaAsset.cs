@@ -21,18 +21,22 @@ namespace FileService.Domain.Entites
 
         public DateTime UpdateAd { get; protected set; } = DateTime.UtcNow;
 
-        public StorageKey Key { get; protected set; }
+        public StorageKey StorageKey { get; protected set; }
+
+        public bool IsActive { get; private set; } = true;
+
+        public DateTime? DeletedAt { get; private set; } = null;
 
         public StatusMedia StatusMedia { get; protected set; }
 
         public MediaOwner Owner { get; protected set; }
 
-        protected MediaAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey key, StatusMedia statusMedia, MediaOwner owner)
+        protected MediaAsset(Guid id, MediaData mediaData, AssetType assetType, StorageKey storageKey, StatusMedia statusMedia, MediaOwner owner)
         {
             Id = id;
             MediaData = mediaData;
             AssetType = assetType;
-            Key = key;
+            StorageKey = storageKey;
             StatusMedia = statusMedia;
             Owner = owner;
             CreateAt = DateTime.UtcNow;
