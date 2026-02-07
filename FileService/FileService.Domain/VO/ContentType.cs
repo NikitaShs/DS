@@ -12,9 +12,9 @@ namespace FileService.Domain.VO
             MediaType = mediaType;
         }
 
-        public string ValueContentType { get; init; }
+        public string ValueContentType { get; }
 
-        public MediaType MediaType { get; init; }
+        public MediaType MediaType { get; }
 
         public static Result<ContentType, Error> Create(string contentType)
         {

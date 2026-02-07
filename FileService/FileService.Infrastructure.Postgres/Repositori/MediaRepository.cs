@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace FileService.Infrastructure.Postgres.Repositori
             _logger = logger;
         }
 
-        public async Task<Result<Guid, Error>> CreateFileAsync(MediaAsset mediaAsset, CancellationToken cancellationToken)
+        public async Task<Result<Guid, Error>> AddFileAsync(MediaAsset mediaAsset, CancellationToken cancellationToken)
         {
 
 
@@ -56,19 +57,20 @@ namespace FileService.Infrastructure.Postgres.Repositori
             return result;
         }
 
-        public async Task<Result<MediaAsset, Error>> GetFileByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<MediaAsset, Error>> GetBy(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken)
         {
-            var res = await _dbContext.MediaAsset.FirstOrDefaultAsync(q => q.Id == id && q.IsActive == true, cancellationToken);
+            var res = await _dbContext.MediaAsset.FirstOrDefaultAsync(expression, cancellationToken);
+
             if (res == null)
             {
                 _logger.LogInformation("неудалось получить файл");
-                return GeneralErrors.ValueNotFound(id);
+                return GeneralErrors.ValueNotFound(null);
             }
 
             return res;
         }
 
-        public async Task<Result<IEnumerable<MediaAsset>, Error>> GetFilesByIdsAsync(IEnumerable<Guid> id, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<MediaAsset>, Error>> GetByIdsAsync(IEnumerable<Guid> id, CancellationToken cancellationToken)
         {
             var res = await _dbContext.MediaAsset.Where(q => id.Contains(q.Id) && q.IsActive == true).ToListAsync(cancellationToken);
             if(res.Count == 0)

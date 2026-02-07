@@ -18,15 +18,15 @@ namespace FileService.Domain.VO
             FullPath = $"{Bucket}/{ValuePreKey}";
         }
 
-        public string ValueKey { get; init; }
+        public string ValueKey { get; }
 
-        public string? Prefix { get; init; }
+        public string? Prefix { get; }
 
-        public string Bucket { get; init; }
+        public string Bucket { get; }
 
-        public string ValuePreKey { get; init; }
+        public string ValuePreKey { get; }
 
-        public string FullPath { get; init; }
+        public string FullPath { get; }
 
         public static Result<StorageKey, Error> Create(string valuekey, string? prefix, string bucket)
         {

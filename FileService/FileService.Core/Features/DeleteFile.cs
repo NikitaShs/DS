@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Adstract;
+using CSharpFunctionalExtensions;
 using FileService.Contracts;
 using FileService.Core.abstractions;
 using FileService.Domain.Entites;
@@ -13,12 +14,11 @@ using SharedKernel.Exseption;
 
 namespace FileService.Core.Features
 {
-
     public sealed class DeleteFile : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("DeleteFile/{Fileid}", async(
+            app.MapDelete("files/{fileId:guid}", async(
                 [FromRoute] Guid Fileid,
                 [FromServices] DeleteFileHandler deleteFileHandler,
                 CancellationToken cancellationToken) =>
@@ -48,7 +48,7 @@ namespace FileService.Core.Features
             _s3Provider = s3Provider;
         }
 
-        public async Task<Result<Guid, Error>> Handler(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<Guid, Errors>> Handler(Guid id, CancellationToken cancellationToken)
         {
             if(id == Guid.Empty)
             {
@@ -56,8 +56,8 @@ namespace FileService.Core.Features
                 GeneralErrors.ValueNotValid("id null");
             }
 
-            var mediaAsset = _mediaRepository.GetFileByIdAsync(id, cancellationToken);
-            if (mediaAsset.Result.IsFailure)
+            var mediaAsset = await _mediaRepository.GetByIdAsync(id, cancellationToken);
+            if (mediaAsset.IsFailure)
             {
                 _logger.LogInformation("нету файла с id {idFile}", id);
                 GeneralErrors.ValueNotFound(id);
@@ -70,7 +70,7 @@ namespace FileService.Core.Features
                 Error.NotFound("DeleteFileAsync.IsFailure.Posgre", "файл не удалён из БД");
             }
 
-            var res = await _s3Provider.DeleteFileAsync(mediaAsset.Result.Value.StorageKey, cancellationToken);
+            var res = await _s3Provider.DeleteFileAsync(mediaAsset.Value.StorageKey, cancellationToken);
             if (res.IsFailure)
             {
                 _logger.LogInformation("неудалось удалить файл из s3 с id {idFile}", id);

@@ -1,4 +1,6 @@
-﻿using FileService.Domain.VO;
+﻿using CSharpFunctionalExtensions;
+using FileService.Domain.VO;
+using SharedKernel.Exseption;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +43,33 @@ namespace FileService.Domain.Entites
             Owner = owner;
             CreateAt = DateTime.UtcNow;
             UpdateAd = DateTime.UtcNow;
+        }
+
+        public static Result<MediaAsset, Errors> CreateTypedMediaAsset(AssetType assetType, MediaData mediaData, MediaOwner mediaOvner)
+        {
+            switch (assetType)
+            {
+                case AssetType.VIDEO:
+                    var videoAsset = VideoAsset.CreateForUpload(Guid.NewGuid(), mediaData, AssetType.VIDEO, mediaOvner);
+                    if (videoAsset.IsFailure)
+                        return GeneralErrors.ValueFailure("VideoAsset").ToErrors();
+                    return videoAsset.Value;
+                    break;
+                case AssetType.PREVIEW:
+                    var previewAsset = PreviewAsset.CreateForUpload(Guid.NewGuid(), mediaData, AssetType.VIDEO, mediaOvner);
+                    if (previewAsset.IsFailure)
+                        return GeneralErrors.ValueFailure("PreviewAsset").ToErrors();
+                    return previewAsset.Value;
+                    break;
+                case AssetType.AVATAR:
+                    return GeneralErrors.Unknown().ToErrors();
+                    break;
+                case AssetType.IMAGE:
+                    return GeneralErrors.Unknown().ToErrors();
+                    break;
+                default:
+                    return GeneralErrors.Unknown().ToErrors();
+            }
         }
     }
 

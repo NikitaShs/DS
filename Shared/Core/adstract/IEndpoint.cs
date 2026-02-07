@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Routing;
 
-namespace FileService.Core.abstractions
+namespace Core.Adstract
 {
     public interface IEndpoint
     {

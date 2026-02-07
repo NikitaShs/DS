@@ -18,9 +18,9 @@ namespace FileService.Domain.VO
             Context = context;
         }
 
-        public Guid EntiteId { get; init; }
+        public Guid EntiteId { get; }
 
-        public string Context { get; init; }
+        public string Context { get; }
 
         public static Result<MediaOwner, Error> Create(Guid entiteId, string context)
         {

@@ -1,4 +1,6 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Core.Adstract;
+using Core.Validation;
+using CSharpFunctionalExtensions;
 using FileService.Contracts;
 using FileService.Core.abstractions;
 using FileService.Domain.Entites;
@@ -13,17 +15,32 @@ using SharedKernel.Exseption;
 
 namespace FileService.Core.Features
 {
+    public class UploadFileValidator : AbstractValidator<CreateFileRequest>
+    {
+        public UploadFileValidator()
+        {
+            RuleFor(q => q.Context).NotEmpty();
+            RuleFor(q => q.AssetType).NotEmpty();
+            RuleFor(q => q.ContentType).NotEmpty();
+            RuleFor(q => q.EntiteId).NotEmpty();
+            RuleFor(q => q.FileName).NotEmpty();
+            RuleFor(q => q.Size).NotEmpty().GreaterThan(0);
+        }
+    }
 
     public sealed class UploadUrlFile : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("UploadFileGenerateUrl", async ([FromBody] CreateFileRequest createFileRequest, [FromServices] UploadFileHandler uploadFileHandler, CancellationToken cancellationToken) =>
+            app.MapPost("files/upload", async (
+                [FromBody] CreateFileRequest createFileRequest,
+                [FromServices] UploadFileHandler uploadFileHandler,
+                CancellationToken cancellationToken) =>
             {
                 var res = await uploadFileHandler.Handler(createFileRequest, cancellationToken);
 
                 if (res.IsFailure)
-                    return Results.BadRequest(res.Error.Message);
+                    return Results.BadRequest(res.Error);
                 return Results.Ok(res.Value);
             });
         }
@@ -32,11 +49,11 @@ namespace FileService.Core.Features
     public class UploadFileHandler
     {
         private readonly IMediaRepository _mediaRepository;
-        private readonly ILogger<UploadUrlFile> _logger;
+        private readonly ILogger<UploadFileHandler> _logger;
         private readonly UploadFileValidator _validator;
         private readonly IS3Provider _s3Provider;
 
-        public UploadFileHandler(IMediaRepository mediaRepository, ILogger<UploadUrlFile> logger, UploadFileValidator validator, IS3Provider s3Provider)
+        public UploadFileHandler(IMediaRepository mediaRepository, ILogger<UploadFileHandler> logger, UploadFileValidator validator, IS3Provider s3Provider)
         {
             _mediaRepository = mediaRepository;
             _logger = logger;
@@ -44,87 +61,51 @@ namespace FileService.Core.Features
             _s3Provider = s3Provider;
         }
 
-        public async Task<Result<string, Error>> Handler(CreateFileRequest createFileRequest, CancellationToken cancellationToken)
+        public async Task<Result<string, Errors>> Handler(CreateFileRequest createFileRequest, CancellationToken cancellationToken)
         {
             var res = _validator.Validate(createFileRequest);
 
             if (!res.IsValid)
             {
                 _logger.LogInformation("невалидные данные");
-                return GeneralErrors.ValueNotValid("createFileRequest");
+                return res.ToList();
             }
 
-            var fileName = FileName.Create(createFileRequest.fileName);
+            var fileName = FileName.Create(createFileRequest.FileName);
             if (fileName.IsFailure)
-                return GeneralErrors.ValueFailure("fileName");
+                return GeneralErrors.ValueFailure("fileName").ToErrors();
 
             var contentType = ContentType.Create(createFileRequest.ContentType);
             if (contentType.IsFailure)
-                return GeneralErrors.ValueFailure("ContentType");
+                return GeneralErrors.ValueFailure("ContentType").ToErrors();
 
             var mediaData = MediaData.Create(
                 fileName.Value,
                 contentType.Value,
-                createFileRequest.size, 1);
+                createFileRequest.Size, 1);
 
             if (mediaData.IsFailure)
-                return GeneralErrors.ValueFailure("MediaData");
+                return GeneralErrors.ValueFailure("MediaData").ToErrors();
 
-            var mediaOvner = MediaOwner.Create(createFileRequest.entiteId, createFileRequest.context);
+            var mediaOvner = MediaOwner.Create(createFileRequest.EntiteId, createFileRequest.Context);
             if (mediaOvner.IsFailure)
-                return GeneralErrors.ValueFailure("MediaOwner");
+                return GeneralErrors.ValueFailure("MediaOwner").ToErrors();
 
-            MediaAsset mediaAsset;
+            var mediaAssetResult = MediaAsset.CreateTypedMediaAsset(createFileRequest.AssetType.AssetTypeConvetToString(), mediaData.Value, mediaOvner.Value);
 
-            switch (createFileRequest.assetType.AssetTypeConvetToString())
-            {
-                case AssetType.VIDEO:
-                    var videoAsset = VideoAsset.CreateForUpload(Guid.NewGuid(), mediaData.Value, AssetType.VIDEO, mediaOvner.Value);
-                    if (videoAsset.IsFailure)
-                        return GeneralErrors.ValueFailure("VideoAsset");
-                    mediaAsset = videoAsset.Value;
-                    break;
-                case AssetType.AVATAR:
-                    _logger.LogInformation("ещё нету");
-                    return GeneralErrors.Unknown();
-                    break;
-                case AssetType.IMAGE:
-                    _logger.LogInformation("ещё нету");
-                    return GeneralErrors.Unknown();
-                    break;
-                case AssetType.PREVIEW:
-                    var previewAsset = PreviewAsset.CreateForUpload(Guid.NewGuid(), mediaData.Value, AssetType.VIDEO, mediaOvner.Value);
-                    if (previewAsset.IsFailure)
-                        return GeneralErrors.ValueFailure("PreviewAsset");
-                    mediaAsset = previewAsset.Value;
-                    break;
-                default:
-                    _logger.LogInformation("асет такого типа не существует");
-                    return GeneralErrors.Unknown();
-            }
+            if(mediaAssetResult.IsFailure)
+                return GeneralErrors.ValueFailure("mediaAsset").ToErrors();
+            var mediaAsset = mediaAssetResult.Value;
 
-            var result = await _mediaRepository.CreateFileAsync(mediaAsset, cancellationToken);
+            var result = await _mediaRepository.AddFileAsync(mediaAsset, cancellationToken);
             if(result.IsFailure)
-                return Error.Failure("CreateFileAsync.Failure", "файл не создан в БД");
+                return Error.Failure("CreateFileAsync.Failure", "файл не создан в БД").ToErrors();
 
             var urlResult = await _s3Provider.GenerateUploadUrlAsync(mediaAsset.StorageKey, mediaAsset.MediaData, cancellationToken);
             if (urlResult.IsFailure)
-                return Error.Failure("GenerateUploadUrl.Failure", "ссылка на добовление фото не сгенерированно");
+                return Error.Failure("GenerateUploadUrl.Failure", "ссылка на добовление фото не сгенерированно").ToErrors();
 
             return urlResult.Value;
-        }
-
-        public class UploadFileValidator : AbstractValidator<CreateFileRequest>
-        {
-            public UploadFileValidator()
-            {
-                RuleFor(q => q.context).NotEmpty();
-                RuleFor(q => q.assetType).NotEmpty();
-                RuleFor(q => q.ContentType).NotEmpty();
-                RuleFor(q => q.entiteId).NotEmpty();
-                RuleFor(q => q.fileName).NotEmpty();
-                RuleFor(q => q.size).NotEmpty().GreaterThan(0);
-            }
         }
     }
 

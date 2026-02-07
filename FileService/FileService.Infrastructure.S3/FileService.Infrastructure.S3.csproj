@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.22" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.18.2" />
-    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.0" />
+    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

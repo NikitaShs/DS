@@ -12,9 +12,9 @@ namespace FileService.Domain.VO
             Extention = extention;
         }
 
-        public string ValueName { get; init; }
+        public string ValueName { get; }
 
-        public string Extention { get; init; }
+        public string Extention { get; }
 
 
         public static Result<FileName, Error> Create(string fileName)

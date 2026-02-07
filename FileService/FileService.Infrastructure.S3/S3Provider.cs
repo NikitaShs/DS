@@ -29,7 +29,10 @@ namespace FileService.Infrastructure.S3
             _logger = logger;
         }
 
-        public async Task<Result<string, Error>> StartMultipartUploadAsync(StorageKey storageKey, MediaData mediaData, CancellationToken cancellationToken)
+        public async Task<Result<string, Error>> StartMultipartUploadAsync(
+            StorageKey storageKey,
+            MediaData mediaData,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -53,8 +56,11 @@ namespace FileService.Infrastructure.S3
         }
 
         public async Task<Result<IReadOnlyList<string>, Error>> GenerateAllChunkUploadUrlsAsync(
-            StorageKey storageKey, MediaData mediaData,
-            string uploadId, int totalChunks, CancellationToken cancellationToken)
+            StorageKey storageKey,
+            MediaData mediaData,
+            string uploadId,
+            int totalChunks,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -97,8 +103,10 @@ namespace FileService.Infrastructure.S3
         }
 
         public async Task<Result<CompleteMultipartUploadResponse, Error>> CompleteMultipartUploadAsync(
-            StorageKey storageKey, MediaData mediaData,
-            string uploadId, IReadOnlyList<PartETag> partETags,
+            StorageKey storageKey,
+            MediaData mediaData,
+            string uploadId,
+            IReadOnlyList<PartETag> partETags,
             CancellationToken cancellationToken)
         {
             try
@@ -121,7 +129,9 @@ namespace FileService.Infrastructure.S3
             }
         }
 
-        public async Task<Result<string, Error>> GenerateDownloadUrlAsync(StorageKey storageKey, CancellationToken cancellationToken)
+        public async Task<Result<string, Error>> GenerateDownloadUrlAsync(
+            StorageKey storageKey,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -144,7 +154,10 @@ namespace FileService.Infrastructure.S3
             }
         }
 
-        public async Task<Result<string, Error>> GenerateUploadUrlAsync(StorageKey storageKey, MediaData mediaData, CancellationToken cancellationToken)
+        public async Task<Result<string, Error>> GenerateUploadUrlAsync(
+            StorageKey storageKey,
+            MediaData mediaData,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -168,7 +181,9 @@ namespace FileService.Infrastructure.S3
             }
         }
 
-        public async Task<Result<string, Error>> DeleteFileAsync(StorageKey storageKey, CancellationToken cancellationToken)
+        public async Task<Result<string, Error>> DeleteFileAsync(
+            StorageKey storageKey,
+            CancellationToken cancellationToken)
         {
             try
             {

@@ -14,13 +14,13 @@ namespace FileService.Domain.VO
             ExpectedChunksCount = expectedChunksCount;
         }
 
-        public FileName FileName { get; init; }
+        public FileName FileName { get; }
 
-        public ContentType ContentType { get; init; }
+        public ContentType ContentType { get; }
 
-        public long Size { get; init; }
+        public long Size { get; }
 
-        public int ExpectedChunksCount { get; init; }
+        public int ExpectedChunksCount { get; }
 
         public static Result<MediaData, Error> Create(FileName fileName, ContentType contentType, long size, int expectedChunksCount)
         {
