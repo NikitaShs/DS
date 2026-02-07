@@ -56,25 +56,25 @@ namespace FileService.Core.Features
                 GeneralErrors.ValueNotValid("id null");
             }
 
-            var mediaAsset = await _mediaRepository.GetByIdAsync(id, cancellationToken);
+            var mediaAsset = await _mediaRepository.GetBy(q => q.Id == id, cancellationToken);
             if (mediaAsset.IsFailure)
             {
                 _logger.LogInformation("нету файла с id {idFile}", id);
-                GeneralErrors.ValueNotFound(id);
+                return GeneralErrors.ValueNotFound(id).ToErrors();
             }
 
             var result = await _mediaRepository.DeleteFileAsync(id, cancellationToken);
             if (result.IsFailure)
             {
                 _logger.LogInformation("неудалось удалить файл в БД с id {idFile}", id);
-                Error.NotFound("DeleteFileAsync.IsFailure.Posgre", "файл не удалён из БД");
+                return Error.NotFound("DeleteFileAsync.IsFailure.Posgre", "файл не удалён из БД").ToErrors();
             }
 
             var res = await _s3Provider.DeleteFileAsync(mediaAsset.Value.StorageKey, cancellationToken);
             if (res.IsFailure)
             {
                 _logger.LogInformation("неудалось удалить файл из s3 с id {idFile}", id);
-                Error.NotFound("DeleteFileAsync.IsFailure.S3", "файл не удалён из S3");
+                return Error.NotFound("DeleteFileAsync.IsFailure.S3", "файл не удалён из S3").ToErrors();
             }
 
             return id;
