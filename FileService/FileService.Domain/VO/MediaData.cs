@@ -6,15 +6,15 @@ namespace FileService.Domain.VO
     public record MediaData
     {
         private MediaData() { }
-        private MediaData(FiilName fiilName, ContentType contentType, long size, int expectedChunksCount)
+        private MediaData(FileName fileName, ContentType contentType, long size, int expectedChunksCount)
         {
-            FiilName = fiilName;
+            FileName = fileName;
             ContentType = contentType;
             Size = size;
             ExpectedChunksCount = expectedChunksCount;
         }
 
-        public FiilName FiilName { get; }
+        public FileName FileName { get; }
 
         public ContentType ContentType { get; }
 
@@ -22,7 +22,7 @@ namespace FileService.Domain.VO
 
         public int ExpectedChunksCount { get; }
 
-        public static Result<MediaData, Error> Create(FiilName fiilName, ContentType contentType, long size, int expectedChunksCount)
+        public static Result<MediaData, Error> Create(FileName fileName, ContentType contentType, long size, int expectedChunksCount)
         {
             if (size <= 0)
                 return GeneralErrors.ValueNotValid("size");
@@ -30,7 +30,7 @@ namespace FileService.Domain.VO
             if (expectedChunksCount <= 0)
                 return GeneralErrors.ValueNotValid("expectedChunksCount");
 
-            return new MediaData(fiilName, contentType, size, expectedChunksCount);
+            return new MediaData(fileName, contentType, size, expectedChunksCount);
         }
 
     }

@@ -14,11 +14,13 @@
     </PackageReference>
     <PackageReference Include="Npgsql" Version="9.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.0" />
+    <PackageReference Include="Qvaik.Core" Version="1.0.2" />
+    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FileService.Contracts\FileService.Contracts.csproj" />
+    <ProjectReference Include="..\FileService.Core\FileService.Core.csproj" />
     <ProjectReference Include="..\FileService.Domain\FileService.Domain.csproj" />
   </ItemGroup>
 

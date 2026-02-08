@@ -7,9 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Qvaik.Core" Version="1.0.1" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.18.2" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.3.9" />
+    <PackageReference Include="Qvaik.Core" Version="1.0.2" />
     <PackageReference Include="Qvaik.Framework" Version="1.0.0" />
-    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.0" />
+    <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FileService.Contracts\FileService.Contracts.csproj" />
+    <ProjectReference Include="..\FileService.Domain\FileService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

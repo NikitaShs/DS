@@ -16,6 +16,7 @@ namespace FileService.Infrastructure.Postgres.DataBase
 
         public DbSet<VideoAsset> VideoAsset => Set<VideoAsset>();
 
+        public DbSet<MediaAsset> MediaAsset => Set<MediaAsset>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -9,38 +9,38 @@ namespace FileService.Domain.VO
     {
         private StorageKey() { }
 
-        private StorageKey(string key, string? prefix, string bucket)
+        private StorageKey(string valuekey, string? prefix, string bucket)
         {
-            Key = key;
+            ValueKey = valuekey;
             Prefix = prefix;
             Bucket = bucket;
-            Value = string.IsNullOrEmpty(prefix) ? Key : $"{Prefix}/{Key}";
-            FullPath = $"{Bucket}/{Value}";
+            ValuePreKey = string.IsNullOrEmpty(prefix) ? ValueKey : $"{Prefix}/{ValueKey}";
+            FullPath = $"{Bucket}/{ValuePreKey}";
         }
 
-        public string Key { get; }
+        public string ValueKey { get; }
 
         public string? Prefix { get; }
 
         public string Bucket { get; }
 
-        public string Value { get; }
+        public string ValuePreKey { get; }
 
         public string FullPath { get; }
 
-        public static Result<StorageKey, Error> Create(string key, string? prefix, string bucket)
+        public static Result<StorageKey, Error> Create(string valuekey, string? prefix, string bucket)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(valuekey))
                 return GeneralErrors.ValueNotValid("key");
 
-            key = NormalazSegment(key).Value;
+            valuekey = NormalazSegment(valuekey).Value;
 
             if (string.IsNullOrWhiteSpace(bucket))
                 return GeneralErrors.ValueNotValid("bucket");
 
             bucket = NormalazSegment(bucket).Value;
 
-            return new StorageKey(key, prefix, bucket);
+            return new StorageKey(valuekey, prefix, bucket);
         }
 
         private static Result<string, Error> NormalazSegment(string value)
@@ -62,7 +62,7 @@ namespace FileService.Domain.VO
                 return GeneralErrors.ValueNotValid("segment");
             var normalSegment = NormalazSegment(segment);
 
-            var newKey = $"{Key}/{normalSegment}";
+            var newKey = $"{ValueKey}/{normalSegment}";
 
             return StorageKey.Create(newKey, Prefix, Bucket);
         }

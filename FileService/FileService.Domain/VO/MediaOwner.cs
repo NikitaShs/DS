@@ -24,7 +24,7 @@ namespace FileService.Domain.VO
 
         public static Result<MediaOwner, Error> Create(Guid entiteId, string context)
         {
-            if (string.IsNullOrWhiteSpace(context) || context.Length <= 50)
+            if (string.IsNullOrWhiteSpace(context) || context.Length >= 50)
                 return GeneralErrors.ValueNotValid("context");
             context = context.Trim().ToLower();
             if (entiteId == Guid.Empty)

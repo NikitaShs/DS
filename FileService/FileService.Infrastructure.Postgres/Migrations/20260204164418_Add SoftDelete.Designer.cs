@@ -3,6 +3,7 @@ using System;
 using FileService.Infrastructure.Postgres.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FileService.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    partial class PostgresDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260204164418_Add SoftDelete")]
+    partial class AddSoftDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,12 +87,10 @@ namespace FileService.Infrastructure.Postgres.Migrations
                                 .HasColumnType("uuid");
 
                             b1.Property<int>("ExpectedChunksCount")
-                                .HasColumnType("integer")
-                                .HasColumnName("expected_chunks_count");
+                                .HasColumnType("integer");
 
                             b1.Property<long>("Size")
-                                .HasColumnType("bigint")
-                                .HasColumnName("size");
+                                .HasColumnType("bigint");
 
                             b1.HasKey("MediaAssetId");
 
@@ -109,40 +110,44 @@ namespace FileService.Infrastructure.Postgres.Migrations
 
                                     b2.Property<string>("MediaType")
                                         .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("media_type");
+                                        .HasColumnType("text");
 
                                     b2.Property<string>("ValueContentType")
                                         .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("value_content_type");
+                                        .HasColumnType("text");
 
                                     b2.HasKey("MediaDataMediaAssetId");
 
                                     b2.ToTable("MediaAsset");
 
+                                    b2
+                                        .ToJson("ContentType")
+                                        .HasColumnType("jsonb");
+
                                     b2.WithOwner()
                                         .HasForeignKey("MediaDataMediaAssetId");
                                 });
 
-                            b1.OwnsOne("FileService.Domain.VO.FileName", "FileName", b2 =>
+                            b1.OwnsOne("FileService.Domain.VO.FiilName", "FiilName", b2 =>
                                 {
                                     b2.Property<Guid>("MediaDataMediaAssetId")
                                         .HasColumnType("uuid");
 
                                     b2.Property<string>("Extention")
                                         .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("extension");
+                                        .HasColumnType("text");
 
                                     b2.Property<string>("ValueName")
                                         .IsRequired()
-                                        .HasColumnType("text")
-                                        .HasColumnName("name");
+                                        .HasColumnType("text");
 
                                     b2.HasKey("MediaDataMediaAssetId");
 
                                     b2.ToTable("MediaAsset");
+
+                                    b2
+                                        .ToJson("FiilName")
+                                        .HasColumnType("jsonb");
 
                                     b2.WithOwner()
                                         .HasForeignKey("MediaDataMediaAssetId");
@@ -151,7 +156,7 @@ namespace FileService.Infrastructure.Postgres.Migrations
                             b1.Navigation("ContentType")
                                 .IsRequired();
 
-                            b1.Navigation("FileName")
+                            b1.Navigation("FiilName")
                                 .IsRequired();
                         });
 
@@ -162,12 +167,10 @@ namespace FileService.Infrastructure.Postgres.Migrations
 
                             b1.Property<string>("Context")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("context");
+                                .HasColumnType("text");
 
                             b1.Property<Guid>("EntiteId")
-                                .HasColumnType("uuid")
-                                .HasColumnName("entity_id");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("MediaAssetId");
 
@@ -181,54 +184,49 @@ namespace FileService.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("MediaAssetId");
                         });
 
-                    b.OwnsOne("FileService.Domain.VO.StorageKey", "StorageKey", b1 =>
+                    b.OwnsOne("FileService.Domain.VO.StorageKey", "Key", b1 =>
                         {
                             b1.Property<Guid>("MediaAssetId")
                                 .HasColumnType("uuid");
 
                             b1.Property<string>("Bucket")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("bucket");
+                                .HasColumnType("text");
 
                             b1.Property<string>("FullPath")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("full_path");
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Key")
+                                .IsRequired()
+                                .HasColumnType("text");
 
                             b1.Property<string>("Prefix")
-                                .HasColumnType("text")
-                                .HasColumnName("prefix");
+                                .HasColumnType("text");
 
-                            b1.Property<string>("ValueKey")
+                            b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("value_key");
-
-                            b1.Property<string>("ValuePreKey")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("value_prekey");
+                                .HasColumnType("text");
 
                             b1.HasKey("MediaAssetId");
 
                             b1.ToTable("MediaAsset");
 
                             b1
-                                .ToJson("StorageKey")
+                                .ToJson("Key")
                                 .HasColumnType("jsonb");
 
                             b1.WithOwner()
                                 .HasForeignKey("MediaAssetId");
                         });
 
+                    b.Navigation("Key")
+                        .IsRequired();
+
                     b.Navigation("MediaData")
                         .IsRequired();
 
                     b.Navigation("Owner")
-                        .IsRequired();
-
-                    b.Navigation("StorageKey")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

@@ -19,48 +19,52 @@ namespace FileService.Infrastructure.Postgres.Configuration
 
             builder.HasKey(q => q.Id);
 
-            builder.Property(q => q.UpdateAd);
+            builder.Property(q => q.UpdateAd).IsRequired();
 
-            builder.Property(q => q.CreateAt);
+            builder.Property(q => q.CreateAt).IsRequired();
+
+            builder.Property(q => q.IsActive).IsRequired();
+
+            builder.Property(q => q.DeletedAt);
 
             builder.OwnsOne(q => q.MediaData, m =>
             {
                 m.ToJson();
-                m.Property(m => m.Size);
-                m.Property(m => m.ExpectedChunksCount);
-                m.OwnsOne(m => m.FiilName, f =>
+                m.Property(m => m.Size).IsRequired().HasColumnName("size");
+                m.Property(m => m.ExpectedChunksCount).IsRequired().HasColumnName("expected_chunks_count");
+                m.OwnsOne(m => m.FileName, f =>
                 {
-                    f.ToJson();
-                    f.Property(f => f.ValueName);
-                    f.Property(f => f.Extention);
+                    //f.ToJson();
+                    f.Property(f => f.ValueName).IsRequired().HasColumnName("name");
+                    f.Property(f => f.Extention).IsRequired().HasColumnName("extension");
                 });
                 m.OwnsOne(m => m.ContentType, c =>
                 {
-                    c.ToJson();
-                    c.Property(f => f.ValueContentType);
-                    c.Property(f => f.MediaType).HasConversion<string>();
+                    //c.ToJson();
+                    c.Property(f => f.ValueContentType).IsRequired().HasColumnName("value_content_type");
+                    c.Property(f => f.MediaType).HasConversion<string>().IsRequired().HasColumnName("media_type");
                 });
             });
 
-            builder.Property(q => q.AssetType).HasConversion<string>();
+            builder.Property(q => q.AssetType).HasConversion<string>().IsRequired();
 
-            builder.Property(q => q.StatusMedia).HasConversion<string>();
+            builder.Property(q => q.StatusMedia).HasConversion<string>().IsRequired();
 
-            builder.OwnsOne(q => q.Key, k =>
+            builder.OwnsOne(q => q.StorageKey, k =>
             {
                 k.ToJson();
-                k.Property(f => f.Bucket);
-                k.Property(f => f.Prefix);
-                k.Property(f => f.Key);
-                k.Property(f => f.Value);
-                k.Property(f => f.FullPath);
+                k.Property(f => f.Bucket).IsRequired().HasColumnName("bucket");
+                k.Property(f => f.Prefix).IsRequired(false).HasColumnName("prefix");
+                k.Property(f => f.ValueKey).IsRequired().HasColumnName("value_key");
+                k.Property(f => f.ValuePreKey).IsRequired().HasColumnName("value_prekey");
+                k.Property(f => f.FullPath).IsRequired().HasColumnName("full_path");
             });
 
             builder.OwnsOne(q => q.Owner, o =>
             {
                 o.ToJson();
-                o.Property(f => f.Context);
-                o.Property(f => f.EntiteId);
+                o.Property(f => f.Context).IsRequired().HasColumnName("context");
+                o.Property(f => f.EntiteId).IsRequired().HasColumnName("entity_id");
             });
 
 
