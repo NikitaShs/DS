@@ -5,6 +5,7 @@ using FileService.Infrastructure.Postgres.Repositori;
 using FileService.Infrastructure.S3;
 using FileService.Infrastructure.S3.BackgroundServise;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Events;
 

@@ -3,6 +3,7 @@ using FileService.Domain.VO;
 using SharedKernel.Exseption;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace FileService.Domain.Entites
     public class VideoAsset : MediaAsset
     {
         public const long MAX_SIZE = 5_368_709_120;
-        public const string BUCKET = "videos";
+        public const string BUCKET = "video";
         public const string RAW_PREFIX = "raw";
         public const string HLS_PREFIX = "hls";
         public const string MASTER_PLAYLIST_NAME = "master.m3u8";

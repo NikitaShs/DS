@@ -1,5 +1,6 @@
 ﻿using Amazon.S3.Model;
 using CSharpFunctionalExtensions;
+using FileService.Contracts;
 using FileService.Domain.VO;
 using SharedKernel.Exseption;
 using System;
@@ -14,14 +15,22 @@ namespace FileService.Core.abstractions
     {
         Task<Result<string, Error>> StartMultipartUploadAsync(StorageKey storageKey, MediaData mediaData, CancellationToken cancellationToken);
 
-        Task<Result<IReadOnlyList<string>, Error>> GenerateAllChunkUploadUrlsAsync(
+        Task<Result<IReadOnlyList<ChunkUploadUrl>, Error>> GenerateAllChunkUploadUrlsAsync(
             StorageKey storageKey, MediaData mediaData,
             string uploadId, int totalChunks, CancellationToken cancellationToken);
 
         Task<Result<CompleteMultipartUploadResponse, Error>> CompleteMultipartUploadAsync(
             StorageKey storageKey, MediaData mediaData,
-            string uploadId, IReadOnlyList<PartETag> partETags,
+            string uploadId, IReadOnlyList<PartETagDto> partETags,
             CancellationToken cancellationToken);
+
+        Task<Result<ChunkUploadUrl, Error>> GenerateChunkUploadUrl(
+            StorageKey storageKey,
+            string uploadId,
+            int partNumber,
+            CancellationToken cancellationToken);
+
+        Task<Result<string, Error>> AbortMultipartUploadAsync(StorageKey storageKey, string uploadId, CancellationToken cancellationToken);
 
         Task<Result<string, Error>> DeleteFileAsync(StorageKey storageKey, CancellationToken cancellationToken);
 

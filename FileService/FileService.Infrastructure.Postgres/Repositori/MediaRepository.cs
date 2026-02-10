@@ -81,5 +81,19 @@ namespace FileService.Infrastructure.Postgres.Repositori
 
             return res;
         }
+
+        public async Task<Result<bool, Error>> SaveChangeAsync(CancellationToken cancellationToken)
+        {
+            try{
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("ошибка при использовании SaveChangeAsync", ex);
+                return Error.Conflict("SaveChangeAsync.IsFailure", "ошибка при использовании SaveChangeAsync");
+            }
+        }
+
     }
 }

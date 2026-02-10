@@ -1,6 +1,7 @@
 ﻿using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
 using Amazon.S3;
+using FileService.Core.abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -17,6 +18,9 @@ namespace FileService.Infrastructure.S3
         public static IServiceCollection AddS3(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<S3Options>(configuration.GetSection(nameof(S3Options)));
+
+
+            services.AddTransient<IChunkSizeCalculator, ChunkSizeCalculator>();
 
             services.AddSingleton<IAmazonS3>(sp =>
             {

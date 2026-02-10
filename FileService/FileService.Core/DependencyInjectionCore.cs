@@ -23,6 +23,14 @@ namespace FileService.Core
 
             services.AddScoped<DeleteFileHandler>();
 
+            services.AddScoped<MultipartUploadFileHandler>();
+
+            services.AddScoped<CompleteMultipartUploadHandler>();
+
+            services.AddScoped<AbortMultipartUploadHandler>();
+
+            services.AddScoped<GetChunkUploadUrlHandler>();
+
             return services;
 
         }
