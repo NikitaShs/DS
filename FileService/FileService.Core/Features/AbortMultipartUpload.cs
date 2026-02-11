@@ -15,7 +15,7 @@ namespace FileService.Core.Features
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/abort_multipart_upload", async (
+            app.MapPost("files/termination_multipart_upload", async (
                 [FromBody] AbortMultipartUploadRequest abortMultipartUploadRequest,
                 [FromServices] AbortMultipartUploadHandler abortMultipartUploadHandler,
                 CancellationToken cancellationToken) =>
