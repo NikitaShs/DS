@@ -22,6 +22,8 @@ namespace FileService.Infrastructure.S3
 
         public IReadOnlyList<string> RequireBuckets { get; init; } = [];
 
+        public long RecommendedChunkSizeBytes { get; init; } = 100 * 1024 * 1024;
 
+        public int MaxChuncs { get; init; } = 100;
     }
 }

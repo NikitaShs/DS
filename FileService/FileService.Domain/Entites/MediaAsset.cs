@@ -45,6 +45,18 @@ namespace FileService.Domain.Entites
             UpdateAd = DateTime.UtcNow;
         }
 
+        public void UpdateStatusToUpoaded()
+        {
+            StatusMedia = StatusMedia.UPLOADED;
+        }
+
+        public void UpdateStatusToFail()
+        {
+            StatusMedia = StatusMedia.FAILED;
+            IsActive = false;
+            DeletedAt = DateTime.UtcNow.AddDays(1);
+        }
+
         public static Result<MediaAsset, Errors> CreateTypedMediaAsset(AssetType assetType, MediaData mediaData, MediaOwner mediaOvner)
         {
             switch (assetType)
@@ -71,6 +83,7 @@ namespace FileService.Domain.Entites
                     return GeneralErrors.Unknown().ToErrors();
             }
         }
+
     }
 
 }

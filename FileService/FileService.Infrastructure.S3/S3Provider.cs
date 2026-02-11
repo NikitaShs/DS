@@ -1,16 +1,12 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using CSharpFunctionalExtensions;
+using FileService.Contracts;
 using FileService.Core.abstractions;
 using FileService.Domain.VO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharedKernel.Exseption;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Infrastructure.S3
 {
@@ -39,7 +35,7 @@ namespace FileService.Infrastructure.S3
                 var request = new InitiateMultipartUploadRequest()
                 {
                     BucketName = storageKey.Bucket,
-                    Key = storageKey.ValueKey,
+                    Key = storageKey.FullPath,
                     ContentType = mediaData.ContentType.ValueContentType
                 };
 
@@ -55,7 +51,7 @@ namespace FileService.Infrastructure.S3
             }
         }
 
-        public async Task<Result<IReadOnlyList<string>, Error>> GenerateAllChunkUploadUrlsAsync(
+        public async Task<Result<IReadOnlyList<ChunkUploadUrl>, Error>> GenerateAllChunkUploadUrlsAsync(
             StorageKey storageKey,
             MediaData mediaData,
             string uploadId,
@@ -72,7 +68,7 @@ namespace FileService.Infrastructure.S3
                     var request = new GetPreSignedUrlRequest
                     {
                         BucketName = storageKey.Bucket,
-                        Key = storageKey.ValueKey,
+                        Key = storageKey.FullPath,
                         Verb = HttpVerb.PUT,
                         UploadId = uploadId,
                         PartNumber = partNumder,
@@ -82,7 +78,7 @@ namespace FileService.Infrastructure.S3
 
                     var url = await _s3client.GetPreSignedURLAsync(request);
 
-                    return url;
+                    return new ChunkUploadUrl(partNumder, url);
                 }
                 finally
                 {
@@ -91,8 +87,7 @@ namespace FileService.Infrastructure.S3
                 }
             });
 
-                var results = await Task.WhenAll(tasks);
-
+                ChunkUploadUrl[] results = await Task.WhenAll(tasks);
 
                 return results;
             }
@@ -102,21 +97,52 @@ namespace FileService.Infrastructure.S3
             }
         }
 
-        public async Task<Result<CompleteMultipartUploadResponse, Error>> CompleteMultipartUploadAsync(
+
+        public async Task<Result<ChunkUploadUrl, Error>> GenerateChunkUploadUrl(
             StorageKey storageKey,
-            MediaData mediaData,
             string uploadId,
-            IReadOnlyList<PartETag> partETags,
+            int partNumber,
             CancellationToken cancellationToken)
         {
             try
             {
-                var request = new CompleteMultipartUploadRequest()
+                var request = new GetPreSignedUrlRequest
                 {
                     BucketName = storageKey.Bucket,
-                    Key = storageKey.ValueKey,
+                    Key = storageKey.FullPath,
+                    Verb = HttpVerb.PUT,
                     UploadId = uploadId,
-                    PartETags = partETags.ToList()
+                    PartNumber = partNumber,
+                    Expires = DateTime.UtcNow.AddHours(_s3Options.UploadUrlExpirationHours),
+                    Protocol = _s3Options.WithSsl ? Protocol.HTTP : Protocol.HTTPS
+                };
+
+                var url = await _s3client.GetPreSignedURLAsync(request);
+
+                return new ChunkUploadUrl(partNumber, url);
+
+            }
+            catch (Exception ex)
+            {
+                return Error.Unknown("problem.in.GenerateChunkUploadUrl", "проблема при генерации ссылки на загрузку по частям");
+            }
+        }
+
+        public async Task<Result<CompleteMultipartUploadResponse, Error>> CompleteMultipartUploadAsync(
+            StorageKey storageKey,
+            MediaData mediaData,
+            string uploadId,
+            IReadOnlyList<PartETagDto> partETags,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var request = new Amazon.S3.Model.CompleteMultipartUploadRequest()
+                {
+                    BucketName = storageKey.Bucket,
+                    Key = storageKey.FullPath,
+                    UploadId = uploadId,
+                    PartETags = partETags.Select(q => new PartETag(q.PartNumber, q.ETag)).ToList()
                 };
 
                 var response = await _s3client.CompleteMultipartUploadAsync(request, cancellationToken);
@@ -202,5 +228,31 @@ namespace FileService.Infrastructure.S3
                 return Error.Unknown("problem.in.DeleteFile", "проблема при удалении файла");
             }
         }
+
+        public async Task<Result<string, Error>> AbortMultipartUploadAsync(StorageKey storageKey, string uploadId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var request = new Amazon.S3.Model.AbortMultipartUploadRequest
+                {
+                    BucketName = storageKey.Bucket,
+                    Key = storageKey.ValueKey,
+                    UploadId = uploadId
+                };
+
+
+                var result = await _s3client.AbortMultipartUploadAsync(request);
+
+                if ((int)result.HttpStatusCode != 204)
+                    return Error.Failure("прервать.Multipart.загрузку.не.удалось", "прервать Multipart загрузку не удалось");
+
+                return uploadId;
+            }
+            catch(Exception ex)
+            {
+                return Error.Failure("прервать.Multipart.загрузку.не.удалось", "прервать Multipart загрузку не удалось");
+            }
+        }
+
     }
 }

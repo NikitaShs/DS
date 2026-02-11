@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Core.Features
+namespace FileService.Contracts
 {
-    internal class MultipartUploadFile
-    {
-    }
+    public record ChunkUploadUrl(
+    int PartNumber,
+    string UploadUrl);
 }

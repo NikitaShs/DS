@@ -19,11 +19,11 @@ namespace FileService.Core.Features
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapDelete("files/{fileId:guid}", async(
-                [FromRoute] Guid Fileid,
+                [FromRoute] Guid fileId,
                 [FromServices] DeleteFileHandler deleteFileHandler,
                 CancellationToken cancellationToken) =>
             {
-                var res = await deleteFileHandler.Handler(Fileid, cancellationToken);
+                var res = await deleteFileHandler.Handler(fileId, cancellationToken);
 
                 if (res.IsFailure)
                 {

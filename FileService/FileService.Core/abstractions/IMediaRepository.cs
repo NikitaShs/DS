@@ -21,5 +21,7 @@ namespace FileService.Core.abstractions
 
         Task<Result<IEnumerable<MediaAsset>, Error>> GetByIdsAsync(IEnumerable<Guid> id, CancellationToken cancellationToken);
 
+        Task<Result<bool, Error>> SaveChangeAsync(CancellationToken cancellationToken);
+
     }
 }
