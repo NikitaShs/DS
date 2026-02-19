@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace FileService.Contracts
 {
-    public record MultipartUrlsDto(Guid MediaAssetId, string UploadId, IReadOnlyList<ChunkUploadUrl> chunkUrls, long chunkSize);
+    public record MultipartUrlsDto(Guid MediaAssetId, string UploadId, IReadOnlyList<ChunkUploadUrl> chunkUrls, int chunkSize);
 }

@@ -45,9 +45,9 @@ namespace FileService.Domain.Entites
             UpdateAd = DateTime.UtcNow;
         }
 
-        public void UpdateStatusToUpoaded()
+        public void UpdateStatusToUpoading()
         {
-            StatusMedia = StatusMedia.UPLOADED;
+            StatusMedia = StatusMedia.UPLOADING;
         }
 
         public void UpdateStatusToFail()

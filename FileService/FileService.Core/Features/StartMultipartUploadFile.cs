@@ -124,7 +124,7 @@ namespace FileService.Core.Features
                 return Error.Failure("GenerateAllChunkUploadUrlsAsync.IsFailure", "неудалось сгенерировать ссылки для Multipart загрузки").ToErrors();
 
 
-            return new MultipartUrlsDto(mediaAsset.Id, resultUploadId.Value, resultUrls.Value, countChunksResult.Value.ChunckSize);
+            return new MultipartUrlsDto(mediaAsset.Id, resultUploadId.Value, resultUrls.Value, (int)countChunksResult.Value.ChunckSize);
         }
     }
 }

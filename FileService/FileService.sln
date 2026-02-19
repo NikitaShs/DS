@@ -26,6 +26,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Domain", "FileS
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DDBB4F10-AA1B-4CE4-B428-45D64A607C3B}"
+	ProjectSection(SolutionItems) = preProject
+		appsettings.Tests.json = appsettings.Tests.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServise.IntegrationTests", "tests\FileServise.IntegrationTests\FileServise.IntegrationTests.csproj", "{FB0E4438-74D2-4770-94D4-01070136C5E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +67,10 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB0E4438-74D2-4770-94D4-01070136C5E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB0E4438-74D2-4770-94D4-01070136C5E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB0E4438-74D2-4770-94D4-01070136C5E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB0E4438-74D2-4770-94D4-01070136C5E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +82,7 @@ Global
 		{2B98320E-2C04-4F17-BFFD-D89E3982F3E2} = {8CAE7E86-A790-4DBC-970E-57FBD3FA718C}
 		{DAA0CA27-A3D4-4DE4-8158-B8EBF231EA7D} = {8CAE7E86-A790-4DBC-970E-57FBD3FA718C}
 		{DDBEF473-FDDD-4D18-8524-16591F4E862E} = {8CAE7E86-A790-4DBC-970E-57FBD3FA718C}
+		{FB0E4438-74D2-4770-94D4-01070136C5E1} = {DDBB4F10-AA1B-4CE4-B428-45D64A607C3B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2280081E-06E4-4B7A-A9A5-D513EDEB5B64}

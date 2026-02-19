@@ -73,7 +73,7 @@ namespace FileService.Infrastructure.S3
                         UploadId = uploadId,
                         PartNumber = partNumder,
                         Expires = DateTime.UtcNow.AddHours(_s3Options.UploadUrlExpirationHours),
-                        Protocol = _s3Options.WithSsl ? Protocol.HTTP : Protocol.HTTPS
+                        Protocol = _s3Options.WithSsl ? Protocol.HTTPS : Protocol.HTTP
                     };
 
                     var url = await _s3client.GetPreSignedURLAsync(request);
@@ -114,7 +114,7 @@ namespace FileService.Infrastructure.S3
                     UploadId = uploadId,
                     PartNumber = partNumber,
                     Expires = DateTime.UtcNow.AddHours(_s3Options.UploadUrlExpirationHours),
-                    Protocol = _s3Options.WithSsl ? Protocol.HTTP : Protocol.HTTPS
+                    Protocol = _s3Options.WithSsl ? Protocol.HTTPS : Protocol.HTTP
                 };
 
                 var url = await _s3client.GetPreSignedURLAsync(request);
@@ -167,7 +167,7 @@ namespace FileService.Infrastructure.S3
                     Key = storageKey.ValueKey,
                     Verb = HttpVerb.GET,
                     Expires = DateTime.UtcNow.AddHours(_s3Options.UploadUrlExpirationHours),
-                    Protocol = _s3Options.WithSsl ? Protocol.HTTP : Protocol.HTTPS
+                    Protocol = _s3Options.WithSsl ? Protocol.HTTPS : Protocol.HTTP
                 };
 
                 var response = await _s3client.GetPreSignedURLAsync(request);
@@ -194,7 +194,7 @@ namespace FileService.Infrastructure.S3
                     Verb = HttpVerb.PUT,
                     ContentType = mediaData.ContentType.ValueContentType,
                     Expires = DateTime.UtcNow.AddHours(_s3Options.UploadUrlExpirationHours),
-                    Protocol = _s3Options.WithSsl ? Protocol.HTTP : Protocol.HTTPS
+                    Protocol = _s3Options.WithSsl ? Protocol.HTTPS : Protocol.HTTP
                 };
 
                 var response = await _s3client.GetPreSignedURLAsync(request);

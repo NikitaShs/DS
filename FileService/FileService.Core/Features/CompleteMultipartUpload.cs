@@ -95,7 +95,7 @@ namespace FileService.Core.Features
                 return Error.NotFound("completeMultipartUploadRequest.IsFailure.S3", "ошибка с завершением Multipar загрузки").ToErrors();
             }
 
-            mediaAsset.Value.UpdateStatusToUpoaded();
+            mediaAsset.Value.UpdateStatusToUpoading();
 
             var resUpdateStatus = await _mediaRepository.SaveChangeAsync(cancellationToken);
             if (resUpdateStatus.IsFailure)

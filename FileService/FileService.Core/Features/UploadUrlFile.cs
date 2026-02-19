@@ -61,7 +61,7 @@ namespace FileService.Core.Features
             _s3Provider = s3Provider;
         }
 
-        public async Task<Result<string, Errors>> Handler(CreateFileRequest createFileRequest, CancellationToken cancellationToken)
+        public async Task<Result<UploadFileHandlerDto, Errors>> Handler(CreateFileRequest createFileRequest, CancellationToken cancellationToken)
         {
             var res = _validator.Validate(createFileRequest);
 
@@ -105,7 +105,7 @@ namespace FileService.Core.Features
             if (urlResult.IsFailure)
                 return Error.Failure("GenerateUploadUrl.Failure", "ссылка на добовление фото не сгенерированно").ToErrors();
 
-            return urlResult.Value;
+            return new UploadFileHandlerDto(urlResult.Value, result.Value);
         }
     }
 

@@ -48,15 +48,6 @@ namespace FileService.Infrastructure.Postgres.Repositori
             }
         }
 
-        public async Task<Result<int, Error>> DeleteFileAsync(Guid id, CancellationToken cancellationToken)
-        {
-
-            var deleteTime = DateTime.UtcNow.AddDays(10);
-            var result = await _dbContext.Database.ExecuteSqlRawAsync("""UPDATE "MediaAsset" SET "IsActive" = false, "DeletedAt" = {0}, "UpdateAd" = CURRENT_TIMESTAMP WHERE "Id" = {1}""", [deleteTime, id], cancellationToken);
-
-            return result;
-        }
-
         public async Task<Result<MediaAsset, Error>> GetBy(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken)
         {
             var res = await _dbContext.MediaAsset.FirstOrDefaultAsync(expression, cancellationToken);
