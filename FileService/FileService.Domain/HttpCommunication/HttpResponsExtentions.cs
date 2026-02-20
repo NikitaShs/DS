@@ -13,19 +13,19 @@ namespace FileService.Domain.HttpCommunication
             try
             {
                 if (!respose.IsSuccessStatusCode)
-                    return Error.Unknown("fail.test", "ошибкка в edpoint");
+                    return Error.Unknown("fail.test", "ошибкка edpoint");
 
                 var data = await respose.Content.ReadFromJsonAsync<TResponse>(cancellationToken);
 
 
                 if (data is null)
-                    return Error.Unknown("fail.test", "ошибкка при чтении ответа");
+                    return Error.Unknown("fail.test", "ошибкка");
 
                 return data;
             }
             catch
             {
-                return Error.Unknown("fail.test", "ошибкка при чтении ответа");
+                return Error.Unknown("fail.test", "ошибкка");
             }
 
         }
