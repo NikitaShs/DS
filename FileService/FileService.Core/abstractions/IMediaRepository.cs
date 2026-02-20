@@ -15,8 +15,6 @@ namespace FileService.Core.abstractions
     {
         Task<Result<Guid, Error>> AddFileAsync(MediaAsset mediaAsset, CancellationToken cancellationToken);
 
-        Task<Result<int, Error>> DeleteFileAsync(Guid id, CancellationToken cancellationToken);
-
         Task<Result<MediaAsset, Error>> GetBy(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken);
 
         Task<Result<IEnumerable<MediaAsset>, Error>> GetByIdsAsync(IEnumerable<Guid> id, CancellationToken cancellationToken);

@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FileService.Contracts
 {
-    public record CreateFileRequest(Guid EntiteId, string Context, string AssetType, int Size, string ContentType, string FileName);
+    public record CreateFileRequest(Guid EntiteId, string Context, string AssetType, long Size, string ContentType, string FileName);
 }

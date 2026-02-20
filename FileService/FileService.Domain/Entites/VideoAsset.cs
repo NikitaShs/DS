@@ -45,7 +45,7 @@ namespace FileService.Domain.Entites
 
             var key = StorageKey.Create(id.ToString(), RAW_PREFIX, BUCKET).Value;
 
-            return new VideoAsset(id, mediaData, assetType, key, StatusMedia.UPLOADING, owner);
+            return new VideoAsset(id, mediaData, assetType, key, StatusMedia.UPLOADED, owner);
         }
 
     }

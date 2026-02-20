@@ -19,7 +19,7 @@ namespace FileService.Core.Features
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("files/{fileId:guid}", async (
+            app.MapGet("files/{fileId:guid}", async (
                 [FromRoute] Guid fileId,
                 [FromServices] DownloadFileHandler downloadFileHandler,
                 CancellationToken cancellationToken) =>

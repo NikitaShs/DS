@@ -63,12 +63,11 @@ namespace FileService.Core.Features
                 return GeneralErrors.ValueNotFound(id).ToErrors();
             }
 
-            var result = await _mediaRepository.DeleteFileAsync(id, cancellationToken);
-            if (result.IsFailure)
-            {
-                _logger.LogInformation("неудалось удалить файл в БД с id {idFile}", id);
-                return Error.NotFound("DeleteFileAsync.IsFailure.Posgre", "файл не удалён из БД").ToErrors();
-            }
+            mediaAsset.Value.UpdateStatusToFail();
+
+            var resSave = await _mediaRepository.SaveChangeAsync(cancellationToken);
+            if (resSave.IsFailure)
+                return Error.NotFound("SaveChangeAsync.IsFailure", "ошибка с SaveChangeAsync").ToErrors();
 
             var res = await _s3Provider.DeleteFileAsync(mediaAsset.Value.StorageKey, cancellationToken);
             if (res.IsFailure)

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Core.Features
+namespace FileService.Contracts
 {
-    internal class MultipartDownloadFile
-    {
-    }
+    public record UploadFileHandlerDto(string url, Guid MediaAssetId);
 }
