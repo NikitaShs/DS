@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Contracts
+namespace FileService.Contracts.Dtos
 {
-    public record AbortMultipartUploadRequest(Guid MediaAssetId, string UploudId);
+    public record ChunkUploadUrl(
+    int PartNumber,
+    string UploadUrl);
 }

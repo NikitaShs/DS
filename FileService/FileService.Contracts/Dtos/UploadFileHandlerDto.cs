@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Contracts
+namespace FileService.Contracts.Dtos
 {
-    public record ChunkUploadUrl(
-    int PartNumber,
-    string UploadUrl);
+    public record UploadFileHandlerDto(string url, Guid MediaAssetId);
 }

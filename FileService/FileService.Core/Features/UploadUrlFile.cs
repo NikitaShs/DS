@@ -1,7 +1,7 @@
 ﻿using Core.Adstract;
 using Core.Validation;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
+using FileService.Contracts.Dtos;
 using FileService.Core.abstractions;
 using FileService.Domain.Entites;
 using FileService.Domain.VO;

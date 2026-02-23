@@ -50,7 +50,20 @@ namespace FileService.Infrastructure.Postgres.Repositori
 
         public async Task<Result<MediaAsset, Error>> GetBy(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken)
         {
-            var res = await _dbContext.MediaAsset.FirstOrDefaultAsync(expression, cancellationToken);
+            var res = await _dbContext.MediaAsset.Where(expression, cancellationToken);
+
+            if (res == null)
+            {
+                _logger.LogInformation("неудалось получить файл");
+                return GeneralErrors.ValueNotFound(null);
+            }
+
+            return res;
+        }
+
+        public async Task<Result<IEnumerable<MediaAsset>, Error>> GetBys(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken)
+        {
+            var res = await _dbContext.MediaAsset.Where(expression).ToListAsync(cancellationToken);
 
             if (res == null)
             {

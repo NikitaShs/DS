@@ -1,5 +1,6 @@
 ﻿using Core.Adstract;
 using CSharpFunctionalExtensions;
+using FileService.Contracts.Dtos;
 using FileService.Core.abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -49,7 +50,7 @@ namespace FileService.Core.Features
             _s3Provider = s3Provider;
         }
 
-        public async Task<Result<string, Errors>> Handler(Guid id, CancellationToken cancellationToken)
+        public async Task<Result<GetFileDto, Errors>> Handler(Guid id, CancellationToken cancellationToken)
         {
             if(id == Guid.Empty)
             {
@@ -71,7 +72,7 @@ namespace FileService.Core.Features
                 return Error.NotFound("GenerateDownloadUrlAsync.IsFailure.S3", "ошибка генерации ссылки на файл из S3").ToErrors();
             }
 
-            return res.Value;
+            return new GetFileDto(mediaAsset.Value.Id, res.Value, mediaAsset.Value.StatusMedia.ToString());
         }
     }
 }

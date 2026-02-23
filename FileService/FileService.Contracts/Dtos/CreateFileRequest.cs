@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Contracts
+namespace FileService.Contracts.Dtos
 {
     public record CreateFileRequest(Guid EntiteId, string Context, string AssetType, long Size, string ContentType, string FileName);
 }

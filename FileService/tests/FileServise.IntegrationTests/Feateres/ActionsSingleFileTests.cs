@@ -1,8 +1,8 @@
 ﻿using Amazon.Util;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
-using FileService.Domain.HttpCommunication;
+using FileService.Contracts.Dtos;
 using FileService.Domain.VO;
+using FileServise.Communication;
 using FileServise.IntegrationTests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel.Exseption;
@@ -76,7 +76,7 @@ namespace FileServise.IntegrationTests.Feateres
 
             HttpResponseMessage response = await AppHttpClient.GetAsync($"files/{res.Value.MediaAssetId}");
 
-            var result = await response.HandlerResponseAsync<string>(cancellationToken);
+            var result = await response.HandlerResponseAsync<GetFileDto>(cancellationToken);
 
             Assert.True(result.IsSuccess);
 

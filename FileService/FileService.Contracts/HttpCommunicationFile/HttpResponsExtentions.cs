@@ -3,7 +3,7 @@ using SharedKernel.Exseption;
 using System.Net.Http.Json;
 
 
-namespace FileService.Domain.HttpCommunication
+namespace FileServise.Communication
 {
     public static class HttpResponsExtentions
     {

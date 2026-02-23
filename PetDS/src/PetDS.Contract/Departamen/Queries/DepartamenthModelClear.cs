@@ -17,4 +17,15 @@ public record DepartamenthModelClear
     public bool IsActive { get; init; }
 
     public bool HasMoreChildren { get; init; }
+
+    public MediaDto? Media { get; init; }
+}
+
+public record MediaDto
+{
+    public Guid MediaId { get; init; }
+
+    public string VideoUrl { get; init; } = string.Empty;
+
+    public string Status { get; init; } = string.Empty;
 }
