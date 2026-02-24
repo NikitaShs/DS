@@ -1,5 +1,6 @@
 ﻿using Core.Adstract;
 using Dapper;
+using FileService.Contracts.HttpCommunicationFile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using PetDS.Application;
@@ -50,6 +51,8 @@ builder.Services.AddHybridCache(options =>
     };
 });
 builder.Services.AddHostedService<DeleteNoActiveDepartamentsBackGroundService>();
+
+builder.Services.AddFilesService(builder.Configuration);
 builder.Services.AddScoped<IReadDbContext, ApplicationDbContext>(q =>
     new ApplicationDbContext(builder.Configuration.GetConnectionString("BDDS")));
 builder.Services.AddScoped<ApplicationDbContext>(q =>

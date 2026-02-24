@@ -17,6 +17,8 @@ namespace FileService.Core.abstractions
 
         Task<Result<MediaAsset, Error>> GetBy(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken);
 
+        Task<Result<IEnumerable<MediaAsset>, Error>> GetBys(Expression<Func<MediaAsset, bool>> expression, CancellationToken cancellationToken);
+
         Task<Result<IEnumerable<MediaAsset>, Error>> GetByIdsAsync(IEnumerable<Guid> id, CancellationToken cancellationToken);
 
         Task<Result<bool, Error>> SaveChangeAsync(CancellationToken cancellationToken);

@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.13" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.12" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
         <PackageReference Include="Respawn" Version="7.0.0" />
         <PackageReference Include="Testcontainers.Minio" Version="4.10.0" />
@@ -19,8 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\FileService.Web\FileService.Web.csproj" />
+      <ProjectReference Include="..\..\FileService.Contracts\FileService.Contracts.csproj" />
+      <ProjectReference Include="..\..\FileService.Domain\FileService.Domain.csproj" />
     </ItemGroup>
+
 
     <ItemGroup>
         <Using Include="Xunit" />

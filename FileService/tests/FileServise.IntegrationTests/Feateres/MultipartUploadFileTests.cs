@@ -1,9 +1,8 @@
 ﻿using Amazon.Util;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
-using FileService.Core.Features;
-using FileService.Domain.HttpCommunication;
+using FileService.Contracts.Dtos;
 using FileService.Domain.VO;
+using FileServise.Communication;
 using FileServise.IntegrationTests.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;

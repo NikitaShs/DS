@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Contracts
+namespace FileService.Contracts.Dtos
 {
     public record MultipartUrlsDto(Guid MediaAssetId, string UploadId, IReadOnlyList<ChunkUploadUrl> chunkUrls, int chunkSize);
 }

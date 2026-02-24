@@ -1,6 +1,6 @@
 ﻿using Amazon.S3.Model;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
+using FileService.Contracts.Dtos;
 using FileService.Domain.VO;
 using SharedKernel.Exseption;
 using System;

@@ -1,6 +1,6 @@
 ﻿using Core.Adstract;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
+using FileService.Contracts.Dtos;
 using FileService.Core.abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

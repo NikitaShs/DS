@@ -1,7 +1,7 @@
 ﻿using Amazon.S3.Model;
 using Core.Adstract;
 using CSharpFunctionalExtensions;
-using FileService.Contracts;
+using FileService.Contracts.Dtos;
 using FileService.Core.abstractions;
 using FileService.Domain.Entites;
 using FileService.Domain.VO;

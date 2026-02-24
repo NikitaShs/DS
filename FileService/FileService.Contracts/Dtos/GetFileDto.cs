@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileService.Contracts
+namespace FileService.Contracts.Dtos
 {
-    public record UploadFileHandlerDto(string url, Guid MediaAssetId);
+    public record GetFileDto(Guid MediaId, string Url, string Status);
 }

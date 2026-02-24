@@ -49,6 +49,8 @@ public class Departament : SharedKernel.Exseption.Entity<DepartamentId>
 
     public bool IsActive { get; private set; }
 
+    public Guid VideoId { get; private set; }
+
     public DateTime? DeletedAt { get; private set; }
 
     public DateTime CreateAt { get; private set; }
