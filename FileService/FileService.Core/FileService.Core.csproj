@@ -15,6 +15,9 @@
     <PackageReference Include="Qvaik.Core" Version="1.0.2" />
     <PackageReference Include="Qvaik.Framework" Version="1.0.0" />
     <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
+    <PackageReference Include="WolverineFx.EntityFrameworkCore" Version="5.16.2" />
+    <PackageReference Include="WolverineFx.Postgresql" Version="5.16.2" />
+    <PackageReference Include="WolverineFx.RabbitMQ" Version="5.16.2" />
   </ItemGroup>
 
   <ItemGroup>
