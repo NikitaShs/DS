@@ -39,7 +39,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-builder.AddWolverine();
+builder.Services.ConfigAddWolverine(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddStackExchangeRedisCache(setup =>
 {

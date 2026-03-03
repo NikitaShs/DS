@@ -243,7 +243,7 @@ public class DepartamentRepository : IDepartamentRepository
         return GeneralErrors.Update("SoftDeleteDept").ToErrors();
     }
 
-    public async Task<Result<bool, Error>> SaveAsync(CancellationToken cancellationToken)
+    public async Task<Result<bool, Errors>> SaveAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -253,7 +253,7 @@ public class DepartamentRepository : IDepartamentRepository
         catch (Exception ex)
         {
             _logger.LogError("ошибка при использовании SaveChangeAsync", ex);
-            return Error.Conflict("SaveChangeAsync.IsFailure", "ошибка при использовании SaveChangeAsync");
+            return Error.Conflict("SaveChangeAsync.IsFailure", "ошибка при использовании SaveChangeAsync").ToErrors();
         }
     }
 }

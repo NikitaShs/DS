@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,21 @@ namespace PetDS.Application.Messaging
 {
     public static class WolverineConfiguration
     {
-        public static void AddWolverine(this WebApplicationBuilder builder)
+        public static void ConfigAddWolverine(this IServiceCollection services, IConfiguration configuration)
         {
 
-            string rebbitString = builder.Configuration.GetConnectionString("RabbitMQ");
+            string rebbitString = configuration.GetConnectionString("RabbitMQ");
 
-            builder.Host.UseWolverine(opts =>
+            services.AddWolverine(ExtensionDiscovery.ManualOnly, opts =>
             {
                 opts.ApplicationAssembly = typeof(WolverineConfiguration).Assembly;
 
                 opts.AddRebbitMQ(rebbitString);
 
                 opts.AutoBuildMessageStorageOnStartup = JasperFx.AutoCreate.CreateOrUpdate;
+
+                opts.Policies.UseDurableOutboxOnAllSendingEndpoints();
+
             });
         }
     }
