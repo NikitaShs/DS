@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolverine;
+using Wolverine.EntityFrameworkCore;
+using Wolverine.Postgresql;
 using static CSharpFunctionalExtensions.Result;
 
 namespace FileService.Core.Messaging
@@ -17,6 +19,8 @@ namespace FileService.Core.Messaging
 
             string rebbitString = builder.Configuration.GetConnectionString("RabbitMQ");
 
+            string postgreConnectionString = builder.Configuration.GetConnectionString("BDFS");
+
             builder.Host.UseWolverine(opts =>
             {
                 opts.ApplicationAssembly = typeof(WolverineConfiguration).Assembly;
@@ -24,7 +28,18 @@ namespace FileService.Core.Messaging
                 opts.AddRebbitMQ(rebbitString);
 
                 opts.AutoBuildMessageStorageOnStartup = JasperFx.AutoCreate.CreateOrUpdate;
+
+                opts.ConfigureDurableMessaging(postgreConnectionString);
             });
+        }
+
+        private static void ConfigureDurableMessaging(this WolverineOptions opts, string postgreConnectionString)
+        {
+            opts.PersistMessagesWithPostgresql(postgreConnectionString, "public");
+            opts.UseEntityFrameworkCoreTransactions();
+            opts.Policies.UseDurableOutboxOnAllSendingEndpoints();
+
+            opts.Policies.UseDurableInboxOnAllListeners();
         }
     }
 }

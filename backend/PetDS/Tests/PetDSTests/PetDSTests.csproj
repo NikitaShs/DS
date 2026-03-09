@@ -11,7 +11,7 @@
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="Qvaik.Core" Version="1.0.4" />
+    <PackageReference Include="Qvaik.Core" Version="1.0.5" />
     <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
     <PackageReference Include="Respawn" Version="7.0.0" />
     <PackageReference Include="Testcontainers" Version="4.9.0" />

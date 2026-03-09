@@ -14,7 +14,7 @@
     </PackageReference>
     <PackageReference Include="Npgsql" Version="9.0.4" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-    <PackageReference Include="Qvaik.Core" Version="1.0.4" />
+    <PackageReference Include="Qvaik.Core" Version="1.0.5" />
     <PackageReference Include="Qvaik.SharedKernel" Version="1.0.1" />
   </ItemGroup>
 

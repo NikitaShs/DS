@@ -235,7 +235,7 @@ public class DepartamentRepository : IDepartamentRepository
         int res = await conn.ExecuteAsync(sql, new { Depid = departamentId, timeDel = delTime });
 
 
-        if (res > 0)
+        if (res >= 0)
         {
             return true;
         }

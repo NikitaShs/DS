@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wolverine.EntityFrameworkCore;
 
 namespace FileService.Infrastructure.Postgres.DataBase
 {
@@ -26,6 +27,8 @@ namespace FileService.Infrastructure.Postgres.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.MapWolverineEnvelopeStorage("public");
+
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostgresDbContext).Assembly);
         }
 

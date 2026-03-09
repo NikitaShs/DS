@@ -12,6 +12,8 @@ namespace Core.MessagingComminication.MessegingConstans
 
         public const string EXTENTION_DEPARTAMENTS_EVENTS = "departaments.events";
 
+        public const string ROUTING_DELETE_DEPARTAMENT = "departament.delete";
+
         public const string ROUTING_CREATE_VIDEO = "video.create";
 
         public const string ROUTING_DELETE_VIDEO = "video.delete";

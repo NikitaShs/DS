@@ -7,20 +7,27 @@ namespace FileService.Core.Messaging
 {
     public static class RebbitMqConfiguration
     {
+        public const string QUEUE_FILE_DEPARTAMENTS_EVENT = "queue.file.departaments.event";
+
         public static void AddRebbitMQ(this WolverineOptions opts, string connectionString)
         {
             opts.UseRabbitMq(new Uri(connectionString))
                 .EnableWolverineControlQueues()
-                .UseQuorumQueues()
+                .UseQuorumQueues().AutoProvision()
                 .DeclareExchange(MessagingCommunicationConstans.EXTENTION_FILE_EVENTS, exchange =>
                 {
                     exchange.ExchangeType = ExchangeType.Topic;
 
                     exchange.IsDurable = true;
+                }).DeclareExchange(MessagingCommunicationConstans.EXTENTION_DEPARTAMENTS_EVENTS, exchange =>
+                {
+                    exchange.ExchangeType = ExchangeType.Fanout;
+                    exchange.IsDurable = true;
                 });
 
 
             opts.SetingPublic();
+            opts.SetingListener();
 
         }
 
@@ -57,6 +64,14 @@ namespace FileService.Core.Messaging
             opts.PublishMessagesToRabbitMqExchange<AvatarDelete>(
                 MessagingCommunicationConstans.EXTENTION_FILE_EVENTS,
                 m => $"{MessagingCommunicationConstans.ROUTING_DELETE_AVATAR}.{m.EntiteType}").UseDurableOutbox();
+        }
+
+        private static void SetingListener(this WolverineOptions opts)
+        {
+            opts.ListenToRabbitQueue(QUEUE_FILE_DEPARTAMENTS_EVENT, queue =>
+            {
+                queue.BindExchange(MessagingCommunicationConstans.EXTENTION_DEPARTAMENTS_EVENTS);
+            });
         }
 
     }
