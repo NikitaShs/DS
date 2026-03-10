@@ -1,0 +1,107 @@
+services:
+  fileservice:
+    container_name: fileservice
+    build:
+      context: ./backend
+      dockerfile: ./FileService/src/FileService.Web/Dockerfile
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
+    ports:
+      - "8002:8002"
+    depends_on:
+      - postgres-file
+      - minio
+      - rabbitmq
+      - seq
+    restart: always
+
+  direction-servise:
+    container_name: PetDS
+    build:
+      context: ./backend
+      dockerfile: ./PetDS/src/PetDS.Web/Dockerfile
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres-departaments
+      - minio
+      - rabbitmq
+      - seq
+    restart: always
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
+    ports:
+      - 5341:5341
+      - 8081:80
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: user
+      MINIO_ROOT_PASSWORD: password
+    command: server --console-address ":9001" /data
+    restart: always
+  rabbitmq:
+    container_name: rebbitmq
+    image: rabbitmq:management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    restart: always
+
+  postgres-file:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_DB: FileSer
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Servise5
+      ports:
+        - "1346:5432"
+      volumes:
+        - postgres-file-data:/var/lib/postgresql/data
+
+  postgres-departaments:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_DB: Nizhny
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: Nowgorod
+      ports:
+        - "1347:5432"
+      volumes:
+        - postgres-departaments-data:/var/lib/postgresql/data
+
+  
+
+
+volumes:
+  postgres-file-data:
+  postgres-departaments-data:
+  rabbitmq-data:
