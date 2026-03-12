@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: ds-service
+spec:
+  selector:
+  app: proselyte-node
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4200
+    type: NodePort
