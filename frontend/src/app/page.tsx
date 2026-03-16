@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { useState } from "react";
 
 export default function Home() {
@@ -11,9 +11,9 @@ export default function Home() {
   ]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black gap-8 p-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background font-sans gap-8 p-8">
       <Button 
-        className="hover:bg-blue-500 dark:hover:bg-blue-600" onClick={() => setTodo([...todo, {id : 4, name : "dd", active : true}])}>
+        className="hover:bg-primary" onClick={() => setTodo([...todo, {id : 4, name : "dd", active : true}])}>
         sa
       </Button>
 
@@ -21,19 +21,20 @@ export default function Home() {
         {todo.map(q => (
           <div 
             key={q.id}
+            className="bg-card p-4 rounded-lg border border-border"
           >
             <div className="space-y-2">
               <div className="flex gap-2">
-                <span className="font-medium">ID:</span>
-                <span>{q.id}</span>
+                <span className="font-medium text-card-foreground">ID:</span>
+                <span className="text-muted-foreground">{q.id}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-medium">Name:</span>
-                <span>{q.name}</span>
+                <span className="font-medium text-card-foreground">Name:</span>
+                <span className="text-muted-foreground">{q.name}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-medium">Active:</span>
-                <span>{q.active ? "✓" : "✗"}</span>
+                <span className="font-medium text-card-foreground">Active:</span>
+                <span className="text-muted-foreground">{q.active ? "✓" : "✗"}</span>
               </div>
             </div>
           </div>

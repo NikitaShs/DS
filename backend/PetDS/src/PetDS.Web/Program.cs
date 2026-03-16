@@ -35,12 +35,13 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
     .CreateLogger();
-
+builder.Services.AddCors();
 builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.ConfigAddWolverine(builder.Configuration);
 builder.Services.AddApplication();
+
 builder.Services.AddStackExchangeRedisCache(setup =>
 {
     setup.Configuration = builder.Configuration.GetConnectionString("redis");
@@ -84,6 +85,14 @@ app.UseExceptionMiddleware();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
+
     app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "PetDS"));
 

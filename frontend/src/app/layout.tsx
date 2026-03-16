@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import Header from "@/shared/components/ui/header/header";
+import { SidebarProvider, SidebarInset } from "@/shared/components/ui/sidebar";
+import AppSidebar from "@/shared/components/ui/app-sidebar/app-sidebar";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/shared/api/query-client";
+import Layout from "@/features/layout/app-layout";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -26,11 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="dark">
+      <body className={cn("font-sans", inter.variable)}>
+        <Layout>{children}</Layout>
       </body>
     </html>
   );
