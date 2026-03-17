@@ -111,7 +111,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axio
 const departamentsApi = {
     getDepartaments: async (request)=>{
         const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axion$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["apiClient"].get("/api/departaments/roots", {
-            params: request
+            params: {
+                SizePage: request.pageSize,
+                Page: request.page,
+                prefetch: request.prefetch
+            }
         });
         return response.data;
     }
@@ -333,12 +337,23 @@ function DepartamentsPage() {
         staleTime: 1000 * 60
     });
     const allModels = data?.result?.departamenthAndChildModels ?? [];
-    const total = allModels.length;
+    const total = data?.result?.totalCount ?? allModels.length;
     const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
     const pages = Array.from({
         length: lastPage
     }, (_v, i)=>i + 1);
-    const models = allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const models = allModels.length > PAGE_SIZE ? allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : allModels;
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (page > lastPage) {
+            setPage(lastPage);
+        }
+        if (page < 1) {
+            setPage(1);
+        }
+    }, [
+        page,
+        lastPage
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "bg-background text-foreground min-h-screen p-3 sm:p-5 md:p-7 lg:p-8",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -356,7 +371,7 @@ function DepartamentsPage() {
                                         children: "Локации / Департаменты"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 38,
+                                        lineNumber: 47,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -364,7 +379,7 @@ function DepartamentsPage() {
                                         children: "Департаменты"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 41,
+                                        lineNumber: 50,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -372,13 +387,13 @@ function DepartamentsPage() {
                                         children: "Список корневых департаментов. Карточки адаптируются под экран и длинный текст."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 42,
+                                        lineNumber: 51,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 37,
+                                lineNumber: 46,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -389,18 +404,18 @@ function DepartamentsPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 46,
+                                lineNumber: 55,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 36,
+                        lineNumber: 45,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 35,
+                    lineNumber: 44,
                     columnNumber: 9
                 }, this),
                 isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -408,21 +423,21 @@ function DepartamentsPage() {
                     children: "Загрузка департаментов..."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 53,
+                    lineNumber: 62,
                     columnNumber: 11
                 }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-center text-destructive",
                     children: "Ошибка загрузки. Обновите страницу."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 57,
+                    lineNumber: 66,
                     columnNumber: 11
                 }, this) : models.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground",
                     children: "Департаменты не найдены."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 61,
+                    lineNumber: 70,
                     columnNumber: 11
                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
@@ -445,7 +460,7 @@ function DepartamentsPage() {
                                                                     children: item.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 75,
+                                                                    lineNumber: 84,
                                                                     columnNumber: 25
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -457,13 +472,13 @@ function DepartamentsPage() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 76,
+                                                                    lineNumber: 85,
                                                                     columnNumber: 25
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 74,
+                                                            lineNumber: 83,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -471,13 +486,13 @@ function DepartamentsPage() {
                                                             children: item.isActive ? "Активен" : "Неактивен"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 80,
+                                                            lineNumber: 89,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 73,
+                                                    lineNumber: 82,
                                                     columnNumber: 21
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -491,7 +506,7 @@ function DepartamentsPage() {
                                                                     children: "Глубина:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 89,
+                                                                    lineNumber: 98,
                                                                     columnNumber: 67
                                                                 }, this),
                                                                 " ",
@@ -499,7 +514,7 @@ function DepartamentsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 89,
+                                                            lineNumber: 98,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -510,7 +525,7 @@ function DepartamentsPage() {
                                                                     children: "Родитель:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 90,
+                                                                    lineNumber: 99,
                                                                     columnNumber: 67
                                                                 }, this),
                                                                 " ",
@@ -518,7 +533,7 @@ function DepartamentsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 90,
+                                                            lineNumber: 99,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -529,7 +544,7 @@ function DepartamentsPage() {
                                                                     children: "Детей:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 91,
+                                                                    lineNumber: 100,
                                                                     columnNumber: 67
                                                                 }, this),
                                                                 " ",
@@ -537,7 +552,7 @@ function DepartamentsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 91,
+                                                            lineNumber: 100,
                                                             columnNumber: 23
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -548,7 +563,7 @@ function DepartamentsPage() {
                                                                     children: "hasMore:"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 92,
+                                                                    lineNumber: 101,
                                                                     columnNumber: 67
                                                                 }, this),
                                                                 " ",
@@ -556,19 +571,19 @@ function DepartamentsPage() {
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 92,
+                                                            lineNumber: 101,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 88,
+                                                    lineNumber: 97,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 72,
+                                            lineNumber: 81,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -580,7 +595,7 @@ function DepartamentsPage() {
                                                         children: "Дочерние департаменты:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                                        lineNumber: 98,
+                                                        lineNumber: 107,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -591,7 +606,7 @@ function DepartamentsPage() {
                                                                     children: child.name
                                                                 }, child.id, false, {
                                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                                    lineNumber: 101,
+                                                                    lineNumber: 110,
                                                                     columnNumber: 29
                                                                 }, this)),
                                                             item.childs.length > 3 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
@@ -602,13 +617,13 @@ function DepartamentsPage() {
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                                                lineNumber: 103,
+                                                                lineNumber: 112,
                                                                 columnNumber: 54
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                                        lineNumber: 99,
+                                                        lineNumber: 108,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
@@ -616,23 +631,23 @@ function DepartamentsPage() {
                                                 children: "Нет дочерних"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                                lineNumber: 107,
+                                                lineNumber: 116,
                                                 columnNumber: 23
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 95,
+                                            lineNumber: 104,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, item.id, true, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 68,
+                                    lineNumber: 77,
                                     columnNumber: 17
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 66,
+                            lineNumber: 75,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Pagination"], {
@@ -643,7 +658,7 @@ function DepartamentsPage() {
                                     text: "Назад"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 115,
+                                    lineNumber: 124,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PaginationContent"], {
@@ -658,17 +673,17 @@ function DepartamentsPage() {
                                                 children: p
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                                lineNumber: 122,
+                                                lineNumber: 131,
                                                 columnNumber: 21
                                             }, this)
                                         }, p, false, {
                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 121,
+                                            lineNumber: 130,
                                             columnNumber: 19
                                         }, this))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 119,
+                                    lineNumber: 128,
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["PaginationNext"], {
@@ -676,13 +691,13 @@ function DepartamentsPage() {
                                     text: "Далее"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 135,
+                                    lineNumber: 144,
                                     columnNumber: 15
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 114,
+                            lineNumber: 123,
                             columnNumber: 13
                         }, this)
                     ]
@@ -690,12 +705,12 @@ function DepartamentsPage() {
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 34,
+            lineNumber: 43,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/departaments/page.tsx",
-        lineNumber: 33,
+        lineNumber: 42,
         columnNumber: 5
     }, this);
 }

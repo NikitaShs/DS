@@ -111,7 +111,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axio
 const departamentsApi = {
     getDepartaments: async (request)=>{
         const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axion$2d$instance$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["apiClient"].get("/api/departaments/roots", {
-            params: request
+            params: {
+                SizePage: request.pageSize,
+                Page: request.page,
+                prefetch: request.prefetch
+            }
         });
         return response.data;
     }
@@ -134,401 +138,395 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$entities$2f$departame
 ;
 ;
 const PAGE_SIZE = 5;
-function getPagerPages(current, last) {
-    const pages = [];
-    for(let i = 1; i <= last; i += 1){
-        if (last <= 5 || i === 1 || i === last || Math.abs(i - current) <= 1) {
-            pages.push(i);
-        } else if (i === 2 || i === last - 1) {
-            pages.push("...");
-        }
-    }
-    return pages.filter((page, index)=>page !== "..." || pages[index - 1] !== "...");
-}
 function DepartamentsPage() {
     const [page, setPage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(1);
-    const { data, isLoading, error } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])([
-        "departaments-roots",
-        page
-    ], ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$entities$2f$departaments$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["departamentsApi"].getDepartaments({
-            page,
-            pageSize: PAGE_SIZE,
-            prefetch: 3
-        }), {
-        keepPreviousData: true,
+    const { data, isLoading, error } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useQuery"])({
+        queryKey: [
+            "departaments",
+            page
+        ],
+        queryFn: ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$entities$2f$departaments$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["departamentsApi"].getDepartaments({
+                page,
+                pageSize: PAGE_SIZE,
+                prefetch: 3
+            }),
         staleTime: 1000 * 60
     });
-    const models = data?.result?.departamenthAndChildModels ?? [];
-    const total = data?.result?.totalCount ?? 0;
+    const allModels = data?.result?.departamenthAndChildModels ?? [];
+    const total = data?.result?.totalCount ?? allModels.length;
     const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-    const pagerPages = getPagerPages(page, lastPage);
+    const pages = Array.from({
+        length: lastPage
+    }, (_v, i)=>i + 1);
+    const models = allModels.length > PAGE_SIZE ? allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : allModels;
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (page > lastPage) {
+            setPage(lastPage);
+        }
+        if (page < 1) {
+            setPage(1);
+        }
+    }, [
+        page,
+        lastPage
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "bg-background text-foreground min-h-screen p-4 sm:p-6 md:p-8",
+        className: "bg-background text-foreground min-h-screen p-3 sm:p-5 md:p-7 lg:p-8",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "mx-auto max-w-6xl space-y-4",
             children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-border bg-card p-4 sm:p-5",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "text-xs uppercase tracking-[0.25em] text-muted-foreground",
-                                            children: "Locations / Departments"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 52,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                            className: "mt-1 text-2xl font-bold sm:text-3xl",
-                                            children: "Departments"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 53,
-                                            columnNumber: 15
-                                        }, this),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                            className: "mt-1 max-w-3xl text-sm text-muted-foreground sm:text-base",
-                                            children: "Root departments list. Showing up to 5 items per page."
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 54,
-                                            columnNumber: 15
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 51,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "rounded-xl border border-border bg-muted px-3 py-2 text-xs font-medium text-foreground",
-                                    children: [
-                                        "Total: ",
-                                        total
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 58,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 50,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "mt-3 flex flex-wrap items-center gap-2",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                    type: "button",
-                                    className: "rounded-md border border-border bg-muted px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed",
-                                    onClick: ()=>setPage((prev)=>Math.max(1, prev - 1)),
-                                    disabled: page <= 1 || isLoading,
-                                    children: "← Prev"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 62,
-                                    columnNumber: 13
-                                }, this),
-                                pagerPages.map((item, index)=>item === "..." ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "px-2 text-xs text-muted-foreground",
-                                        children: "..."
-                                    }, `dots-${index}`, false, {
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex flex-wrap items-start justify-between gap-3",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-xs uppercase tracking-[0.25em] text-muted-foreground",
+                                        children: "Локации / Департаменты"
+                                    }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 73,
-                                        columnNumber: 17
-                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                        type: "button",
-                                        onClick: ()=>setPage(Number(item)),
-                                        disabled: isLoading,
-                                        className: `rounded-md border px-2 py-1 text-xs font-semibold ${item === page ? "border-primary bg-primary text-white" : "border-border bg-background text-foreground hover:border-primary"}`,
-                                        children: item
-                                    }, `page-${item}`, false, {
+                                        lineNumber: 40,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                        className: "mt-1 text-2xl font-bold sm:text-3xl",
+                                        children: "Департаменты"
+                                    }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 77,
-                                        columnNumber: 17
-                                    }, this)),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                    type: "button",
-                                    className: "rounded-md border border-border bg-muted px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed",
-                                    onClick: ()=>setPage((prev)=>Math.min(lastPage, prev + 1)),
-                                    disabled: page >= lastPage || isLoading,
-                                    children: "Next →"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 93,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "ml-auto text-xs text-muted-foreground",
-                                    children: [
-                                        "Page ",
-                                        page,
-                                        " of ",
-                                        lastPage
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 102,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 61,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                                        lineNumber: 43,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "mt-1 max-w-3xl text-sm text-muted-foreground sm:text-base",
+                                        children: "Список корневых департаментов. Карточки адаптируются под экран и длинный текст."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/departaments/page.tsx",
+                                        lineNumber: 44,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/departaments/page.tsx",
+                                lineNumber: 39,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "text-xs sm:text-sm",
+                                children: [
+                                    "Всего департаментов: ",
+                                    total
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/departaments/page.tsx",
+                                lineNumber: 48,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/departaments/page.tsx",
+                        lineNumber: 38,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 49,
+                    lineNumber: 37,
                     columnNumber: 9
                 }, this),
                 isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground",
-                    children: "Loading..."
+                    children: "Загрузка департаментов..."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 107,
+                    lineNumber: 55,
                     columnNumber: 11
                 }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-center text-destructive",
-                    children: "Error loading departments. Please refresh."
+                    children: "Ошибка загрузки. Обновите страницу."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 109,
+                    lineNumber: 59,
                     columnNumber: 11
                 }, this) : models.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground",
-                    children: "No departments found."
+                    children: "Департаменты не найдены."
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 111,
+                    lineNumber: 63,
                     columnNumber: 11
-                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-3",
-                    children: models.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
-                            className: "flex min-h-[200px] flex-col justify-between rounded-2xl border border-border bg-card p-3 sm:p-4 transition hover:-translate-y-0.5 hover:shadow-md",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "space-y-2",
+                }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-3",
+                            children: models.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("article", {
+                                    className: "flex min-h-45 flex-col justify-between rounded-2xl border border-border bg-card p-3 sm:p-4 transition hover:-translate-y-0.5 hover:shadow-md",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "flex flex-wrap items-start justify-between gap-2",
+                                            className: "space-y-2",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "min-w-0",
+                                                    className: "flex flex-wrap items-start justify-between gap-2",
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                                            className: "text-base font-semibold sm:text-lg truncate",
-                                                            children: item.name
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 122,
-                                                            columnNumber: 23
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "mt-0.5 text-xs text-muted-foreground sm:text-sm truncate",
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "min-w-0",
                                                             children: [
-                                                                item.identifier,
-                                                                " · ",
-                                                                item.path
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                                                    className: "text-base font-semibold leading-snug sm:text-lg truncate",
+                                                                    children: item.name
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 77,
+                                                                    columnNumber: 25
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                    className: "mt-0.5 text-xs text-muted-foreground sm:text-sm truncate",
+                                                                    children: [
+                                                                        item.identifier,
+                                                                        " · ",
+                                                                        item.path
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 78,
+                                                                    columnNumber: 25
+                                                                }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 123,
+                                                            lineNumber: 76,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                            className: `rounded-full px-2 py-0.5 text-[10px] font-semibold sm:text-xs ${item.isActive ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"}`,
+                                                            children: item.isActive ? "Активен" : "Неактивен"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                                            lineNumber: 82,
                                                             columnNumber: 23
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 121,
+                                                    lineNumber: 75,
                                                     columnNumber: 21
                                                 }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: `rounded-full px-2 py-0.5 text-[10px] font-semibold sm:text-xs ${item.isActive ? "bg-emerald-500/10 text-emerald-600" : "bg-red-500/10 text-red-600"}`,
-                                                    children: item.isActive ? "Active" : "Inactive"
-                                                }, void 0, false, {
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "grid gap-2 text-xs text-muted-foreground sm:grid-cols-2 sm:text-sm",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "rounded-md bg-muted/60 p-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "font-medium text-foreground",
+                                                                    children: "Глубина:"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 91,
+                                                                    columnNumber: 67
+                                                                }, this),
+                                                                " ",
+                                                                item.depth
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                                            lineNumber: 91,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "rounded-md bg-muted/60 p-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "font-medium text-foreground",
+                                                                    children: "Родитель:"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 92,
+                                                                    columnNumber: 67
+                                                                }, this),
+                                                                " ",
+                                                                item.parentId ?? "—"
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                                            lineNumber: 92,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "rounded-md bg-muted/60 p-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "font-medium text-foreground",
+                                                                    children: "Детей:"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 93,
+                                                                    columnNumber: 67
+                                                                }, this),
+                                                                " ",
+                                                                item.childs?.length ?? 0
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                                            lineNumber: 93,
+                                                            columnNumber: 23
+                                                        }, this),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "rounded-md bg-muted/60 p-2",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                                    className: "font-medium text-foreground",
+                                                                    children: "hasMore:"
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 94,
+                                                                    columnNumber: 67
+                                                                }, this),
+                                                                " ",
+                                                                item.hasMoreChildren ? "Да" : "Нет"
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                                            lineNumber: 94,
+                                                            columnNumber: 23
+                                                        }, this)
+                                                    ]
+                                                }, void 0, true, {
                                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 125,
+                                                    lineNumber: 90,
                                                     columnNumber: 21
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 120,
+                                            lineNumber: 74,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "grid gap-2 text-xs text-muted-foreground sm:grid-cols-2 sm:text-sm",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "rounded-md bg-muted/60 p-2",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            className: "font-medium text-foreground",
-                                                            children: "Depth:"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 131,
-                                                            columnNumber: 65
-                                                        }, this),
-                                                        " ",
-                                                        item.depth
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 131,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "rounded-md bg-muted/60 p-2",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            className: "font-medium text-foreground",
-                                                            children: "Parent:"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 132,
-                                                            columnNumber: 65
-                                                        }, this),
-                                                        " ",
-                                                        item.parentId ?? "—"
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 132,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "rounded-md bg-muted/60 p-2",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            className: "font-medium text-foreground",
-                                                            children: "Children:"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 133,
-                                                            columnNumber: 65
-                                                        }, this),
-                                                        " ",
-                                                        item.childs?.length ?? 0
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 133,
-                                                    columnNumber: 21
-                                                }, this),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "rounded-md bg-muted/60 p-2",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                            className: "font-medium text-foreground",
-                                                            children: "More:"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 134,
-                                                            columnNumber: 65
-                                                        }, this),
-                                                        " ",
-                                                        item.hasMoreChildren ? "Yes" : "No"
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                                    lineNumber: 134,
-                                                    columnNumber: 21
-                                                }, this)
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 130,
-                                            columnNumber: 19
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 119,
-                                    columnNumber: 17
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "mt-2 rounded-xl border border-border p-2 text-xs text-muted-foreground sm:text-sm",
-                                    children: item.childs && item.childs.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "font-medium text-foreground",
-                                                children: "Child departments:"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/departaments/page.tsx",
-                                                lineNumber: 141,
-                                                columnNumber: 23
-                                            }, this),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                                                className: "ml-3 mt-1 list-disc space-y-1",
+                                            className: "mt-2 rounded-xl border border-border p-2 text-xs text-muted-foreground sm:text-sm",
+                                            children: item.childs?.length ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                                                 children: [
-                                                    item.childs.slice(0, 3).map((child)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                                            className: "truncate",
-                                                            children: child.name
-                                                        }, child.id, false, {
-                                                            fileName: "[project]/src/app/departaments/page.tsx",
-                                                            lineNumber: 144,
-                                                            columnNumber: 27
-                                                        }, this)),
-                                                    item.childs.length > 3 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "font-medium text-foreground",
+                                                        children: "Дочерние департаменты:"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/app/departaments/page.tsx",
+                                                        lineNumber: 100,
+                                                        columnNumber: 25
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                                                        className: "ml-3 mt-1 list-disc space-y-1",
                                                         children: [
-                                                            "+",
-                                                            item.childs.length - 3,
-                                                            " more..."
+                                                            item.childs.slice(0, 3).map((child)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                                    className: "truncate",
+                                                                    children: child.name
+                                                                }, child.id, false, {
+                                                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                                                    lineNumber: 103,
+                                                                    columnNumber: 29
+                                                                }, this)),
+                                                            item.childs.length > 3 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
+                                                                children: [
+                                                                    "+",
+                                                                    item.childs.length - 3,
+                                                                    " ещё..."
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/src/app/departaments/page.tsx",
+                                                                lineNumber: 105,
+                                                                columnNumber: 54
+                                                            }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                                        lineNumber: 146,
-                                                        columnNumber: 51
-                                                    }, this) : null
+                                                        lineNumber: 101,
+                                                        columnNumber: 25
+                                                    }, this)
                                                 ]
-                                            }, void 0, true, {
+                                            }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                children: "Нет дочерних"
+                                            }, void 0, false, {
                                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                                lineNumber: 142,
+                                                lineNumber: 109,
                                                 columnNumber: 23
                                             }, this)
-                                        ]
-                                    }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        children: "No child departments"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 150,
-                                        columnNumber: 21
-                                    }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                            lineNumber: 97,
+                                            columnNumber: 19
+                                        }, this)
+                                    ]
+                                }, item.id, true, {
+                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                    lineNumber: 70,
+                                    columnNumber: 17
+                                }, this))
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/departaments/page.tsx",
+                            lineNumber: 68,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Pagination, {
+                            className: "mt-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PaginationPrevious, {
+                                    onClick: ()=>setPage((prev)=>Math.max(1, prev - 1)),
+                                    text: "Назад"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 138,
-                                    columnNumber: 17
+                                    lineNumber: 117,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PaginationContent, {
+                                    children: pages.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PaginationItem, {
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PaginationLink, {
+                                                href: "#",
+                                                isActive: p === page,
+                                                onClick: (event)=>{
+                                                    event.preventDefault();
+                                                    setPage(p);
+                                                },
+                                                children: p
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/departaments/page.tsx",
+                                                lineNumber: 124,
+                                                columnNumber: 21
+                                            }, this)
+                                        }, p, false, {
+                                            fileName: "[project]/src/app/departaments/page.tsx",
+                                            lineNumber: 123,
+                                            columnNumber: 19
+                                        }, this))
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                    lineNumber: 121,
+                                    columnNumber: 15
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(PaginationNext, {
+                                    onClick: ()=>setPage((prev)=>Math.min(lastPage, prev + 1)),
+                                    text: "Далее"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/departaments/page.tsx",
+                                    lineNumber: 137,
+                                    columnNumber: 15
                                 }, this)
                             ]
-                        }, item.id, true, {
+                        }, void 0, true, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 115,
-                            columnNumber: 15
-                        }, this))
-                }, void 0, false, {
-                    fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 113,
-                    columnNumber: 11
-                }, this)
+                            lineNumber: 116,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true)
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 48,
+            lineNumber: 36,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/departaments/page.tsx",
-        lineNumber: 47,
+        lineNumber: 35,
         columnNumber: 5
     }, this);
 }

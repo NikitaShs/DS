@@ -30,7 +30,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axio
 const departamentsApi = {
     getDepartaments: async (request)=>{
         const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$api$2f$axion$2d$instance$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["apiClient"].get("/api/departaments/roots", {
-            params: request
+            params: {
+                SizePage: request.pageSize,
+                Page: request.page,
+                prefetch: request.prefetch
+            }
         });
         return response.data;
     }
@@ -570,12 +574,12 @@ var _s = __turbopack_context__.k.signature();
 const PAGE_SIZE = 5;
 function DepartamentsPage() {
     _s();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(21);
-    if ($[0] !== "42679c0de9a7fd1e84c613bb4fd236bfcac7ae73b263bbdff30ff0c1d0f3bc1c") {
-        for(let $i = 0; $i < 21; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(27);
+    if ($[0] !== "d156fcee8b4dd7f77a2cb3d71a411fbd2ccae0ab8e94ade4e9144d3bbedbd9c3") {
+        for(let $i = 0; $i < 27; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "42679c0de9a7fd1e84c613bb4fd236bfcac7ae73b263bbdff30ff0c1d0f3bc1c";
+        $[0] = "d156fcee8b4dd7f77a2cb3d71a411fbd2ccae0ab8e94ade4e9144d3bbedbd9c3";
     }
     const [page, setPage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
     let t0;
@@ -599,111 +603,158 @@ function DepartamentsPage() {
     }
     const { data, isLoading, error } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useQuery"])(t0);
     let t1;
+    if ($[3] !== data?.result?.departamenthAndChildModels) {
+        t1 = data?.result?.departamenthAndChildModels ?? [];
+        $[3] = data?.result?.departamenthAndChildModels;
+        $[4] = t1;
+    } else {
+        t1 = $[4];
+    }
+    const allModels = t1;
+    const total = data?.result?.totalCount ?? allModels.length;
+    const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
     let t2;
-    let t3;
-    let t4;
-    if ($[3] !== data?.result?.departamenthAndChildModels || $[4] !== error || $[5] !== isLoading || $[6] !== page) {
-        const allModels = data?.result?.departamenthAndChildModels ?? [];
-        const total = allModels.length;
-        const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-        const pages = Array.from({
+    if ($[5] !== lastPage) {
+        t2 = Array.from({
             length: lastPage
         }, _DepartamentsPageArrayFrom);
-        const models = allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-        t4 = "bg-background text-foreground min-h-screen p-3 sm:p-5 md:p-7 lg:p-8";
-        t1 = "mx-auto max-w-6xl space-y-4";
-        let t5;
-        if ($[11] === Symbol.for("react.memo_cache_sentinel")) {
-            t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        $[5] = lastPage;
+        $[6] = t2;
+    } else {
+        t2 = $[6];
+    }
+    const pages = t2;
+    let t3;
+    if ($[7] !== allModels || $[8] !== page) {
+        t3 = allModels.length > PAGE_SIZE ? allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : allModels;
+        $[7] = allModels;
+        $[8] = page;
+        $[9] = t3;
+    } else {
+        t3 = $[9];
+    }
+    const models = t3;
+    let t4;
+    let t5;
+    if ($[10] !== lastPage || $[11] !== page) {
+        t4 = ({
+            "DepartamentsPage[useEffect()]": ()=>{
+                if (page > lastPage) {
+                    setPage(lastPage);
+                }
+                if (page < 1) {
+                    setPage(1);
+                }
+            }
+        })["DepartamentsPage[useEffect()]"];
+        t5 = [
+            page,
+            lastPage
+        ];
+        $[10] = lastPage;
+        $[11] = page;
+        $[12] = t4;
+        $[13] = t5;
+    } else {
+        t4 = $[12];
+        t5 = $[13];
+    }
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])(t4, t5);
+    let t6;
+    if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
+        t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    className: "text-xs uppercase tracking-[0.25em] text-muted-foreground",
+                    children: "Локации / Департаменты"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/departaments/page.tsx",
+                    lineNumber: 97,
+                    columnNumber: 15
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                    className: "mt-1 text-2xl font-bold sm:text-3xl",
+                    children: "Департаменты"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/departaments/page.tsx",
+                    lineNumber: 97,
+                    columnNumber: 114
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    className: "mt-1 max-w-3xl text-sm text-muted-foreground sm:text-base",
+                    children: "Список корневых департаментов. Карточки адаптируются под экран и длинный текст."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/departaments/page.tsx",
+                    lineNumber: 97,
+                    columnNumber: 183
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/app/departaments/page.tsx",
+            lineNumber: 97,
+            columnNumber: 10
+        }, this);
+        $[14] = t6;
+    } else {
+        t6 = $[14];
+    }
+    let t7;
+    if ($[15] !== total) {
+        t7 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "rounded-2xl border border-border bg-card p-4 sm:p-5",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "flex flex-wrap items-start justify-between gap-3",
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "text-xs uppercase tracking-[0.25em] text-muted-foreground",
-                        children: "Локации / Департаменты"
-                    }, void 0, false, {
+                    t6,
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "text-xs sm:text-sm",
+                        children: [
+                            "Всего департаментов: ",
+                            total
+                        ]
+                    }, void 0, true, {
                         fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 56,
-                        columnNumber: 17
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "mt-1 text-2xl font-bold sm:text-3xl",
-                        children: "Департаменты"
-                    }, void 0, false, {
-                        fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 56,
-                        columnNumber: 116
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "mt-1 max-w-3xl text-sm text-muted-foreground sm:text-base",
-                        children: "Список корневых департаментов. Карточки адаптируются под экран и длинный текст."
-                    }, void 0, false, {
-                        fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 56,
-                        columnNumber: 185
+                        lineNumber: 104,
+                        columnNumber: 149
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/departaments/page.tsx",
-                lineNumber: 56,
-                columnNumber: 12
-            }, this);
-            $[11] = t5;
-        } else {
-            t5 = $[11];
-        }
-        if ($[12] !== total) {
-            t2 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "rounded-2xl border border-border bg-card p-4 sm:p-5",
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex flex-wrap items-start justify-between gap-3",
-                    children: [
-                        t5,
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "text-xs sm:text-sm",
-                            children: [
-                                "Всего департаментов: ",
-                                total
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 62,
-                            columnNumber: 151
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 62,
-                    columnNumber: 81
-                }, this)
-            }, void 0, false, {
-                fileName: "[project]/src/app/departaments/page.tsx",
-                lineNumber: 62,
-                columnNumber: 12
-            }, this);
-            $[12] = total;
-            $[13] = t2;
-        } else {
-            t2 = $[13];
-        }
-        t3 = isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                lineNumber: 104,
+                columnNumber: 79
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/app/departaments/page.tsx",
+            lineNumber: 104,
+            columnNumber: 10
+        }, this);
+        $[15] = total;
+        $[16] = t7;
+    } else {
+        t7 = $[16];
+    }
+    let t8;
+    if ($[17] !== error || $[18] !== isLoading || $[19] !== lastPage || $[20] !== models || $[21] !== page || $[22] !== pages) {
+        t8 = isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground",
             children: "Загрузка департаментов..."
         }, void 0, false, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 68,
+            lineNumber: 112,
             columnNumber: 22
         }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-center text-destructive",
             children: "Ошибка загрузки. Обновите страницу."
         }, void 0, false, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 68,
+            lineNumber: 112,
             columnNumber: 160
         }, this) : models.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "rounded-2xl border border-border bg-card p-4 text-center text-muted-foreground",
             children: "Департаменты не найдены."
         }, void 0, false, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 68,
+            lineNumber: 112,
             columnNumber: 335
         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: [
@@ -712,7 +763,7 @@ function DepartamentsPage() {
                     children: models.map(_DepartamentsPageModelsMap)
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 68,
+                    lineNumber: 112,
                     columnNumber: 466
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Pagination"], {
@@ -725,7 +776,7 @@ function DepartamentsPage() {
                             text: "\u041D\u0430\u0437\u0430\u0434"
                         }, void 0, false, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 68,
+                            lineNumber: 112,
                             columnNumber: 599
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PaginationContent"], {
@@ -743,18 +794,18 @@ function DepartamentsPage() {
                                             children: p
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/departaments/page.tsx",
-                                            lineNumber: 71,
+                                            lineNumber: 115,
                                             columnNumber: 75
                                         }, this)
                                     }, p, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 71,
+                                        lineNumber: 115,
                                         columnNumber: 51
                                     }, this)
                             }["DepartamentsPage[pages.map()]"])
                         }, void 0, false, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 70,
+                            lineNumber: 114,
                             columnNumber: 104
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$shared$2f$components$2f$ui$2f$pagination$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["PaginationNext"], {
@@ -766,70 +817,56 @@ function DepartamentsPage() {
                             text: "\u0414\u0430\u043B\u0435\u0435"
                         }, void 0, false, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 77,
+                            lineNumber: 121,
                             columnNumber: 67
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 68,
+                    lineNumber: 112,
                     columnNumber: 570
                 }, this)
             ]
         }, void 0, true);
-        $[3] = data?.result?.departamenthAndChildModels;
-        $[4] = error;
-        $[5] = isLoading;
-        $[6] = page;
-        $[7] = t1;
-        $[8] = t2;
-        $[9] = t3;
-        $[10] = t4;
+        $[17] = error;
+        $[18] = isLoading;
+        $[19] = lastPage;
+        $[20] = models;
+        $[21] = page;
+        $[22] = pages;
+        $[23] = t8;
     } else {
-        t1 = $[7];
-        t2 = $[8];
-        t3 = $[9];
-        t4 = $[10];
+        t8 = $[23];
     }
-    let t5;
-    if ($[14] !== t1 || $[15] !== t2 || $[16] !== t3) {
-        t5 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: t1,
-            children: [
-                t2,
-                t3
-            ]
-        }, void 0, true, {
-            fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 98,
-            columnNumber: 10
-        }, this);
-        $[14] = t1;
-        $[15] = t2;
-        $[16] = t3;
-        $[17] = t5;
-    } else {
-        t5 = $[17];
-    }
-    let t6;
-    if ($[18] !== t4 || $[19] !== t5) {
-        t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: t4,
-            children: t5
+    let t9;
+    if ($[24] !== t7 || $[25] !== t8) {
+        t9 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "bg-background text-foreground min-h-screen p-3 sm:p-5 md:p-7 lg:p-8",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "mx-auto max-w-6xl space-y-4",
+                children: [
+                    t7,
+                    t8
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/departaments/page.tsx",
+                lineNumber: 138,
+                columnNumber: 95
+            }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/departaments/page.tsx",
-            lineNumber: 108,
+            lineNumber: 138,
             columnNumber: 10
         }, this);
-        $[18] = t4;
-        $[19] = t5;
-        $[20] = t6;
+        $[24] = t7;
+        $[25] = t8;
+        $[26] = t9;
     } else {
-        t6 = $[20];
+        t9 = $[26];
     }
-    return t6;
+    return t9;
 }
-_s(DepartamentsPage, "FGrRqmq1uMtqK0CueYsz+lwqP/Y=", false, function() {
+_s(DepartamentsPage, "DgHq2+ts1guXzJHVKhEuvQkzyJQ=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$tanstack$2f$react$2d$query$2f$build$2f$modern$2f$useQuery$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useQuery"]
     ];
@@ -856,7 +893,7 @@ function _DepartamentsPageModelsMap(item) {
                                         children: item.name
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 304
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -868,13 +905,13 @@ function _DepartamentsPageModelsMap(item) {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 393
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 279
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -882,13 +919,13 @@ function _DepartamentsPageModelsMap(item) {
                                 children: item.isActive ? "\u0410\u043A\u0442\u0438\u0432\u0435\u043D" : "\u041D\u0435\u0430\u043A\u0442\u0438\u0432\u0435\u043D"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 506
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 121,
+                        lineNumber: 151,
                         columnNumber: 213
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -902,7 +939,7 @@ function _DepartamentsPageModelsMap(item) {
                                         children: "Глубина:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 935
                                     }, this),
                                     " ",
@@ -910,7 +947,7 @@ function _DepartamentsPageModelsMap(item) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 891
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -921,7 +958,7 @@ function _DepartamentsPageModelsMap(item) {
                                         children: "Родитель:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 1059
                                     }, this),
                                     " ",
@@ -929,7 +966,7 @@ function _DepartamentsPageModelsMap(item) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 1015
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -940,7 +977,7 @@ function _DepartamentsPageModelsMap(item) {
                                         children: "Детей:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 1199
                                     }, this),
                                     " ",
@@ -948,7 +985,7 @@ function _DepartamentsPageModelsMap(item) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 1155
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -959,7 +996,7 @@ function _DepartamentsPageModelsMap(item) {
                                         children: "hasMore:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/departaments/page.tsx",
-                                        lineNumber: 121,
+                                        lineNumber: 151,
                                         columnNumber: 1335
                                     }, this),
                                     " ",
@@ -967,19 +1004,19 @@ function _DepartamentsPageModelsMap(item) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/departaments/page.tsx",
-                                lineNumber: 121,
+                                lineNumber: 151,
                                 columnNumber: 1291
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/departaments/page.tsx",
-                        lineNumber: 121,
+                        lineNumber: 151,
                         columnNumber: 807
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/departaments/page.tsx",
-                lineNumber: 121,
+                lineNumber: 151,
                 columnNumber: 186
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -991,7 +1028,7 @@ function _DepartamentsPageModelsMap(item) {
                             children: "Дочерние департаменты:"
                         }, void 0, false, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 121,
+                            lineNumber: 151,
                             columnNumber: 1601
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -1006,13 +1043,13 @@ function _DepartamentsPageModelsMap(item) {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/departaments/page.tsx",
-                                    lineNumber: 121,
+                                    lineNumber: 151,
                                     columnNumber: 1813
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/departaments/page.tsx",
-                            lineNumber: 121,
+                            lineNumber: 151,
                             columnNumber: 1674
                         }, this)
                     ]
@@ -1020,18 +1057,18 @@ function _DepartamentsPageModelsMap(item) {
                     children: "Нет дочерних"
                 }, void 0, false, {
                     fileName: "[project]/src/app/departaments/page.tsx",
-                    lineNumber: 121,
+                    lineNumber: 151,
                     columnNumber: 1866
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/departaments/page.tsx",
-                lineNumber: 121,
+                lineNumber: 151,
                 columnNumber: 1477
             }, this)
         ]
     }, item.id, true, {
         fileName: "[project]/src/app/departaments/page.tsx",
-        lineNumber: 121,
+        lineNumber: 151,
         columnNumber: 10
     }, this);
 }
@@ -1041,7 +1078,7 @@ function _DepartamentsPageModelsMapAnonymous(child) {
         children: child.name
     }, child.id, false, {
         fileName: "[project]/src/app/departaments/page.tsx",
-        lineNumber: 124,
+        lineNumber: 154,
         columnNumber: 10
     }, this);
 }

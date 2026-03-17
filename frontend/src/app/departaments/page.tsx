@@ -1,36 +1,36 @@
 ﻿"use client"
 
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import { departamentsApi, Envelope } from "@/entities/departaments/api"
-import { DepartamentChild, DepartamenthAndChildDto } from "@/entities/departaments/types"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/shared/components/ui/pagination"
+import { useEffect, useState } from "react"
+import { DepartamentsPagination } from "@/features/departament/departaments-pagination"
+import { DepartamentChild } from "@/entities/departaments/types"
+import DepartamentRootList from "@/features/departament/model/use-create-departament"
+import { CreateDepartamentDialog } from "@/features/departament/create-departament_dialog"
 
 const PAGE_SIZE = 5
 
 export default function DepartamentsPage() {
   const [page, setPage] = useState(1)
-  const { data, isLoading, error } = useQuery<Envelope<DepartamenthAndChildDto>, Error>({
-    queryKey: ["departaments", page],
-    queryFn: () => departamentsApi.getDepartaments({ page, pageSize: PAGE_SIZE, prefetch: 3 }),
-    staleTime: 1000 * 60,
-  })
+  
+  const { data, isLoading, error } = DepartamentRootList({ page, pageSize: PAGE_SIZE })
 
   const allModels: DepartamentChild[] = data?.result?.departamenthAndChildModels ?? []
-  const total = allModels.length
+  const total = data?.result?.totalCount ?? allModels.length
   const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const pages = Array.from({ length: lastPage }, (_v, i) => i + 1)
-  const models = allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  const models = allModels.length > PAGE_SIZE ? allModels.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : allModels
+
+  useEffect(() => {
+    if (page > lastPage) {
+      setPage(lastPage)
+    }
+    if (page < 1) {
+      setPage(1)
+    }
+  }, [page, lastPage])
 
   return (
     <div className="bg-background text-foreground min-h-screen p-3 sm:p-5 md:p-7 lg:p-8">
+      <CreateDepartamentDialog />
       <div className="mx-auto max-w-6xl space-y-4">
         <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
@@ -111,32 +111,7 @@ export default function DepartamentsPage() {
               ))}
             </div>
 
-            <Pagination className="mt-4">
-              <PaginationPrevious
-                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                text="Назад"
-              />
-              <PaginationContent>
-                {pages.map((p) => (
-                  <PaginationItem key={p}>
-                    <PaginationLink
-                      href="#"
-                      isActive={p === page}
-                      onClick={(event) => {
-                        event.preventDefault()
-                        setPage(p)
-                      }}
-                    >
-                      {p}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-              </PaginationContent>
-              <PaginationNext
-                onClick={() => setPage((prev) => Math.min(lastPage, prev + 1))}
-                text="Далее"
-              />
-            </Pagination>
+            <DepartamentsPagination page={page} setPage={setPage} total={total} pageSize={PAGE_SIZE} />
           </>
         )}
       </div>

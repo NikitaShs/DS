@@ -42,8 +42,8 @@ public class GetRootsDepartamentsServise
 
         long totalCount = await req.LongCountAsync();
 
-        req = req.OrderBy(q => q.CreateAt).Take(reqvestDto.SizePage)
-            .Skip((reqvestDto.Page - 1) * reqvestDto.SizePage);
+        req = req.OrderBy(q => q.CreateAt).Skip((reqvestDto.Page - 1) * reqvestDto.SizePage).Take(reqvestDto.SizePage)
+            ;
 
         List<DepartamenthAndChildModel> res = await req.Select(q => new DepartamenthAndChildModel
         {
