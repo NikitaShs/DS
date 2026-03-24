@@ -4,6 +4,7 @@ using PetDS.Application.abcstractions;
 using PetDS.Domain.Departament;
 using PetDS.Domain.Location;
 using PetDS.Domain.Position;
+using Wolverine.EntityFrameworkCore;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 
@@ -41,6 +42,7 @@ public class ApplicationDbContext(string connectionString) : DbContext, IReadDbC
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.MapWolverineEnvelopeStorage("public");
         modelBuilder.HasPostgresExtension("ltree");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }

@@ -33,13 +33,15 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
         UpdateDepartamentHierarchyCommand command,
         CancellationToken cancellationToken = default)
     {
-        Result<ITransactionScopes, Error> resultCommand = await _connectionManeger.CreateTranzit(cancellationToken);
-        if (resultCommand.IsFailure)
+        var resTranz = await _connectionManeger.CreateTranzit(cancellationToken);
+
+        if (resTranz.IsFailure)
         {
-            return GeneralErrors.Unknown().ToErrors();
+            return resTranz.Error;
         }
 
-        using ITransactionScopes? tranziction = resultCommand.Value;
+        await using var tranzit = resTranz.Value;
+
 
         if (command.departanetId == command.dto.parantId)
         {
@@ -75,7 +77,7 @@ public class UpdateDepartamentHierarchyServise : IHandler<Guid, UpdateDepartamen
             return GeneralErrors.Update("Hierahi").ToErrors();
         }
 
-        tranziction.Commit();
+        await tranzit.Commit(cancellationToken);
         _hybridCache.RemoveByTagAsync(CacheTags.Departament);
         return command.departanetId;
     }

@@ -3,52 +3,88 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using SharedKernel.Exseption;
+using Wolverine.EntityFrameworkCore;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 
-public class ConnectionManeger : IConnectionManeger
+public class ConnectionManeger : IAsyncDisposable, IConnectionManeger
 {
-    private readonly ApplicationDbContext _dbconection;
+    private readonly IDbContextOutbox<ApplicationDbContext> _outbox;
     private readonly ILogger<ConnectionManeger> _logger;
-    private readonly ILoggerFactory _loggerFactory;
+    private IDbContextTransaction _dbtransation;
 
-    public ConnectionManeger(ApplicationDbContext dbconection, ILogger<ConnectionManeger> logger,
-        ILoggerFactory loggerFactory)
+    public ConnectionManeger(IDbContextOutbox<ApplicationDbContext> outbox, ILogger<ConnectionManeger> logger)
     {
-        _dbconection = dbconection;
         _logger = logger;
-        _loggerFactory = loggerFactory;
+        _outbox = outbox;
     }
 
-    public async Task<Result<ITransactionScopes, Error>> CreateTranzit(CancellationToken cancellationToken)
+    public async Task<Result<IConnectionManeger, Errors>> CreateTranzit(CancellationToken cancellationToken)
     {
         try
         {
-            ILogger<TransactionScopes> logger = _loggerFactory.CreateLogger<TransactionScopes>();
-            IDbContextTransaction transaction = await _dbconection.Database.BeginTransactionAsync(cancellationToken);
-            TransactionScopes transactionScope = new(transaction.GetDbTransaction(), logger);
-            _logger.LogInformation("транзакция создана");
-            return transactionScope;
+            _dbtransation = await _outbox.DbContext.Database.BeginTransactionAsync(cancellationToken);
+            return this;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "транзакция не создана ");
-            return GeneralErrors.Unknown();
+            return Error.Failure("transaction.failed", ex.Message).ToErrors();
         }
     }
 
-    public async Task<UnitResult<Error>> SaveChangeAsync()
+    public async Task<UnitResult<Error>> Commit(CancellationToken cancellationToken)
+    {
+        if (_dbtransation is null)
+            return Error.Failure("fail.commit", "fail is commit");
+        try
+        {
+            await _dbtransation.CommitAsync(cancellationToken);
+            await _outbox.FlushOutgoingMessagesAsync();
+            _logger.LogInformation("успешный комит");
+            return UnitResult.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "не успешный комит");
+            return Error.Failure("fail.commit", "fail is commit");
+        }
+    }
+
+    public Task Rollback(CancellationToken cancellationToken) => _dbtransation.RollbackAsync(cancellationToken);
+
+    public ValueTask DisposeAsync() => _dbtransation.DisposeAsync();
+
+    public async Task<UnitResult<Error>> SaveChangeAsync(CancellationToken cancellationToken)
     {
         try
         {
-            _dbconection.SaveChanges();
-            _logger.LogInformation("успешно сохранено");
+            await _outbox.DbContext.SaveChangesAsync(cancellationToken);
             return UnitResult.Success<Error>();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "ошибка в созранением");
             return Error.Failure("fail.is.save", "fail save");
+        }
+    }
+
+    public async Task<UnitResult<Error>> PublishToOutboxAsync<T>(T message, CancellationToken cancellationToken = default) where T : class
+    {
+        if (_dbtransation == null)
+            return Error.Failure("transaction.not.started", "Транзакция не начата");
+
+        try
+        {
+            await _outbox.PublishAsync(message);
+
+            _logger.LogDebug("Сообщение сохранено в Outbox");
+            return UnitResult.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при сохранении сообщения в Outbox");
+            return Error.Failure("fail.is.save.Outbox", "fail save Outbox");
         }
     }
 }

@@ -39,8 +39,6 @@ public class DepartamentRepository : IDepartamentRepository
 
         try
         {
-            _applicationDbContext.SaveChanges();
-            _logger.LogInformation("Departament сохранён");
             if (departament.Parent != null)
             {
                 _hybridCache.RemoveByTagAsync(CacheTags.DepartamentChilds);

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MessagingComminication.MessagingDto
+namespace Core.MessagingComminication.MessagingDto.File
 {
-    public record AvatarDelete(
-        Guid AvatarId,
+    public record PreviewDelete(
+        Guid PreviewId,
         string EntiteType,
         Guid AssetsType
         );

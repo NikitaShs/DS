@@ -71,7 +71,7 @@ namespace FileService.Core.Messaging
             opts.ListenToRabbitQueue(QUEUE_FILE_DEPARTAMENTS_EVENT, queue =>
             {
                 queue.BindExchange(MessagingCommunicationConstans.EXTENTION_DEPARTAMENTS_EVENTS);
-            });
+            }).UseDurableInbox();
         }
 
     }

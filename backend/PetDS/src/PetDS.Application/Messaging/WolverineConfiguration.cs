@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wolverine;
+using Wolverine.EntityFrameworkCore;
+using Wolverine.Postgresql;
 using static CSharpFunctionalExtensions.Result;
 
 namespace PetDS.Application.Messaging
@@ -18,9 +20,14 @@ namespace PetDS.Application.Messaging
 
             string rebbitString = configuration.GetConnectionString("RabbitMQ");
 
+            string postgreConnectionString = configuration.GetConnectionString("BDDS");
+
+
             services.AddWolverine(ExtensionDiscovery.ManualOnly, opts =>
             {
                 opts.ApplicationAssembly = typeof(WolverineConfiguration).Assembly;
+
+                opts.ConfigureDurableMessaging(postgreConnectionString);
 
                 opts.AddRebbitMQ(rebbitString);
 
@@ -29,6 +36,17 @@ namespace PetDS.Application.Messaging
                 opts.Policies.UseDurableOutboxOnAllSendingEndpoints();
 
             });
+
+
+        }
+
+        private static void ConfigureDurableMessaging(this WolverineOptions opts, string postgreConnectionString)
+        {
+            opts.PersistMessagesWithPostgresql(postgreConnectionString, "public");
+            opts.UseEntityFrameworkCoreTransactions();
+            opts.Policies.UseDurableOutboxOnAllSendingEndpoints();
+
+            opts.Policies.UseDurableInboxOnAllListeners();
         }
     }
 }

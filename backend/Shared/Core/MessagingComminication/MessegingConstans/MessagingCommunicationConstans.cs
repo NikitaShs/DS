@@ -10,9 +10,19 @@ namespace Core.MessagingComminication.MessegingConstans
     {
         public const string EXTENTION_FILE_EVENTS = "file.events";
 
-        public const string EXTENTION_DEPARTAMENTS_EVENTS = "departaments.events";
+        public const string EXTENTION_NOTIFICATION_EVENTS = "notification.events";
 
-        public const string ROUTING_DELETE_DEPARTAMENT = "departament.delete";
+        public const string EXTENTION_DEPARTAMENTS_EVENTS = "departaments.events";
+            
+        public const string ROUTING_DEACTIVATED_DEPARTAMENT = "department.deactivated";
+
+        public const string ROUTING_CREATE_DEPARTAMENT = "department.created";
+
+        public const string ROUTING_LOCATION_UPDATE_DEPARTAMENT = "department.locations_updated";
+
+        public const string ROUTING_CREATE_POSITION = "position.created";
+
+        public const string ROUTING_DELETE_POSITION = "position.deleted";
 
         public const string ROUTING_CREATE_VIDEO = "video.create";
 

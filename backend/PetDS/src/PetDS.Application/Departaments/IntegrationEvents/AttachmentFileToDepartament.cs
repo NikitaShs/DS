@@ -1,4 +1,5 @@
 ﻿using Core.MessagingComminication.MessagingDto;
+using Core.MessagingComminication.MessagingDto.File;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;

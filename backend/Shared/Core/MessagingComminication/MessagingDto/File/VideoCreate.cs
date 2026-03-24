@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.MessagingComminication.MessagingDto
+namespace Core.MessagingComminication.MessagingDto.File
 {
-    public record ImageCreate(
-        Guid ImageId,
+    public record VideoCreate(
+        Guid VideoId,
         string EntiteType,
         Guid AssetsType
         );

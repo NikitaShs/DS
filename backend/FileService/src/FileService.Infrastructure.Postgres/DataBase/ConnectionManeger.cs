@@ -10,7 +10,7 @@ using Wolverine.EntityFrameworkCore;
 
 namespace PetDS.Infrastructure.DataBaseConnections;
 
-public class ConnectionManeger : IDisposable
+public class ConnectionManeger : IAsyncDisposable
 {
     private readonly IDbContextOutbox<PostgresDbContext> _outbox;
     private readonly ILogger<ConnectionManeger> _logger;
@@ -54,17 +54,15 @@ public class ConnectionManeger : IDisposable
         }
     }
 
-    public void Dispose() => _dbtransation?.Dispose();
+    public Task Rollback(CancellationToken cancellationToken) => _dbtransation.RollbackAsync(cancellationToken);
 
-    public void Rollback() => _dbtransation.Rollback();
-
+    public ValueTask DisposeAsync() => _dbtransation.DisposeAsync();
 
     public async Task<UnitResult<Error>> SaveChangeAsync(CancellationToken cancellationToken)
     {
         try
         {
             await _outbox.DbContext.SaveChangesAsync(cancellationToken);
-            await _outbox.FlushOutgoingMessagesAsync();
             return UnitResult.Success<Error>();
         }
         catch (Exception ex)
@@ -73,4 +71,24 @@ public class ConnectionManeger : IDisposable
             return Error.Failure("fail.is.save", "fail save");
         }
     }
+
+    public async Task<UnitResult<Error>> PublishToOutboxAsync<T>(T message, CancellationToken cancellationToken = default) where T : class
+    {
+        if (_dbtransation == null)
+            return Error.Failure("transaction.not.started", "Транзакция не начата");
+
+        try
+        {
+            await _outbox.PublishAsync(message);
+
+            _logger.LogDebug("Сообщение сохранено в Outbox");
+            return UnitResult.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при сохранении сообщения в Outbox");
+            return Error.Failure("fail.is.save.Outbox", "fail save Outbox");
+        }
+    }
+
 }

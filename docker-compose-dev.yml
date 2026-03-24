@@ -1,37 +1,37 @@
 services:
-  fileservice:
-    container_name: fileservice
-    build:
-      context: ./backend
-      dockerfile: ./FileService/src/FileService.Web/Dockerfile
-      args:
-        NUGET_USERNAME: ${NUGET_USERNAME}
-        NUGET_PASSWORD: ${NUGET_PASSWORD}
-    ports:
-      - "8002:8002"
-    depends_on:
-      - postgres-file
-      - minio
-      - rabbitmq
-      - seq
-    restart: always
+  # fileservice:
+  #   container_name: fileservice
+  #   build:
+  #     context: ./backend
+  #     dockerfile: ./FileService/src/FileService.Web/Dockerfile
+  #     args:
+  #       NUGET_USERNAME: ${NUGET_USERNAME}
+  #       NUGET_PASSWORD: ${NUGET_PASSWORD}
+  #   ports:
+  #     - "8002:8002"
+  #   depends_on:
+  #     - postgres-file
+  #     - minio
+  #     - rabbitmq
+  #     - seq
+  #   restart: always
 
-  direction-servise:
-    container_name: PetDS
-    build:
-      context: ./backend
-      dockerfile: ./PetDS/src/PetDS.Web/Dockerfile
-      args:
-        NUGET_USERNAME: ${NUGET_USERNAME}
-        NUGET_PASSWORD: ${NUGET_PASSWORD}
-    ports:
-      - "8001:8001"
-    depends_on:
-      - postgres-departaments
-      - minio
-      - rabbitmq
-      - seq
-    restart: always
+  # direction-servise:
+  #   container_name: PetDS
+  #   build:
+  #     context: ./backend
+  #     dockerfile: ./PetDS/src/PetDS.Web/Dockerfile
+  #     args:
+  #       NUGET_USERNAME: ${NUGET_USERNAME}
+  #       NUGET_PASSWORD: ${NUGET_PASSWORD}
+  #   ports:
+  #     - "8001:8001"
+  #   depends_on:
+  #     - postgres-departaments
+  #     - minio
+  #     - rabbitmq
+  #     - seq
+  #   restart: always
 
   seq:
     image: datalust/seq:latest
@@ -98,10 +98,26 @@ services:
       volumes:
         - postgres-departaments-data:/var/lib/postgresql/data
 
-  
+  postgres-notification:
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_DB: notif
+        POSTGRES_USER: name
+        POSTGRES_PASSWORD: pas
+      ports:
+        - "1348:5432"
+      volumes:
+        - postgres-notification-data:/var/lib/postgresql/data
+  mailhog:
+    image: mailhog/mailhog
+    ports: 
+      - 1025:1025
+      - 8025:8025
 
 
 volumes:
   postgres-file-data:
   postgres-departaments-data:
+  postgres-notification-data:
   rabbitmq-data:

@@ -1,4 +1,5 @@
 ﻿using Core.Adstract;
+using Core.MessagingComminication.MessagingDto.Departament;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -18,20 +19,33 @@ public class DepartamentCreateServise : IHandler<Guid, CreateDepartamentCommand>
     private readonly ILocationRepository _locationRepository;
     private readonly ILogger<DepartamentCreateServise> _logger;
     private readonly IValidator<CreateDepartamentDto> _validator;
+    private readonly IConnectionManeger _connectionManeger;
 
     public DepartamentCreateServise(IDepartamentRepository departamentRepository,
         ILogger<DepartamentCreateServise> logger,
-        IValidator<CreateDepartamentDto> validator, ILocationRepository locationRepository)
+        IValidator<CreateDepartamentDto> validator,
+        ILocationRepository locationRepository,
+        IConnectionManeger connectionManeger)
     {
         _departamentRepository = departamentRepository;
         _logger = logger;
         _validator = validator;
         _locationRepository = locationRepository;
+        _connectionManeger = connectionManeger;
     }
 
     public async Task<Result<Guid, Errors>> Handler(CreateDepartamentCommand command,
         CancellationToken cancellationToken = default)
     {
+        var resTranz = await _connectionManeger.CreateTranzit(cancellationToken);
+
+        if (resTranz.IsFailure)
+        {
+            return resTranz.Error;
+        }
+
+        await using var tranzit = resTranz.Value;
+
         CreateDepartamentDto dto = command.departamentDto;
 
         List<LocationId> idLoc = dto.locationsId.Select(q => LocationId.Create(q)).ToList();
@@ -77,6 +91,12 @@ public class DepartamentCreateServise : IHandler<Guid, CreateDepartamentCommand>
         }
 
         await _departamentRepository.AddDepartament(departament.Value, cancellationToken);
+
+        await tranzit.SaveChangeAsync(cancellationToken);
+
+        await tranzit.PublishToOutboxAsync<DepartamentCreate>(new DepartamentCreate(departament.Value.Id.ValueId, departament.Value.Name.ValueName, departament.Value.Identifier.ValueIdentifier));
+
+        await tranzit.Commit(cancellationToken);
 
         return departament.Value.Id.ValueId;
     }
