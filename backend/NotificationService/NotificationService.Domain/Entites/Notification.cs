@@ -108,6 +108,12 @@ namespace NotificationService.Domain.Entites
             return true;
         }
 
+        public void UpdateStatusToSend()
+        {
+            Status = StatusType.Send;
+        }
+
+
     }
 
     public enum ChannelType

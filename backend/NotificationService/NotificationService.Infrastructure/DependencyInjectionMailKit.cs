@@ -24,9 +24,9 @@ namespace NotificationService.Infrastructure
                 var option = q.GetRequiredService<IOptions<MailKitOptions>>().Value;
 
                 client.Connect(
-                    option.AddresServer,  // Адрес SMTP сервера
-                    option.Port,               // Порт (587 для TLS, 465 для SSL)
-                    option.UseSsl               // Использовать SSL/TLS
+                    option.AddresServer,
+                    option.Port,    
+                    option.UseSsl      
                 );
 
                 //client.Authenticate(

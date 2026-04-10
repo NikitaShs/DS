@@ -4,6 +4,7 @@ using Microsoft.Build.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using NotificationService.Core.Abstraction;
 using SharedKernel.Exseption;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using Error = SharedKernel.Exseption.Error;
 
 namespace NotificationService.Infrastructure.Repository
 {
-    public class EmailSender
+    public class EmailSender : IEmailSender
     {
         private readonly SmtpClient _smtpClient;
         private readonly MailKitOptions _mailKitOptions;
@@ -37,9 +38,9 @@ namespace NotificationService.Infrastructure.Repository
 
                 message.To.Add(new MailboxAddress("Recipient", "nisc2008faiv@gmail.com"));
 
-                message.Subject = subject;
+                message.Subject = "subject";
 
-                message.Body = new TextPart("plain") { Text = body };
+                message.Body = new TextPart("plain") { Text = "body" };
 
                 await _smtpClient.SendAsync(message);
                 return true;

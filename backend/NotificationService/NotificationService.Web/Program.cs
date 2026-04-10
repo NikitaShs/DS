@@ -1,6 +1,8 @@
 using MailKit.Net.Smtp;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Core.Abstraction;
+using NotificationService.Infrastructure;
+using NotificationService.Infrastructure.BackGroundService;
 using NotificationService.Infrastructure.DataBaseConnection;
 using NotificationService.Infrastructure.Repository;
 using PetDS.Application.Messaging;
@@ -22,12 +24,14 @@ builder.Services.AddScoped<NotificationDbContext>(q => new NotificationDbContext
 builder.Services.ConfigAddWolverine(builder.Configuration);
 builder.Services.AddSerilog();
 
-SmtpClient
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddMailKit(builder.Configuration);
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+builder.Services.AddHostedService<SendMeilBackGroundService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
