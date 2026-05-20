@@ -25,7 +25,7 @@ namespace NotificationService.Core.IntegrationEvents
 
         public async Task Handle(DepartmentDeactivated departmentDeactivated, CancellationToken cancellationToken)
         {
-            var resCheck = await _notificationRepository.CheckDuplicatNotification("department.created", departmentDeactivated.depthIs, cancellationToken);
+            var resCheck = await _notificationRepository.CheckDuplicatNotification("department.deactivated", departmentDeactivated.depthIs, cancellationToken);
             if (resCheck.IsFailure)
             {
                 _logger.LogError("да такое смс уже было");
@@ -67,13 +67,13 @@ namespace NotificationService.Core.IntegrationEvents
                 DateTime.UtcNow
                 );
 
-            if (resInApp.IsFailure)
+            if (resEmail.IsFailure)
             {
                 _logger.LogError("неудалось создать Email сообщение с деактивацией департамента в id {id}", departmentDeactivated.depthIs);
                 return;
             }
 
-            var resDbEmail = await _notificationRepository.AddNotification(resInApp.Value, cancellationToken);
+            var resDbEmail = await _notificationRepository.AddNotification(resEmail.Value, cancellationToken);
 
             if (resDbEmail.IsFailure)
             {

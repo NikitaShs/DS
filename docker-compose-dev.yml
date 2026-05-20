@@ -1,3 +1,4 @@
+
 services:
   # fileservice:
   #   container_name: fileservice
@@ -16,22 +17,22 @@ services:
   #     - seq
   #   restart: always
 
-  # direction-servise:
-  #   container_name: PetDS
-  #   build:
-  #     context: ./backend
-  #     dockerfile: ./PetDS/src/PetDS.Web/Dockerfile
-  #     args:
-  #       NUGET_USERNAME: ${NUGET_USERNAME}
-  #       NUGET_PASSWORD: ${NUGET_PASSWORD}
-  #   ports:
-  #     - "8001:8001"
-  #   depends_on:
-  #     - postgres-departaments
-  #     - minio
-  #     - rabbitmq
-  #     - seq
-  #   restart: always
+  direction-servise:
+    container_name: PetDS
+    build:
+      context: ./backend
+      dockerfile: ./PetDS/src/PetDS.Web/Dockerfile
+      args:
+        NUGET_USERNAME: ${NUGET_USERNAME}
+        NUGET_PASSWORD: ${NUGET_PASSWORD}
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres-departaments
+      - minio
+      - rabbitmq
+      - seq
+    restart: always
 
   seq:
     image: datalust/seq:latest
@@ -115,9 +116,101 @@ services:
       - 1025:1025
       - 8025:8025
 
+  # ============================================
+  # Loki — хранилище логов
+  # ============================================
+  loki:
+    image: grafana/loki:3.7.1
+    container_name: setu-loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./config/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki-data:/loki
+    ports:
+      - "3100:3100"
+    restart: always
+  # ============================================
+  # Grafana Alloy — сбор логов с Docker контейнеров
+  # ============================================
+  alloy:
+    image: grafana/alloy:v1.16.1
+    container_name: alloy
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    volumes:
+      - ./config/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - //var/run/docker.sock:/var/run/docker.sock:ro
+      - alloy-data:/var/lib/alloy/data
+    ports:
+      - "12345:12345" # UI самого Alloy для отладки
+    depends_on:
+      - loki
+    restart: always
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana-data:/var/lib/grafana
+      #- ./config/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+    depends_on:
+      - loki    # ← убрали лишнее, оставили только имя сервиса
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.151.0
+    container_name: setu-otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./config/otel-collector/config.yaml:/etc/otel-collector-config.yaml
+    expose:
+      - "4317" # OTLP gRPC — приём метрик от сервисов
+      - "4318" # OTLP HTTP
+      - "9464" # /metrics для Prometheus (внутри docker-сети)
+      - "8888" # внутренние метрики самого коллектора
+      - "13133" # health_check extension
+    ports:
+      # Публикуем OTLP-порты наружу для локальной отладки
+      # (например, отправить тестовую метрику с хоста через otel-cli).
+      # На проде эти порты можно закрыть — сервисы и так в docker-сети.
+      - "4317:4317"
+      - "4318:4318"
+    restart: always
+
+  # Prometheus — TSDB и движок PromQL. Скрейпит /metrics у otel-collector.
+  prometheus:
+    image: prom/prometheus:v3.11.3
+    container_name: setu-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      # Позволяет hot-reload по POST /-/reload — удобно при правке prometheus.yml.
+      - --web.enable-lifecycle
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090" # UI Prometheus (PromQL, Targets, Status)
+    depends_on:
+      - otel-collector
+    restart: always
 
 volumes:
   postgres-file-data:
   postgres-departaments-data:
   postgres-notification-data:
   rabbitmq-data:
+  loki-data:
+  grafana-data:
+  alloy-data:
+  prometheus-data:

@@ -36,11 +36,10 @@ namespace NotificationService.Infrastructure.BackGroundService
 
             IEmailSender emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
 
-            using IServiceScope scopeDbcontext = _scopeFactory.CreateScope();
 
-            NotificationDbContext dbContext = scopeDbcontext.ServiceProvider.GetRequiredService<NotificationDbContext>();
+            NotificationDbContext dbContext = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
 
-            PeriodicTimer timer = new(TimeSpan.FromSeconds(10));
+            PeriodicTimer timer = new(TimeSpan.FromMinutes(10));
 
             _logger.LogInformation("bacgraung inicianalication");
 
@@ -49,32 +48,49 @@ namespace NotificationService.Infrastructure.BackGroundService
             {
                 _logger.LogInformation("full start");
 
-                var funcRebublic = await dbContext.Notifications.Where(
-                q => q.Status == StatusType.Pending).ToListAsync(cancellationToken);
+                var funcRebublic = await dbContext.Notifications
+                    .Where(q => q.Status == StatusType.Pending && q.Channel == ChannelType.Email)
+                    .OrderBy(q => q.CreateAt)
+                    .Take(150)
+                    .ToListAsync(cancellationToken);
 
 
+                int shit = 0;
 
                 foreach (var q in funcRebublic)
                 {
-                    _logger.LogInformation("{q}", q.Id);
-                    var pulRes = await emailSender.SendAsync(
-                    "noreply@notification.local",
-                    q.Subject,
-                    q.Body,
-                    cancellationToken);
-
-                    if (pulRes.IsSuccess)
+                    shit = 0;
+                    while (shit < 3)
                     {
-                        q.UpdateStatusToSend();
 
-                        await dbContext.SaveChangesAsync(cancellationToken);
+                        _logger.LogInformation("{q}", q.Id);
+                        var pulRes = await emailSender.SendAsync(
+                        "noreply@notification.local",
+                        q.Subject,
+                        q.Body,
+                        cancellationToken);
 
-                        _logger.LogInformation("email send to complite");
+                        if (pulRes.IsSuccess)
+                        {
+                            q.UpdateStatusToSend();
+
+                            _logger.LogInformation("email send to complite");
+
+                            break;
+                        }
+                        else
+                        {
+                            if(shit >= 3)
+                            {
+                                q.UpdateStatusToFailed();
+
+                                break;
+                            }
+                            shit++;
+                            _logger.LogError("email send to not complite {id}", q.Id);
+                        }
                     }
-                    else
-                    {
-                        _logger.LogError("email send to not complite {id}", q.Id);
-                    }
+                    await dbContext.SaveChangesAsync(cancellationToken);
                 }
             }
         }

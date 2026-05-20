@@ -45,7 +45,7 @@ public class GetChildsDepartamentsServise
                         Depth = q.Depth,
                         Path = q.Path.ValuePash,
                         IsActive = q.IsActive,
-                        HasMoreChildren = q.Children.Count > 0
+                        HasMoreChildren = q.Children.Any()
                     }).ToListAsync(cancellationToken);
                 if (!res.Any())
                 {

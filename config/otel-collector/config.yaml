@@ -1,0 +1,70 @@
+# OpenTelemetry Collector — пока что только метрики.
+# Сервисы пушат метрики по OTLP (gRPC 4317 / HTTP 4318),
+# коллектор буферизует и отдаёт их в формате Prometheus на :9464/metrics,
+# откуда их потом будет скрейпить Prometheus.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Защита от OOM: при росте RSS выше лимита коллектор начнёт дропать данные,
+  # а не падать целиком. По доке должен стоять ПЕРВЫМ в пайплайне,
+  # чтобы backpressure шёл в receiver'ы.
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 80
+    spike_limit_percentage: 25
+
+  # Батчим перед экспортом — меньше CPU и сетевых сисколов.
+  # По доке: после memory_limiter и любых сэмплеров.
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+
+exporters:
+  # Prometheus сам ходит на этот endpoint и скрейпит метрики.
+  prometheus:
+    endpoint: 0.0.0.0:9464
+    # Resource-атрибуты OTLP (service.name, deployment.environment и т.п.)
+    # -> Prometheus labels на каждой метрике.
+    resource_to_telemetry_conversion:
+      enabled: true
+    # Используем дефолтную translation_strategy = NoUTF8EscapingWithSuffixes:
+    # точки в OTLP-именах -> '_', к counter'ам добавляется _total, к гистограммам
+    # единиц времени — _seconds. Это идиоматично для Prometheus и совпадает с тем,
+    # как пишет большинство дашбордов/алертов/туториалов. Можно было поставить
+    # WithoutSuffixes, но тогда метрики выглядят непривычно (http_server_request_duration
+    # вместо http_server_request_duration_seconds).
+
+extensions:
+  # /healthz и /readyz для docker healthcheck.
+  health_check:
+    endpoint: 0.0.0.0:13133
+
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus]
+  # Внутренняя телеметрия самого коллектора:
+  # logs — пишутся в stdout (их подхватит Alloy/Loki как у других контейнеров).
+  # metrics — отдельный /metrics на :8888 со счётчиками pipeline
+  # (сколько принято/дропнуто/экспортировано). Prometheus скрейпит их отдельно.
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      level: detailed
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 0.0.0.0
+                port: 8888

@@ -1,0 +1,103 @@
+// Подписываемся на список Docker-контейнеров.
+discovery.docker "containers" {
+	host             = "unix:///var/run/docker.sock"
+	refresh_interval = "5s"
+}
+
+// Переименовываем системные мета-лейблы в человекочитаемые.
+discovery.relabel "containers" {
+	targets = discovery.docker.containers.targets
+
+	rule {
+		source_labels = ["__meta_docker_container_name"]
+		regex         = "/(.*)"
+		target_label  = "container"
+	}
+
+	rule {
+		source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+		target_label  = "compose_service"
+	}
+}
+
+// Подсасываем stdout всех контейнеров.
+loki.source.docker "containers" {
+	host          = "unix:///var/run/docker.sock"
+	targets       = discovery.relabel.containers.output
+	forward_to    = [loki.process.parse.receiver]
+	relabel_rules = discovery.relabel.containers.rules
+}
+
+// Пытаемся вытащить полезное из тела лога.
+loki.process "parse" {
+	forward_to = [loki.write.local.receiver]
+
+	stage.match {
+		selector = "{compose_service=\"auth-service\"}"
+
+		// Если строка — JSON от Serilog CLEF, тащим поля, которые удобно искать в Grafana.
+		stage.json {
+			expressions = {
+				level            = "\"@l\"",
+				timestamp        = "\"@t\"",
+				message          = "\"@m\"",
+				exception        = "\"@x\"",
+				message_template = "\"@mt\"",
+				service_name     = "service_name",
+				environment      = "environment",
+			}
+		}
+
+		// CLEF не пишет @l для Information, поэтому нормализуем уровень для Loki label.
+		stage.template {
+			source   = "level"
+			template = "{{ if .level }}{{ .level }}{{ else }}Information{{ end }}"
+		}
+
+		// Stack trace держим не в видимой строке, а в metadata записи.
+		stage.structured_metadata {
+			values = {
+				exception_stacktrace = "exception",
+			}
+		}
+
+		// Некоторые Microsoft/EF логи уже кладут exception внутрь @m.
+		// Для списка логов оставляем только первую строку, полный stack trace лежит выше в metadata.
+		stage.template {
+			source   = "display_message"
+			template = "{{ if .exception }}{{ regexReplaceAll \"(?s)\\n.*\" .message \"\" }}{{ else }}{{ .message }}{{ end }}"
+		}
+
+		// Используем timestamp самого приложения, а не момент чтения stdout Docker'ом.
+		stage.timestamp {
+			source = "timestamp"
+			format = "RFC3339Nano"
+		}
+
+		// В Grafana показываем короткое сообщение, а не весь CLEF JSON.
+		stage.output {
+			source = "display_message"
+		}
+	}
+
+	// Plain text fallback (на nginx/postgres) — ловим LEVEL в начале строки.
+	stage.regex {
+		expression = "^(?P<level>(TRACE|DEBUG|INFO|WARN|ERROR|FATAL|CRITICAL))"
+	}
+
+	// Финально — level в Loki-лейбл.
+	stage.labels {
+		values = {
+			level        = "",
+			service_name = "",
+			environment  = "",
+		}
+	}
+}
+
+// Пушим в Loki.
+loki.write "local" {
+	endpoint {
+		url = "http://loki:3100/loki/api/v1/push"
+	}
+}

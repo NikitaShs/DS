@@ -43,9 +43,9 @@ namespace NotificationService.Infrastructure.Repository
 
         public async Task<Result<bool, Error>> CheckDuplicatNotification(string sourceEvent, Guid sourceEntityId, CancellationToken cancellationToken)
         {
-            var res = await _notificationDbContext.Notifications.Where(q => q.SourseEvent == sourceEvent & q.SourseEntityId == sourceEntityId).ToListAsync(cancellationToken);
+            var res = await _notificationDbContext.Notifications.AnyAsync(q => q.SourseEvent == sourceEvent && q.SourseEntityId == sourceEntityId, cancellationToken);
 
-            if (res.Count > 0)
+            if (res)
             {
                 _logger.LogInformation("сообщение с такими sourceEvent - {sourceEvent} и sourceEntityId - {sourceEntityId} уже есть", sourceEvent, sourceEntityId);
                 return GeneralErrors.ValueNotValid("sourceEvent, sourceEntityId");

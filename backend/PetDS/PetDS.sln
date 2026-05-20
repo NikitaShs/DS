@@ -22,6 +22,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDS.Contract", "src\PetDS.Contract\PetDS.Contract.csproj", "{6E959837-386D-73B1-8DA0-A3D13B49A437}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1B37B015-B8BD-49D7-8DA2-7852E8C9D563}"
+	ProjectSection(SolutionItems) = preProject
+		src\PetDS.Web\Program.cs = src\PetDS.Web\Program.cs
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetDSTests", "Tests\PetDSTests\PetDSTests.csproj", "{9264DB40-493B-457C-B936-1887973AF320}"
 EndProject

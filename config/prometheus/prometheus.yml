@@ -1,0 +1,36 @@
+# Prometheus — скрейпит метрики, которые OTel Collector
+# отдаёт в Prometheus-формате на :9464/metrics.
+# Сами сервисы (AuthService и пр.) Prometheus напрямую НЕ трогает —
+# они пушат в коллектор по OTLP, а коллектор уже выставляет /metrics.
+
+global:
+  scrape_interval: 15s # как часто ходим за метриками
+  scrape_timeout: 10s
+  evaluation_interval: 15s # как часто пересчитываем правила (пока их нет)
+  external_labels:
+    cluster: setu-local
+
+scrape_configs:
+  # Сам Prometheus — полезно видеть, жив ли он и сколько таргетов up.
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # OTel Collector — основной источник прикладных метрик.
+  # Коллектор сам по себе слушает только OTLP (4317/4318) для приёма от сервисов;
+  # экспортер `prometheus` поднимает отдельный HTTP-сервер на :9464,
+  # который отдаёт накопленные метрики по пути /metrics в формате Prometheus.
+  - job_name: otel-collector
+    metrics_path: /metrics # по умолчанию и так /metrics — пишем явно для наглядности
+    static_configs:
+      - targets: ["otel-collector:9464"]
+        labels:
+          source: otel
+
+  # Внутренние метрики самого коллектора (otelcol_* — receiver/exporter/queue stats).
+  # Полезно, чтобы видеть, не дропает ли коллектор данные на пути.
+  - job_name: otel-collector-internal
+    static_configs:
+      - targets: ["otel-collector:8888"]
+        labels:
+          source: otel-internal

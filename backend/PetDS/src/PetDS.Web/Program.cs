@@ -3,6 +3,7 @@ using Dapper;
 using FileService.Contracts.HttpCommunicationFile;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
+using NotificationService.Web.Extensions;
 using PetDS.Application;
 using PetDS.Application.abcstractions;
 using PetDS.Application.Departaments;
@@ -22,25 +23,23 @@ using PetDS.Infrastructure.DataBaseConnections;
 using PetDS.Infrastructure.Repositorys;
 using PetDS.Infrastructure.Seeding;
 using PetDS.Infrastructure.Seedings;
+using PetDS.Web;
 using PetDS.Web.Middlewares;
 using Serilog;
 using Serilog.Events;
+using Serilog.Formatting.Compact;
+using Serilog.Sinks.Loki;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.Seq(builder.Configuration.GetConnectionString("seq") ?? throw new ArgumentNullException("seq"))
-    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
-    .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
-    .CreateLogger();
+builder.Host.AddConfigureSerilogForLoki("notification-service");
+
 builder.Services.AddCors();
-builder.Services.AddSerilog();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.ConfigAddWolverine(builder.Configuration);
 builder.Services.AddApplication();
+builder.AddOpenTelemetryMetrics("NotificationService");
 
 builder.Services.AddStackExchangeRedisCache(setup =>
 {

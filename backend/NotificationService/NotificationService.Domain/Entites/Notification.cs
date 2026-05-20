@@ -103,7 +103,7 @@ namespace NotificationService.Domain.Entites
                 return GeneralErrors.ValueNotValid(subject);
             if (string.IsNullOrWhiteSpace(body) || body.Length >= 500)
                 return GeneralErrors.ValueNotValid(body);
-            if (string.IsNullOrWhiteSpace(sourseEvent) || sourseEvent.Length >= 20)
+            if (string.IsNullOrWhiteSpace(sourseEvent) || sourseEvent.Length >= 50)
                 return GeneralErrors.ValueNotValid(sourseEvent);
             return true;
         }
@@ -111,6 +111,11 @@ namespace NotificationService.Domain.Entites
         public void UpdateStatusToSend()
         {
             Status = StatusType.Send;
+        }
+
+        public void UpdateStatusToFailed()
+        {
+            Status = StatusType.Failed;
         }
 
 
